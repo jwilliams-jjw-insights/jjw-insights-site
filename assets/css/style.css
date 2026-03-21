@@ -1,0 +1,341 @@
+/* ============================================
+   JJW Insights Analytics LLC — Site Styles
+   Brand colors: Periwinkle #6468DA, Gold #FBDA18
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+  --color-periwinkle: #6468DA;
+  --color-periwinkle-dark: #4a4eb8;
+  --color-periwinkle-light: #8a8de6;
+  --color-gold: #FBDA18;
+  --color-gold-dark: #d4b810;
+  --color-bg: #0e0f1a;
+  --color-bg-card: #1a1b2e;
+  --color-bg-card-hover: #22243a;
+  --color-text: #e0e0e8;
+  --color-text-muted: #9a9ab0;
+  --color-text-heading: #ffffff;
+  --font-heading: 'Lato', sans-serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-periwinkle-light);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--color-gold);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---- Layout ---- */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ---- Navigation ---- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(14, 15, 26, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(100, 104, 218, 0.15);
+  padding: 0.8rem 0;
+}
+
+.site-nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-nav__logo {
+  height: 48px;
+  width: auto;
+}
+
+.site-nav__links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.site-nav__links a {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease;
+}
+.site-nav__links a:hover,
+.site-nav__links a.active {
+  color: var(--color-gold);
+}
+
+/* ---- Hero ---- */
+.hero {
+  padding: 6rem 0 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(100,104,218,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero__tagline {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--color-text-heading);
+  line-height: 1.2;
+  max-width: 780px;
+  margin: 0 auto 1.5rem;
+}
+
+.hero__tagline .accent {
+  color: var(--color-gold);
+}
+
+.hero__sub {
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+  max-width: 620px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 2.2rem;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+}
+
+.btn--primary {
+  background: var(--color-periwinkle);
+  color: #fff;
+}
+.btn--primary:hover {
+  background: var(--color-periwinkle-dark);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100,104,218,0.35);
+}
+
+.btn--outline {
+  border: 2px solid var(--color-periwinkle);
+  color: var(--color-periwinkle-light);
+  background: transparent;
+}
+.btn--outline:hover {
+  background: var(--color-periwinkle);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ---- Section Headings ---- */
+.section {
+  padding: 5rem 0;
+}
+
+.section__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 2rem;
+  color: var(--color-text-heading);
+  margin-bottom: 0.6rem;
+}
+
+.section__subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: 3rem;
+  max-width: 640px;
+}
+
+/* ---- Value Props ---- */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.value-card {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(100,104,218,0.1);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.value-card:hover {
+  border-color: var(--color-periwinkle);
+  transform: translateY(-4px);
+}
+
+.value-card__icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.value-card__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--color-text-heading);
+  margin-bottom: 0.5rem;
+}
+
+.value-card__text {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* ---- Portfolio Grid ---- */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.portfolio-card {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(100,104,218,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.portfolio-card:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-4px);
+}
+
+.portfolio-card__img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(100,104,218,0.1);
+}
+
+.portfolio-card__body {
+  padding: 1.5rem;
+}
+
+.portfolio-card__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--color-text-heading);
+  margin-bottom: 0.4rem;
+}
+
+.portfolio-card__desc {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.portfolio-card__link {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-gold);
+}
+.portfolio-card__link:hover {
+  color: var(--color-gold-dark);
+}
+
+/* ---- About Page ---- */
+.about-content {
+  max-width: 740px;
+}
+
+.about-content h2 {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: var(--color-text-heading);
+  margin: 2.5rem 0 0.8rem;
+}
+
+.about-content p {
+  margin-bottom: 1.2rem;
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  border-top: 1px solid rgba(100,104,218,0.15);
+  padding: 2.5rem 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.site-footer a {
+  color: var(--color-text-muted);
+}
+.site-footer a:hover {
+  color: var(--color-gold);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 720px) {
+  .site-nav__links {
+    gap: 1.2rem;
+  }
+  .hero {
+    padding: 4rem 0 2.5rem;
+  }
+  .section {
+    padding: 3rem 0;
+  }
+}
