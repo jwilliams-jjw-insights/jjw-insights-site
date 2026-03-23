@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JJW Insights Analytics — Capability Statement</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --periwinkle: #6468DA;
+    --periwinkle-dark: #4a4eb8;
+    --periwinkle-light: #8a8de6;
+    --periwinkle-pale: rgba(100,104,218,0.12);
+    --gold: #FBDA18;
+    --gold-dark: #d4b810;
+    --gold-dim: rgba(251,218,24,0.15);
+    --bg: #0e0f1a;
+    --bg-card: #1a1b2e;
+    --bg-card-hover: #22243a;
+    --text: #e0e0e8;
+    --text-muted: #9a9ab0;
+    --text-heading: #ffffff;
+    --font-heading: 'Lato', sans-serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+
+    /* tree palette */
+    --leaf: #4CAF50;
+    --leaf-dark: #2E7D32;
+    --leaf-glow: rgba(76,175,80,0.15);
+    --bark: #8D6E63;
+    --bark-dark: #5D4037;
+    --root: #A1887F;
+    --root-glow: rgba(161,136,127,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 30%, var(--leaf-glow) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 80%, var(--root-glow) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 60%, var(--periwinkle-pale) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+  /* ── Header ── */
+  .header { text-align: center; padding: 3rem 0 1.5rem; }
+  .logo { height: 80px; width: auto; margin: 0 auto 0.75rem; display: block; }
+  .tagline {
+    font-family: var(--font-heading);
+    font-weight: 300;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .intro {
+    max-width: 680px; margin: 0 auto;
+    font-size: 0.95rem; color: var(--text-muted);
+    line-height: 1.75;
+  }
+
+  /* ── Controls ── */
+  .controls { display: flex; justify-content: flex-end; margin: 1.5rem 0 0.5rem; opacity:0; animation: fadeIn .6s .3s forwards; }
+  .expand-btn {
+    font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--periwinkle-light); background: transparent;
+    border: 1px solid rgba(100,104,218,0.25); border-radius: 4px;
+    padding: 0.45rem 1.2rem; cursor: pointer;
+    transition: all 0.25s;
+  }
+  .expand-btn:hover { background: var(--periwinkle); color: #fff; }
+
+  /* ── Tree Structure ── */
+  .tree { position: relative; }
+
+  /* SVG trunk connector */
+  .trunk-svg { display: flex; justify-content: center; position: relative; z-index: 1; }
+  .trunk-svg svg { width: 4px; overflow: visible; }
+
+  .trunk-line {
+    stroke: var(--bark);
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .trunk-line-glow {
+    stroke: var(--bark);
+    stroke-width: 12;
+    stroke-linecap: round;
+    opacity: 0.08;
+  }
+
+  /* Branch lines from trunk to cards */
+  .branch-container {
+    display: flex; justify-content: center; padding: 0;
+    position: relative; z-index: 1;
+  }
+  .branch-line {
+    width: 2px; height: 28px;
+    position: relative; overflow: hidden;
+  }
+  .branch-line::after {
+    content:''; position:absolute; inset:0;
+    transform-origin: top; animation: growDown 0.7s ease forwards;
+  }
+  .branch-canopy .branch-line::after { background: linear-gradient(var(--leaf), var(--bark)); animation-delay:.4s; }
+  .branch-roots .branch-line::after { background: linear-gradient(var(--bark), var(--root)); animation-delay:.7s; }
+
+  /* ── Tier ── */
+  .tier { margin-bottom: 0; position: relative; }
+  .tier-label {
+    font-family: var(--font-heading); font-weight: 700;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    text-align: center; margin-bottom: 0.6rem;
+    opacity: 0; animation: fadeIn 0.5s ease forwards;
+  }
+  .tier-canopy .tier-label { color: var(--leaf); animation-delay: .15s; }
+  .tier-trunk .tier-label  { color: var(--periwinkle-light); animation-delay: .45s; }
+  .tier-roots .tier-label  { color: var(--gold-dark); animation-delay: .75s; }
+
+  .tier-grid {
+    display: grid; gap: 1rem;
+    opacity: 0; animation: riseIn 0.6s ease forwards;
+  }
+  .tier-canopy .tier-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); animation-delay: .25s; }
+  .tier-trunk .tier-grid  { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); animation-delay: .55s; }
+  .tier-roots .tier-grid  { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); animation-delay: .85s; }
+
+  /* ── Card ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid rgba(100,104,218,0.1);
+    border-radius: 8px; padding: 1.2rem 1.3rem;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: border-color .3s, transform .3s, box-shadow .3s;
+  }
+  .card::before {
+    content:''; position:absolute; top:0; left:0;
+    width: 3px; height:100%; transition: width .25s;
+  }
+  .card:hover { border-color: var(--periwinkle); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+  .card:hover::before { width: 5px; }
+  .tier-canopy .card::before { background: var(--leaf); }
+  .tier-trunk .card::before { background: var(--periwinkle); }
+  .tier-roots .card::before { background: var(--gold-dark); }
+
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: .6rem; }
+  .card-icon { font-size: 1.2rem; flex-shrink:0; line-height:1; margin-top:2px; }
+  .card-titles { flex:1; }
+  .card-title { font-family: var(--font-heading); font-weight: 900; font-size: 1rem; color: var(--text-heading); line-height:1.3; }
+  .card-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: .15rem; line-height:1.4; }
+  .card-toggle {
+    flex-shrink:0; width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.7rem; color: var(--text-muted); background: rgba(255,255,255,0.04);
+    transition: all .25s;
+  }
+  .card:hover .card-toggle { background: rgba(255,255,255,0.08); }
+  .card.open .card-toggle { transform: rotate(180deg); }
+
+  .card-body {
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height .4s cubic-bezier(.25,.46,.45,.94), opacity .3s;
+  }
+  .card.open .card-body { max-height: 400px; opacity: 1; }
+  .card-body-inner {
+    padding-top: .85rem; margin-top: .7rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .detail {
+    display: flex; align-items: flex-start; gap: .55rem;
+    margin-bottom: .5rem; font-size: .85rem; line-height: 1.55; color: var(--text-muted);
+  }
+  .dot { flex-shrink:0; width:5px; height:5px; border-radius:50%; margin-top:.5em; }
+  .tier-canopy .dot { background: var(--leaf); }
+  .tier-trunk .dot  { background: var(--periwinkle-light); }
+  .tier-roots .dot  { background: var(--gold); }
+
+  /* ── Bottom Panels ── */
+  .bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; opacity:0; animation: riseIn .6s 1s forwards; }
+  .panel {
+    background: var(--bg-card); border: 1px solid rgba(100,104,218,0.1);
+    border-radius: 8px; padding: 1.5rem 1.75rem;
+  }
+  .panel h3 {
+    font-family: var(--font-heading); font-weight: 900; font-size: 1.05rem;
+    color: var(--text-heading); margin-bottom: .85rem;
+  }
+  .perf-item { display: flex; align-items: flex-start; gap: .55rem; margin-bottom: .55rem; font-size: .85rem; line-height: 1.55; color: var(--text-muted); }
+  .perf-dot { flex-shrink:0; width:6px; height:6px; border-radius:50%; background: var(--gold); margin-top:.45em; }
+  .contact-item { display: flex; align-items: center; gap: .7rem; margin-bottom: .55rem; font-size: .88rem; color: var(--text-muted); }
+  .contact-icon { flex-shrink:0; width:26px; height:26px; border-radius:6px; background: rgba(100,104,218,0.15); display:flex; align-items:center; justify-content:center; font-size:.75rem; color: var(--periwinkle-light); }
+  .contact-item a { color: var(--periwinkle-light); text-decoration: none; transition: color .2s; }
+  .contact-item a:hover { color: var(--gold); }
+  .certs { margin-top: .85rem; padding-top: .7rem; border-top: 1px solid rgba(255,255,255,0.06); font-size: .8rem; color: var(--text-muted); }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; margin-top: 3rem; padding-top: 1.5rem;
+    border-top: 1px solid rgba(100,104,218,0.15);
+    font-size: .8rem; color: var(--text-muted);
+    opacity: 0; animation: fadeIn .5s 1.2s forwards;
+  }
+  .footer a { color: var(--text-muted); text-decoration: none; }
+  .footer a:hover { color: var(--gold); }
+
+  /* ── Animations ── */
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes riseIn { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes growDown { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .page { padding: 0 1.25rem 3rem; }
+    .tier-grid { grid-template-columns: 1fr !important; }
+    .bottom { grid-template-columns: 1fr; }
+    .logo { height: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <img class="logo" src="JJW_Logo.svg" alt="JJW Insights Analytics LLC">
+    <div class="tagline">Grounded Expertise · Actionable Intelligence</div>
+    <p class="intro">
+      Platform-agnostic data consulting rooted in a decade of federal program delivery —
+      from EPA water systems to FEMA preparedness dashboards.
+      We turn fragmented data into governed pipelines, clear dashboards, and narratives that move decisions.
+    </p>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="expand-btn" id="toggleBtn" onclick="toggleAll()">Expand All</button>
+  </div>
+
+  <!-- Tree -->
+  <div class="tree">
+
+    <!-- ═══ CANOPY ═══ -->
+    <div class="tier tier-canopy">
+      <div class="tier-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:4px;">
+          <path d="M12 2C8 2 4 6 4 10c0 3 2 6 5 7.5V22h6v-4.5c3-1.5 5-4.5 5-7.5 0-4-4-8-8-8z" fill="currentColor" opacity=".5"/>
+        </svg>
+        Canopy — What Clients Get
+      </div>
+      <div class="tier-grid" id="canopy"></div>
+    </div>
+
+    <!-- Trunk connector -->
+    <div class="branch-container branch-canopy"><div class="branch-line"></div></div>
+
+    <!-- ═══ TRUNK ═══ -->
+    <div class="tier tier-trunk">
+      <div class="tier-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:4px;">
+          <rect x="10" y="4" width="4" height="16" rx="2" fill="currentColor" opacity=".5"/>
+        </svg>
+        Trunk — How We Work
+      </div>
+      <div class="tier-grid" id="trunk"></div>
+    </div>
+
+    <!-- Root connector -->
+    <div class="branch-container branch-roots"><div class="branch-line"></div></div>
+
+    <!-- ═══ ROOTS ═══ -->
+    <div class="tier tier-roots">
+      <div class="tier-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:4px;">
+          <path d="M12 12c-2 2-5 4-7 8h4l3-4 3 4h4c-2-4-5-6-7-8z" fill="currentColor" opacity=".5"/>
+        </svg>
+        Roots — Why It Holds
+      </div>
+      <div class="tier-grid" id="roots"></div>
+    </div>
+
+  </div>
+
+  <!-- Bottom -->
+  <div class="bottom">
+    <div class="panel">
+      <h3>Selected Performance</h3>
+      <div id="perf"></div>
+    </div>
+    <div class="panel">
+      <h3>Connect</h3>
+      <div id="contact"></div>
+      <div class="certs" id="certs"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 JJW Insights Analytics LLC &middot; Baltimore, MD
+  </div>
+
+</div>
+
+<script>
+const DATA = {
+  canopy: [
+    {
+      icon: "📊", title: "Interactive Dashboards",
+      sub: "Decision-ready reporting",
+      details: [
+        "Power BI and web-based dashboards built for executive and program-level audiences",
+        "Change detection and snapshot comparison across reporting periods",
+        "Colorblind-accessible design with stakeholder-specific views"
+      ]
+    },
+    {
+      icon: "🔗", title: "Governed Data Pipelines",
+      sub: "From messy sources to single source of truth",
+      details: [
+        "Power Query / M-language pipelines with deduplication, fuzzy matching, and normalization",
+        "Cross-platform integration across federal data ecosystems",
+        "Automated ingestion from SharePoint, APIs, and flat file sources"
+      ]
+    },
+    {
+      icon: "📐", title: "Data Architecture & Governance",
+      sub: "Structure that scales",
+      details: [
+        "Workbook and tracker design with embedded QA workflows",
+        "Consolidation of parallel data entry into single-source systems",
+        "Metadata schema design and classification pipelines"
+      ]
+    },
+    {
+      icon: "📝", title: "Data-Driven Narratives",
+      sub: "Translating analysis into action",
+      details: [
+        "Stakeholder-ready reports with embedded visualizations",
+        "Exploratory analysis with interpretive hypotheses and recommendations",
+        "Technical documentation and SOPs for reproducible workflows"
+      ]
+    }
+  ],
+  trunk: [
+    {
+      icon: "🧩", title: "Platform-Agnostic Problem Solving",
+      sub: "The right tool for the job — not the trendy one",
+      details: [
+        "Proficient across BI, statistical, GIS, and cloud environments",
+        "AI-augmented workflows where appropriate, traditional methods where they're better",
+        "No vendor lock-in; solutions designed for portability and handoff"
+      ]
+    },
+    {
+      icon: "🔄", title: "Iterative & Transparent Process",
+      sub: "Clients see the work, not just the output",
+      details: [
+        "Incremental delivery with review checkpoints — no black boxes",
+        "Documentation-first approach ensures institutional knowledge transfer",
+        "Designed for maintainability by non-technical staff after engagement ends"
+      ]
+    },
+    {
+      icon: "🛡️", title: "Compliance-Aware Delivery",
+      sub: "Built for the federal context",
+      details: [
+        "Familiar with CMMC, FedRAMP, and federal data handling expectations",
+        "Experience navigating multi-agency stakeholder dynamics",
+        "Scope definition and boundary-setting for security and governance frameworks"
+      ]
+    }
+  ],
+  roots: [
+    {
+      icon: "🎓", title: "Academic Depth",
+      sub: "Research-trained analytical rigor",
+      details: [
+        "Ph.D. in Geosciences — machine learning, spatial analysis, contaminant transport",
+        "M.S. in Healthcare Analytics — EDA, predictive modeling, health informatics",
+        "Published researcher with peer-reviewed analytical methodology"
+      ]
+    },
+    {
+      icon: "🏛️", title: "Federal Program Experience",
+      sub: "10+ years across four agencies",
+      details: [
+        "EPA — water program technical assistance, regulatory data systems",
+        "USGS — national water information systems, geochemical data integration",
+        "DHS / FEMA — national preparedness dashboards, grant program data"
+      ]
+    },
+    {
+      icon: "🤝", title: "GovCon Fluency",
+      sub: "Speaks contractor and client",
+      details: [
+        "Joint venture and subcontracting experience in federal consulting",
+        "Capability statement and proposal-ready documentation",
+        "Understands the dynamics of prime–sub relationships from the inside"
+      ]
+    }
+  ],
+  performance: [
+    "Resolved reporting discrepancies across EPA program data by rebuilding the entire dashboard pipeline",
+    "Consolidated 44 fragmented data queries into a single dynamic query architecture, cutting maintenance overhead substantially",
+    "Designed and deployed e-signature automation workflows for multi-agency federal partners",
+    "Built change-detection dashboards enabling month-over-month tracking for national grant programs",
+  ],
+  contact: [
+    { icon: "🌐", label: "jjw-insights.org", href: "#" },
+    { icon: "✉️", label: "info@jjw-insights.org", href: "mailto:jwilliams@jjw-insights.org" },
+  ],
+  certs: "NAICS & PSC codes available upon request. SBA certifications pending."
+};
+
+function makeCard(item) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <div class="card-head">
+      <span class="card-icon">${item.icon}</span>
+      <div class="card-titles">
+        <div class="card-title">${item.title}</div>
+        <div class="card-sub">${item.sub}</div>
+      </div>
+      <span class="card-toggle">▾</span>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      ${item.details.map(d => `<div class="detail"><span class="dot"></span><span>${d}</span></div>`).join('')}
+    </div></div>`;
+  el.addEventListener('click', () => { el.classList.toggle('open'); syncBtn(); });
+  return el;
+}
+
+function render() {
+  ['canopy','trunk','roots'].forEach(tier => {
+    const g = document.getElementById(tier);
+    DATA[tier].forEach(item => g.appendChild(makeCard(item)));
+  });
+
+  const pf = document.getElementById('perf');
+  DATA.performance.forEach(t => {
+    pf.innerHTML += `<div class="perf-item"><span class="perf-dot"></span><span>${t}</span></div>`;
+  });
+
+  const cf = document.getElementById('contact');
+  DATA.contact.forEach(c => {
+    cf.innerHTML += `<div class="contact-item"><span class="contact-icon">${c.icon}</span><a href="${c.href}">${c.label}</a></div>`;
+  });
+
+  document.getElementById('certs').textContent = DATA.certs;
+}
+
+function toggleAll() {
+  const cards = document.querySelectorAll('.card');
+  const anyCollapsed = [...cards].some(c => !c.classList.contains('open'));
+  cards.forEach(c => anyCollapsed ? c.classList.add('open') : c.classList.remove('open'));
+  syncBtn();
+}
+
+function syncBtn() {
+  const cards = document.querySelectorAll('.card');
+  const allOpen = [...cards].every(c => c.classList.contains('open'));
+  document.getElementById('toggleBtn').textContent = allOpen ? 'Collapse All' : 'Expand All';
+}
+
+render();
+</script>
+</body>
+</html>
