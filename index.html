@@ -6,6 +6,65 @@
   <title>JJW Insights Analytics LLC — Outcomes, Not Overhead</title>
   <meta name="description" content="Data analytics consulting that delivers concrete, measurable outcomes — not complexity theater. See what your data looks like now, what it will look like after, and how we'll know it worked.">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Portfolio card icon strip ── */
+    .portfolio-card__icon-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 140px;
+      background: var(--color-bg);
+      border-bottom: 1px solid rgba(100,104,218,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .portfolio-card__icon-strip::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      background: radial-gradient(circle at 50% 80%, var(--color-periwinkle) 0%, transparent 70%);
+    }
+    .portfolio-card__icon-strip svg {
+      width: 56px;
+      height: 56px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease;
+    }
+    .portfolio-card:hover .portfolio-card__icon-strip svg {
+      transform: scale(1.1);
+    }
+
+    /* ── Value card accent replacement ── */
+    .value-card__accent {
+      width: 32px;
+      height: 3px;
+      background: var(--color-gold);
+      border-radius: 2px;
+      margin-bottom: 1.1rem;
+    }
+
+    /* ── Bottom CTA section ── */
+    .cta-section {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+    .cta-section__heading {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 1.6rem;
+      color: var(--color-text-heading);
+      margin-bottom: 0.6rem;
+    }
+    .cta-section__sub {
+      color: var(--color-text-muted);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+    }
+    .cta-section .btn { margin: 0 0.5rem; }
+  </style>
 </head>
 <body>
 
@@ -16,11 +75,11 @@
         <img src="assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
       </a>
       <ul class="site-nav__links">
-        <li><a href="index.html" class="active">Home </a></li>
-        <li><a href="capability-tree.html"> Capabilities </a></li>
-        <li><a href="portfolio.html"> Portfolio </a></li>
-        <li><a href="about.html"> About </a></li>
-        <li><a href="contact.html"> Contact</a></li>
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="capability-tree.html">Capabilities</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -32,7 +91,7 @@
         Every hour billed is pointed at <span class="accent">the actual problem.</span>
       </h1>
       <p class="hero__sub">
-        JJW Insights Analytics delivers outcome-focused data solutions for organizations tired of meetings about meetings. Here's what your data looks like now. Here's what it will look like after we work together. Here's how we'll know it worked.
+        JJW Insights Analytics delivers outcome-focused data solutions for organizations tired of meetings about meetings. We show you where your data is broken, fix it, and prove the fix worked.
       </p>
       <a href="portfolio.html" class="btn btn--primary">See the Work</a>
     </div>
@@ -48,7 +107,7 @@
       <div class="values-grid">
 
         <div class="value-card">
-          <div class="value-card__icon">&#9670;</div>
+          <div class="value-card__accent"></div>
           <h3 class="value-card__title">Concrete Solutions, Not Complexity Theater</h3>
           <p class="value-card__text">
             No sprawling methodologies. No two-hour meetings over a spelling issue. We name the problem, build the fix, and prove it works — so you can get back to the work that matters.
@@ -56,7 +115,7 @@
         </div>
 
         <div class="value-card">
-          <div class="value-card__icon">&#9670;</div>
+          <div class="value-card__accent"></div>
           <h3 class="value-card__title">Dashboards That Tell the Truth</h3>
           <p class="value-card__text">
             Interactive, self-contained analytics tools built to surface the insights your stakeholders actually need — not vanity metrics wrapped in a pretty slide deck.
@@ -64,7 +123,7 @@
         </div>
 
         <div class="value-card">
-          <div class="value-card__icon">&#9670;</div>
+          <div class="value-card__accent"></div>
           <h3 class="value-card__title">Federal-Grade Data Governance</h3>
           <p class="value-card__text">
             10+ years across EPA, USGS, DHS, and FEMA. We bring rigorous data pipeline design, QA frameworks, and compliance experience to every engagement — without the bureaucratic overhead.
@@ -84,7 +143,16 @@
       </p>
       <div class="portfolio-grid">
 
+        <!-- ABA Medicaid Dashboard -->
         <div class="portfolio-card">
+          <div class="portfolio-card__icon-strip">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Heart / health symbol -->
+              <path d="M28 48C28 48 8 34 8 20c0-6.6 5.4-12 12-12 4.4 0 6.8 2.4 8 4.8C29.2 10.4 31.6 8 36 8c6.6 0 12 5.4 12 12 0 14-20 28-20 28z" stroke="#FBDA18" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+              <!-- Pulse line across the heart -->
+              <path d="M10 26h10l3-8 4 16 4-12 3 4h12" stroke="#6468DA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">ABA Medicaid Reimbursement Dashboard</h3>
             <p class="portfolio-card__desc">
@@ -94,7 +162,21 @@
           </div>
         </div>
 
+        <!-- CMMC Dashboard -->
         <div class="portfolio-card">
+          <div class="portfolio-card__icon-strip">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Shield -->
+              <path d="M28 6L10 14v12c0 11.1 7.7 21.5 18 24 10.3-2.5 18-12.9 18-24V14L28 6z" stroke="#FBDA18" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+              <!-- Lock body -->
+              <rect x="21" y="26" width="14" height="12" rx="2" stroke="#6468DA" stroke-width="2" fill="none"/>
+              <!-- Lock shackle -->
+              <path d="M24 26v-4a4 4 0 018 0v4" stroke="#6468DA" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <!-- Keyhole -->
+              <circle cx="28" cy="32" r="1.5" fill="#6468DA"/>
+              <path d="M28 33.5v2.5" stroke="#6468DA" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">CMMC Level 1 Assessment Dashboard</h3>
             <p class="portfolio-card__desc">
@@ -104,7 +186,20 @@
           </div>
         </div>
 
+        <!-- DC Property Tax Map -->
         <div class="portfolio-card">
+          <div class="portfolio-card__icon-strip">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Map outline -->
+              <path d="M8 12l12-4 16 6 12-4v36l-12 4-16-6-12 4V12z" stroke="#FBDA18" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+              <!-- Fold lines -->
+              <path d="M20 8v36M36 14v36" stroke="#6468DA" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6"/>
+              <!-- Pin -->
+              <circle cx="28" cy="26" r="4" stroke="#6468DA" stroke-width="2" fill="none"/>
+              <path d="M28 30v6" stroke="#6468DA" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="28" cy="26" r="1.5" fill="#6468DA"/>
+            </svg>
+          </div>
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">DC Property Tax Geospatial Analysis</h3>
             <p class="portfolio-card__desc">
@@ -115,6 +210,18 @@
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-section__heading">Ready to talk about your data?</h2>
+      <p class="cta-section__sub">
+        No pitch decks. No discovery phases that outlast the project. Just a direct conversation about what's broken and what it takes to fix it.
+      </p>
+      <a href="contact.html" class="btn btn--primary">Start a Conversation</a>
+      <a href="capability-tree.html" class="btn btn--outline">View Capabilities</a>
     </div>
   </section>
 
