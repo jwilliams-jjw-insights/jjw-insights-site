@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading a NASA granule &mdash; 3B-HHR.MS.MRG.3IMERG.20230704-S133000-E135959.0810.V07B.HDF5</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* --- interactive processing-level ladder --- */
+.levels{margin:26px 0}
+.ladder{display:flex;gap:1px;background:var(--rule);border:1px solid var(--rule);
+ border-radius:5px 5px 0 0;overflow:hidden}
+.rung{flex:1 1 0;min-width:0;background:var(--panel);border:0;cursor:pointer;
+ padding:12px 10px;text-align:left;font-family:inherit;display:flex;
+ flex-direction:column;gap:3px;transition:background .15s}
+.rung:hover{background:var(--tint)}
+.rung.is-on{background:var(--tint);box-shadow:inset 0 -3px 0 var(--sea)}
+.rung-l{font-family:var(--mono);font-size:.78rem;color:var(--dim)}
+.rung.is-on .rung-l,.rung.is-this .rung-l{color:var(--sea)}
+.rung-b{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rung-n{font-size:.82rem;color:var(--ink);line-height:1.3}
+.lv-stage{border:1px solid var(--rule);border-top:0;border-radius:0 0 5px 5px;
+ background:var(--panel);overflow:hidden}
+.lv-panel{display:none;grid-template-columns:440px 1fr;gap:0 24px;padding:20px 22px;
+ align-items:start}
+.lv-panel.is-on{display:grid}
+.lv-panel svg{width:100%;height:auto;border:1px solid var(--rule);border-radius:4px}
+.lv-txt h4{font-family:var(--disp);font-size:1.02rem;margin:0 0 7px;font-weight:600}
+.lv-txt p{font-size:.9rem;margin:0 0 12px!important}
+.lv-ex{font-size:.84rem!important;color:var(--dim);padding-top:11px;
+ border-top:1px solid var(--rule)}
+.lv-ex>span{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;
+ text-transform:uppercase;margin-bottom:5px}
+.lv-ex code{background:none;padding:0;color:var(--sea-d);font-size:.86rem;
+ margin-right:6px}
+.lv-n{font-family:var(--mono);font-size:12px;fill:var(--dim);text-anchor:middle}
+.lv-t{font-family:var(--mono);font-size:10.5px;fill:var(--dim)}
+@media (max-width:860px){.lv-panel{grid-template-columns:1fr;gap:16px}
+ .ladder{flex-wrap:wrap}.rung{flex:1 1 33%}}
+
+:root{
+  --paper:#F1F5F6; --panel:#FFFFFF; --tint:#E7EFF1; --tint2:#DCE8EB;
+  --ink:#0F2027; --body:#33474F; --dim:#6B838C; --rule:#C6D6DA;
+  --sea:#1E6F9F; --sea-d:#14506F; --deep:#0F3D57;
+  --hot:#C4531F; --warn:#B8860B; --good:#2E7D5B;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --sans:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --disp:"Fraunces","Public Sans",Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--body);font-family:var(--sans);
+  font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--sea);outline-offset:3px}
+h1,h2,h3,h4{color:var(--ink)}
+code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;
+  border-radius:3px;word-break:break-word}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+
+/* rail */
+.rail{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:30;
+  display:flex;flex-direction:column;gap:3px}
+.rail a{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--dim);
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;padding:3px 0;
+  opacity:.55;transition:opacity .18s}
+.rail a::before{content:"";width:14px;height:2px;background:var(--rule);
+  transition:width .18s,background .18s}
+.rail a:hover,.rail a.is-here{opacity:1;color:var(--ink)}
+.rail a:hover::before,.rail a.is-here::before{width:26px;background:var(--sea)}
+@media (max-width:1320px){.rail{display:none}}
+
+/* opening */
+.open{padding:16vh 0 12vh;max-width:1080px;margin:0 auto;padding-left:32px;
+  padding-right:32px}
+.kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--sea);margin:0 0 20px}
+.open h1{font-family:var(--disp);font-weight:600;font-size:clamp(2.4rem,6.5vw,4.4rem);
+  line-height:1.02;letter-spacing:-.028em;margin:0 0 24px;max-width:15ch}
+.open-sub{font-size:1.22rem;max-width:52ch;margin:0 0 28px;color:var(--body)}
+.open-file{font-family:var(--mono);font-size:.8rem;color:var(--dim);
+  word-break:break-all;margin:0 0 40px;padding-left:14px;
+  border-left:3px solid var(--sea)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:36px}
+.stat{background:var(--panel);padding:20px 22px;display:flex;flex-direction:column;gap:4px}
+.stat-k{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+.stat-v{font-family:var(--disp);font-size:1.35rem;font-weight:600;color:var(--ink);
+  line-height:1.2}
+.stat-s{font-size:.8rem;color:var(--dim)}
+.open-note{font-size:.92rem;color:var(--dim);max-width:64ch;margin:0 0 44px}
+.scroll-cue{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--sea);text-decoration:none;display:inline-flex;
+  align-items:center;gap:10px}
+.scroll-cue span{width:28px;height:1px;background:var(--sea);position:relative}
+.scroll-cue span::after{content:"";position:absolute;right:0;top:-3px;width:7px;
+  height:7px;border-right:1px solid var(--sea);border-bottom:1px solid var(--sea);
+  transform:rotate(-45deg)}
+
+/* chapters */
+.ch{max-width:1080px;margin:0 auto;padding:0 32px 96px;display:grid;
+  grid-template-columns:64px 1fr;gap:0 26px;scroll-margin-top:40px}
+.ch-mark{display:flex;flex-direction:column;align-items:center;padding-top:8px}
+.ch-num{font-family:var(--mono);font-size:.8rem;color:var(--sea);letter-spacing:.06em}
+.ch-rule{flex:1;width:1px;background:var(--rule);margin-top:14px}
+.ch-in{min-width:0;max-width:74ch}
+.ch h2{font-family:var(--disp);font-weight:600;font-size:clamp(1.7rem,3.4vw,2.5rem);
+  line-height:1.1;letter-spacing:-.022em;margin:0 0 16px}
+.lede{font-size:1.1rem;color:var(--ink);margin:0 0 28px;max-width:56ch;
+  padding-bottom:22px;border-bottom:1px solid var(--rule)}
+.ch p{margin:0 0 20px}
+.dfn{border-bottom:1px dotted var(--sea);cursor:help;position:relative}
+.dfn::after{content:attr(data-def);position:absolute;left:0;top:calc(100% + 8px);
+  width:280px;background:var(--ink);color:#EAF2F4;font-family:var(--sans);
+  font-size:.82rem;line-height:1.5;padding:11px 13px;border-radius:5px;z-index:40;
+  opacity:0;visibility:hidden;transition:opacity .15s;pointer-events:none}
+.dfn:hover::after,.dfn:focus::after{opacity:1;visibility:visible}
+
+/* evidence panels */
+.ev{background:var(--tint);border:1px solid var(--rule);border-radius:5px;
+  margin:28px 0 26px;overflow:hidden}
+.ev-tab{font-family:var(--mono);font-size:.63rem;letter-spacing:.16em;
+  text-transform:uppercase;color:#fff;background:var(--sea-d);padding:6px 14px;
+  display:inline-block;border-bottom-right-radius:5px}
+.ev-in{padding:6px 22px 22px}
+.ev-lead{margin:14px 0 0!important;font-size:.96rem}
+.ev-in .code,.ch pre.code{background:var(--ink);color:#C9E3EC;font-family:var(--mono);
+  font-size:.8rem;line-height:1.7;padding:15px 17px;border-radius:5px;overflow-x:auto;
+  margin:14px 0 0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;margin:18px 0 0;
+  font-size:.94rem}
+.kv dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--dim);
+  text-transform:uppercase;padding-top:4px}
+.kv dd{margin:0;color:var(--ink)}
+
+/* day bar */
+.daybar{display:flex;gap:2px;margin-top:16px}
+.tk{flex:1;height:34px;background:var(--tint2);border-radius:1px}
+.tk.is-lit{background:var(--sea);box-shadow:0 0 0 2px var(--paper),0 0 0 3px var(--sea)}
+.daybar-ax{display:flex;justify-content:space-between;font-family:var(--mono);
+  font-size:.64rem;color:var(--dim);margin-top:7px}
+
+/* formats */
+.fmts{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:14px;
+  margin:24px 0}
+.fmt{background:var(--panel);border:1px solid var(--rule);border-radius:5px;padding:18px 20px}
+.fmt.is-this{border-color:var(--sea);box-shadow:0 0 0 2px rgba(30,111,159,.13)}
+.fmt-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.fmt h4{font-family:var(--mono);font-size:.86rem;margin:0;letter-spacing:-.01em}
+.pill{font-family:var(--mono);font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--sea);color:#fff;padding:2px 8px;border-radius:99px}
+.pill--off{background:var(--rule);color:var(--dim)}
+.fmt-l{font-weight:600;color:var(--ink);margin:0 0 8px!important;font-size:.94rem}
+.fmt-b{font-size:.88rem;margin:0 0 12px!important;color:var(--body)}
+.fmt-r{font-size:.78rem;color:var(--dim);margin:0!important;font-family:var(--mono)}
+.fmt-r span{text-transform:uppercase;letter-spacing:.1em;font-size:.62rem;display:block}
+.venn{display:flex;align-items:center;gap:26px;margin:26px 0;flex-wrap:wrap}
+.venn-outer{width:190px;height:110px;border:2px solid var(--sea);border-radius:7px;
+  position:relative;display:flex;align-items:flex-start;justify-content:flex-start;
+  padding:8px 10px;flex:0 0 auto}
+.venn-outer>span,.venn-inner>span{font-family:var(--mono);font-size:.72rem;color:var(--sea-d)}
+.venn-inner{position:absolute;right:8px;bottom:8px;width:112px;height:62px;
+  background:rgba(30,111,159,.15);border:2px solid var(--sea-d);border-radius:5px;
+  display:flex;align-items:center;justify-content:center}
+.venn p{font-size:.9rem;flex:1 1 260px;margin:0!important;color:var(--dim)}
+
+/* level ladder + swath */
+.swath{margin:24px 0}
+.swath svg{width:100%;height:auto;background:var(--panel);border:1px solid var(--rule);
+  border-radius:5px;display:block}
+.svg-t{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.cap{font-size:.82rem;color:var(--dim);margin:9px 0 0!important}
+/* (legacy static-ladder styles removed: they appeared later in the cascade
+   and overrode the interactive ladder buttons defined at the top) */
+
+/* pipeline */
+.pipeline{list-style:none;margin:26px 0;padding:0}
+.stage{display:grid;grid-template-columns:26px 1fr;gap:0 18px;position:relative;
+  padding-bottom:26px}
+.stage:not(:last-child)::before{content:"";position:absolute;left:12px;top:22px;
+  bottom:0;width:2px;background:var(--rule)}
+.stage-dot{width:14px;height:14px;border-radius:50%;background:var(--sea);
+  margin:6px 0 0 5px;position:relative;z-index:1;box-shadow:0 0 0 4px var(--paper)}
+.stage.is-off .stage-dot{background:var(--rule)}
+.stage-b h4{font-family:var(--disp);font-size:1.08rem;font-weight:600;margin:0 0 6px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stage.is-off h4,.stage.is-off p{color:var(--dim)}
+.stage-b p{font-size:.94rem;margin:0!important}
+.stage-ev{margin-top:10px!important;font-size:.84rem!important;color:var(--dim)}
+.stage-ev span{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;margin-right:8px}
+.vchip{background:var(--tint);border:1px solid var(--sea);color:var(--sea-d);
+  font-size:.76rem;margin-right:5px;display:inline-block}
+.stage-ev--no span{color:var(--dim);text-transform:none;letter-spacing:0;
+  font-size:.82rem;font-family:var(--sans)}
+.runs{width:100%;border-collapse:collapse;margin-top:16px;font-size:.9rem}
+.runs th,.runs td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule)}
+.runs thead th,.runs tr:first-child th{font-family:var(--mono);font-size:.64rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500}
+.runs tbody th,.runs tr th:first-child{font-family:var(--mono);font-size:.84rem;color:var(--ink)}
+.runs tr.is-this{background:rgba(30,111,159,.1)}
+.runs tr.is-this th:first-child{box-shadow:inset 3px 0 0 var(--sea)}
+
+/* filename */
+.fname{margin:26px 0}
+.segs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.seg{background:var(--panel);border:1px solid var(--rule);border-radius:4px;
+  padding:8px 11px 7px;cursor:pointer;transition:border-color .15s,background .15s}
+.seg code{background:none;padding:0;font-size:.84rem;color:var(--ink);display:block}
+.seg-l{font-family:var(--mono);font-size:.57rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);display:block;margin-top:3px}
+.seg:hover,.seg:focus,.seg.is-on{border-color:var(--sea);background:var(--tint)}
+.seg:hover .seg-l,.seg.is-on .seg-l{color:var(--sea-d)}
+.seg-xs{background:var(--panel);border:1px solid var(--rule);border-radius:5px;
+  padding:16px 18px;min-height:96px}
+.seg-x{display:none}
+.seg-x.is-on{display:block}
+.seg-x.is-idle{display:block;color:var(--dim)}
+.seg-xs.has-sel .seg-x.is-idle{display:none}
+.seg-x h4{font-size:.92rem;margin:0 0 6px;display:flex;gap:10px;align-items:baseline;
+  flex-wrap:wrap}
+.seg-x p{font-size:.9rem;margin:0!important}
+
+/* magic bytes */
+.bytes{margin:24px 0}
+.bytes-row{display:flex;gap:5px;flex-wrap:wrap}
+.byte{background:var(--ink);border-radius:4px;padding:11px 0 8px;flex:1 1 62px;
+  text-align:center;min-width:58px}
+.byte .hex{font-family:var(--mono);font-size:1.02rem;color:#8FD3E8;display:block;
+  letter-spacing:.04em}
+.byte .asc{font-family:var(--mono);font-size:.64rem;color:#5F8595;display:block;
+  margin-top:3px}
+
+/* fill simulator */
+.sim{background:var(--panel);border:1px solid var(--rule);border-radius:6px;
+  padding:24px 26px;margin:26px 0}
+.sim-head h4{font-family:var(--disp);font-size:1.15rem;margin:0 0 6px;font-weight:600}
+.sim-head p{font-size:.87rem;color:var(--dim);margin:0 0 20px!important;max-width:56ch}
+.sim-ctl{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.sim-ctl>span{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dim);flex:0 0 auto}
+.sim-ctl input{flex:1 1 200px;accent-color:var(--sea);height:4px}
+.sim-ctl output{font-family:var(--mono);font-size:.95rem;color:var(--ink);
+  min-width:48px;text-align:right}
+.sim-out{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sim-box{border-radius:5px;padding:16px 18px;display:flex;flex-direction:column;gap:3px}
+.sim-box--bad{background:#FBEDE6;border:1px solid #E6BFA8}
+.sim-box--good{background:#E8F3ED;border:1px solid #A8CDBA}
+.sim-k{font-family:var(--mono);font-size:.62rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim)}
+.sim-v{font-family:var(--disp);font-size:1.9rem;font-weight:600;line-height:1.1;
+  color:var(--ink);word-break:break-all}
+.sim-box--bad .sim-v{color:var(--hot)}
+.sim-box--good .sim-v{color:var(--good)}
+.sim-s{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+.sim-note{font-size:.87rem;color:var(--dim);margin:18px 0 0!important}
+.gotcha{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.gotcha>div{background:var(--panel);border:1px solid var(--rule);border-radius:5px;
+  padding:13px 15px}
+.g-k{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);display:block;margin-bottom:5px}
+.g-v{font-size:.98rem;background:none;padding:0;color:var(--ink)}
+.g-v--hot{color:var(--hot);font-weight:500}
+
+/* time decode */
+.decode{margin-top:16px;border:1px solid var(--rule);border-radius:5px;
+  background:var(--panel);overflow:hidden}
+.dec-row{display:grid;grid-template-columns:190px 1fr;gap:14px;padding:12px 16px;
+  border-bottom:1px solid var(--rule);align-items:baseline}
+.dec-row:last-child{border-bottom:0}
+.dec-k{font-family:var(--mono);font-size:.64rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim)}
+.dec-v{background:none;padding:0;font-size:.95rem;color:var(--ink)}
+.dec-s{grid-column:2;font-size:.8rem;color:var(--dim)}
+.dec-row.is-right{background:#E8F3ED}
+.dec-row.is-right .dec-v{color:var(--good);font-weight:500}
+.dec-row.is-wrong{background:#FBEDE6}
+.dec-row.is-wrong .dec-v{color:var(--hot)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:5px;margin-top:16px;
+  background:var(--panel)}
+.ledger,.matrix{width:100%;border-collapse:collapse;font-size:.83rem}
+.ledger th{text-align:left;font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--dim);font-weight:500;padding:11px 14px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;background:var(--tint)}
+.ledger td{padding:10px 14px;border-bottom:1px solid var(--tint2);vertical-align:top}
+.ledger tbody tr:last-child td{border-bottom:0}
+.ledger tr.is-hidden{display:none}
+.c-n code{background:none;padding:0;color:var(--ink)}
+.c-p{font-family:var(--mono);font-size:.66rem;color:var(--dim);display:block}
+.c-m{font-family:var(--mono);color:var(--dim);white-space:nowrap}
+.c-d{color:var(--body);min-width:20ch;max-width:38ch}
+.c-d .none{color:var(--dim);font-style:italic}
+.kind{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 7px;border-radius:3px;border:1px solid var(--rule);color:var(--dim);
+  white-space:nowrap;cursor:help}
+.kind--data{border-color:var(--sea);color:var(--sea-d);background:rgba(30,111,159,.09)}
+.kind--axis{border-color:var(--dim)}
+.kinds{list-style:none;padding:0;margin:20px 0}
+.kinds li{margin-bottom:11px;font-size:.94rem;display:flex;gap:11px;align-items:baseline}
+.kinds .kind{flex:0 0 auto}
+.filters{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.filt{background:var(--panel);border:1px solid var(--rule);color:var(--dim);
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 13px;border-radius:3px;cursor:pointer}
+.filt.is-on{background:var(--sea);color:#fff;border-color:var(--sea)}
+
+/* rules */
+.tier{margin:26px 0 30px}
+.tier-h{border-left:3px solid var(--rule);padding-left:16px;margin-bottom:14px}
+.tier--wrong .tier-h{border-color:var(--hot)}
+.tier--break .tier-h{border-color:var(--warn)}
+.tier--fine .tier-h{border-color:var(--rule)}
+.tier-h h3{font-family:var(--disp);font-size:1.15rem;margin:0 0 3px;font-weight:600}
+.tier-h p{font-size:.88rem;color:var(--dim);margin:0!important}
+.rules{display:flex;flex-direction:column;gap:10px}
+.rule{background:var(--panel);border:1px solid var(--rule);border-radius:5px;
+  padding:16px 18px}
+.rule-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.rec{font-family:var(--mono);font-size:.74rem;color:var(--dim)}
+.rule-h h4{font-size:.96rem;margin:0;flex:1 1 auto}
+.rule p{font-size:.9rem;margin:0!important}
+.verdict{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 9px;border-radius:99px;white-space:nowrap;border:1px solid var(--rule);
+  color:var(--dim)}
+.verdict--fail{border-color:var(--hot);color:var(--hot)}
+.verdict--pass{border-color:var(--good);color:var(--good)}
+.verdict--undetermined{border-color:var(--warn);color:var(--warn)}
+.verdict--advisory{border-color:var(--sea);color:var(--sea-d)}
+.closing{border-top:1px solid var(--rule);padding-top:22px;font-size:1.02rem;
+  color:var(--ink)}
+
+/* matrix */
+.matrix .mh{padding:12px 6px;vertical-align:bottom;height:230px;background:var(--tint);
+  border-bottom:1px solid var(--rule)}
+.matrix .mh span{display:block;writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:var(--mono);font-size:.66rem;color:var(--dim);font-weight:400;
+  white-space:nowrap;text-align:left}
+.matrix .mr{text-align:left;padding:11px 16px;background:var(--tint);white-space:nowrap;
+  border-bottom:1px solid var(--rule);font-weight:400}
+.matrix .mr .mrt{display:block;font-size:.75rem;color:var(--dim)}
+.matrix .mc{text-align:center;padding:11px 6px;border-bottom:1px solid var(--tint2)}
+.matrix .mc span{display:inline-block;width:20px;height:20px;border-radius:3px;
+  background:var(--rule)}
+.mc--pass span{background:var(--good)}
+.mc--fail span{background:var(--hot)}
+.mc--advisory span{background:var(--sea)}
+.mc--undetermined span{background:var(--warn)}
+.matrix .mv{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);padding:11px 14px;white-space:nowrap;
+  border-bottom:1px solid var(--tint2)}
+.matrix tr.is-split .mv{color:var(--hot)}
+.matrix tr.is-split .mr{box-shadow:inset 3px 0 0 var(--hot)}
+
+.end{max-width:1080px;margin:0 auto;padding:40px 32px 90px;border-top:1px solid var(--rule)}
+.end p{font-size:.85rem;color:var(--dim);max-width:74ch}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .wrap,.open,.ch,.end{padding-left:20px;padding-right:20px}
+  .ch{grid-template-columns:1fr;gap:0}
+  .ch-mark{flex-direction:row;gap:12px;align-items:center;padding:0 0 14px}
+  .ch-rule{flex:1;width:auto;height:1px;margin:0}
+  .sim-out,.gotcha{grid-template-columns:1fr}
+  .dec-row{grid-template-columns:1fr;gap:3px}
+  .dec-s{grid-column:1}
+  .dfn::after{width:min(260px,72vw)}
+}
+
+/* --- added for multi-product --- */
+.ev--inf{background:#FBF1E9;border-color:#E0BC9C}
+.ev--inf .ev-tab{background:var(--hot)}
+.daycont{position:relative;height:34px;background:var(--tint2);border-radius:2px;margin-top:16px}
+.daymark{position:absolute;top:-3px;bottom:-3px;background:var(--sea);border-radius:2px;
+ min-width:3px;box-shadow:0 0 0 2px var(--tint)}
+.comps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:24px 0}
+.comp{background:var(--panel);border:1px solid var(--rule);border-radius:5px;padding:16px 18px}
+.comp code{background:none;padding:0;font-size:.9rem;color:var(--sea-d);display:block;margin-bottom:7px}
+.comp p{font-size:.88rem;margin:0!important}
+.flag{display:inline-block;font-family:var(--mono);font-size:.6rem;padding:1px 6px;
+ border-radius:3px;background:var(--tint2);color:var(--sea-d);margin-left:6px}
+.verdict--deferred{border-color:var(--warn);color:var(--warn)}
+.mc--deferred span{background:var(--warn)}
+.end a{color:var(--sea-d)}
+.idx{max-width:1080px;margin:0 auto;padding:12vh 32px 90px}
+.idx h1{font-family:var(--disp);font-weight:600;font-size:clamp(2.2rem,5.5vw,3.4rem);
+ line-height:1.05;letter-spacing:-.025em;margin:0 0 20px;max-width:18ch}
+.idx-sub{font-size:1.1rem;max-width:56ch;margin:0 0 44px}
+.coll{margin-bottom:44px}
+.coll-h{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:10px;
+ border-bottom:1px solid var(--rule);margin-bottom:18px}
+.coll-h h2{font-family:var(--disp);font-size:1.4rem;margin:0;font-weight:600}
+.coll-h .cnt{font-family:var(--mono);font-size:.72rem;color:var(--dim);margin-left:auto}
+.coll-h .lvl{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+ background:var(--tint2);color:var(--sea-d);padding:3px 9px;border-radius:99px}
+.glist{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+ border:1px solid var(--rule);border-radius:5px;overflow:hidden}
+.glist a{background:var(--panel);padding:14px 18px;text-decoration:none;display:flex;
+ gap:18px;align-items:baseline;flex-wrap:wrap}
+.glist a:hover{background:var(--tint)}
+.glist .gn{font-family:var(--mono);font-size:.82rem;color:var(--ink);flex:1 1 340px;word-break:break-all}
+.glist .gw{font-size:.8rem;color:var(--dim);font-family:var(--mono)}
+@media (max-width:760px){.idx{padding-left:20px;padding-right:20px}}
+</style></head><body>
+<nav class="rail" aria-label="Chapters"><a href="#granule">01</a><a href="#format">02</a><a href="#level">03</a><a href="#pipeline">04</a><a href="#filename">05</a><a href="#magic">06</a><a href="#companions">07</a><a href="#inside">08</a><a href="#attrs">09</a><a href="#trap">10</a><a href="#gis">11</a><a href="#time">12</a><a href="#rules">13</a><a href="#batch">14</a></nav>
+
+<header class="open" id="top">
+  <p class="kicker">A walkthrough of one file</p>
+  <h1>You downloaded this. Here is what it is.</h1>
+  <p class="open-sub">Every cell of a 3,600&thinsp;&times;&thinsp;1,800 grid covering the whole planet, holding an estimate for 30 min on 04 July 2023.</p>
+  <p class="open-file">3B-HHR.MS.MRG.3IMERG.20230704-S133000-E135959.0810.V07B.HDF5</p>
+  <div class="stats"><div class="stat"><span class="stat-k">When</span><span class="stat-v">13:30 UTC</span><span class="stat-s">04 Jul 2023</span></div><div class="stat"><span class="stat-k">Processing level</span><span class="stat-v">Level 3</span><span class="stat-s">Gridded</span></div><div class="stat"><span class="stat-k">Layout</span><span class="stat-v">Grid</span><span class="stat-s">a regular lattice</span></div><div class="stat"><span class="stat-k">What is inside</span><span class="stat-v">19 arrays</span><span class="stat-s">10 of them are data</span></div></div>
+  <p class="open-note">Nothing below assumes you have worked with satellite data
+  before. Terms with a <span class="dfn" tabindex="0"
+  data-def="Like this. Hover or tap to see what a word means.">dotted underline</span>
+  carry their own definition. A panel on a tinted background was read out of your file
+  or its name; a panel with an orange edge is an inference this guide made, flagged so
+  you can check it.</p>
+  <a class="scroll-cue" href="#granule">Start<span></span></a>
+</header>
+
+<section class="ch" id="granule">
+  <div class="ch-mark"><span class="ch-num">01</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">First, the unit you are holding</p>
+    <h2>One file is a slice, not a dataset</h2>
+    <p class="lede">A dataset is the record. A granule is one file out of it. Almost every confusing thing about Earthdata follows from that distinction.</p>
+    
+    <p>NASA does not hand you a dataset. It hands you <span class="dfn" tabindex="0" data-def="One file: the smallest piece of a dataset that NASA distributes.">granules</span>
+    &mdash; the smallest slice it is willing to distribute. Download a year of this
+    product and you have 17,520 files that are individually meaningless and
+    collectively a scientific record.</p>
+    <p>This is the first thing that trips people up. You go looking for <em>data</em>
+    and you get a file with a name like the one above, which is one slice out of a
+    record running for years. The <span class="dfn" tabindex="0" data-def="NASA&#x27;s identifier for a dataset, e.g. GPM_3IMERGHH.">collection</span> identifier names the whole
+    record; the granule is one slice of it.</p>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead">This granule covers 13:30:00 to
+      14:00:00 UTC on 04 July 2023 &mdash;
+      30 min.</p>
+      <div class="daybar"><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk is-lit"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div><div class="tk"></div></div><div class="daybar-ax"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div><p class="cap">One day of this product, sliced into 48 granules. Yours is the lit one.</p>
+      <dl class="kv">
+        <dt>Collection</dt><dd><code>GPM_3IMERGHH</code></dd>
+        <dt>Version</dt><dd>V07B</dd>
+        <dt>The full record</dt><dd>One file every half hour, without gaps. The Final run reaches back to January 1998 (extended from June 2000 in late 2024); Early and Late begin June 2000. Half a million granules and counting.</dd>
+      </dl></div></div>
+    
+  </div>
+</section>
+<section class="ch" id="format">
+  <div class="ch-mark"><span class="ch-num">02</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Second, the container</p>
+    <h2>What kind of file is this, really?</h2>
+    <p class="lede">HDF5, netCDF-4, HDF4 and GeoTIFF are containers, not data. Which one you have decides which software will open it.</p>
+    
+    <p>The file extension is a label someone typed. It is not enforced by anything,
+    and renaming a file does not change what is inside it. So the honest first
+    question is: what container is this actually written in, and what will open
+    it?</p>
+    <div class="fmts">
+      <div class="fmt is-this">
+        <div class="fmt-h"><h4>HDF5</h4>
+          <span class="pill">yours</span></div>
+        <p class="fmt-l">A filesystem inside a single file.</p><p class="fmt-b">Holds folders (groups), arrays (datasets), and labelled notes attached to either (attributes). One file can carry a dozen variables, their coordinate axes, and a paragraph describing each, with no separate header to lose.</p>
+        <p class="fmt-r"><span>Opened by</span> h5py, xarray, Panoply, HDFView, MATLAB, IDL</p></div>
+      <div class="fmt ">
+        <div class="fmt-h"><h4>netCDF-4</h4>
+          </div>
+        <p class="fmt-l">HDF5 with the rules turned on.</p><p class="fmt-b">Every netCDF-4 file is valid HDF5. The reverse is not true. netCDF-4 forbids some HDF5 features and requires coordinate axes to be declared a particular way, which is what lets xarray open a file and immediately know which dimension is time.</p>
+        <p class="fmt-r"><span>Opened by</span> xarray, netCDF4-python, NCO, CDO, Panoply, QGIS</p></div>
+      <div class="fmt ">
+        <div class="fmt-h"><h4>netCDF</h4>
+          </div>
+        <p class="fmt-l">The classic, flat version.</p><p class="fmt-b">No groups, no compression, no nesting. Simple and extremely portable. Common for model output and station records.</p>
+        <p class="fmt-r"><span>Opened by</span> netCDF4-python, xarray, NCO, CDO</p></div>
+      <div class="fmt ">
+        <div class="fmt-h"><h4>HDF4 (legacy)</h4>
+          </div>
+        <p class="fmt-l">The previous generation. Not compatible with HDF5.</p><p class="fmt-b">Despite the name, HDF4 and HDF5 are different formats with different libraries. Older MODIS and AIRS products still ship this way. If h5py refuses a .hdf file, this is why.</p>
+        <p class="fmt-r"><span>Opened by</span> pyhdf, GDAL, HDFView</p></div>
+      <div class="fmt ">
+        <div class="fmt-h"><h4>GeoTIFF</h4>
+          </div>
+        <p class="fmt-l">An image that knows where it is.</p><p class="fmt-b">A raster with a coordinate reference system baked into its tags. Excellent in GIS software, awkward for anything with a time dimension.</p>
+        <p class="fmt-r"><span>Opened by</span> GDAL, rasterio, QGIS, ArcGIS</p></div></div>
+    <div class="venn">
+      <div class="venn-outer"><span>HDF5</span>
+        <div class="venn-inner"><span>netCDF-4</span></div></div>
+      <p>Every netCDF-4 file is a valid HDF5 file. The reverse is not true, which is
+      why a file can be perfectly well formed and still refuse to open in
+      xarray.</p></div>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in"><p class="ev-lead">Your file was opened twice: once through the HDF5 library and once through the netCDF-4 library. Both worked, which means xarray, Panoply, QGIS and the HDF5 tools will all read it without special handling.</p></div></div>
+  </div>
+</section>
+<section class="ch" id="level">
+  <div class="ch-mark"><span class="ch-num">03</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Third, and most important</p>
+    <h2>Nobody measured most of these cells</h2>
+    <p class="lede">Level 3 means gridded. Gridded means an algorithm filled the space between what the satellites actually saw.</p>
+    
+    <p>Here is the idea that changes how you read every number in this file.</p>
+    <p>Nobody measured the quantity in those 6,480,000 cells. Satellites do not see a
+    grid. A satellite sees a <span class="dfn" tabindex="0" data-def="The strip of ground a satellite sees as it passes overhead.">swath</span> &mdash; a strip of ground traced out
+    underneath it as it orbits. Between one pass and the next, that patch of ground
+    is not being watched at all. A <span class="dfn" tabindex="0" data-def="A regular lattice of cells covering an area, all the same size.">grid</span> covering the whole planet with no
+    holes in it is something an algorithm produced from those strips.</p>
+    <div class="swath">
+      <svg viewBox="0 0 640 200" role="img"
+           aria-label="Curved satellite swaths crossing a regular grid">
+        <defs><pattern id="gr" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0v20" fill="none" stroke="var(--rule)" stroke-width="1"/>
+        </pattern></defs>
+        <rect width="640" height="200" fill="url(#gr)"/>
+        <path d="M-20 210 Q160 60 340 -10" fill="none" stroke="var(--sea)"
+              stroke-width="46" stroke-linecap="round" opacity=".33"/>
+        <path d="M180 215 Q380 70 560 -10" fill="none" stroke="var(--sea)"
+              stroke-width="46" stroke-linecap="round" opacity=".33"/>
+        <path d="M400 220 Q600 90 700 40" fill="none" stroke="var(--sea)"
+              stroke-width="46" stroke-linecap="round" opacity=".33"/>
+        <text x="14" y="26" class="svg-t">the grid you were given</text>
+        <text x="380" y="178" class="svg-t">what was actually observed</text>
+      </svg>
+      <p class="cap">Two satellite passes over one grid. Everything the strips miss
+      has to be filled some other way &mdash; which is the next chapter.</p></div>
+    <p>NASA labels how far a product has travelled from the raw signal. The number
+    appears in the filename of almost every Earthdata product, and it is the fastest
+    way to know what you are dealing with.</p>
+    <div class="levels">
+      <div class="ladder" role="group" aria-label="Processing levels">
+      <button class="rung "
+              type="button" data-lvl="0" aria-pressed="false">
+        <span class="rung-l">L0</span>
+        <span class="rung-b"><span class="rung-n">Raw</span>
+          </span></button>
+      <button class="rung "
+              type="button" data-lvl="1" aria-pressed="false">
+        <span class="rung-l">L1</span>
+        <span class="rung-b"><span class="rung-n">Calibrated and located</span>
+          </span></button>
+      <button class="rung "
+              type="button" data-lvl="2" aria-pressed="false">
+        <span class="rung-l">L2</span>
+        <span class="rung-b"><span class="rung-n">Retrieved</span>
+          </span></button>
+      <button class="rung is-this is-on"
+              type="button" data-lvl="3" aria-pressed="true">
+        <span class="rung-l">L3</span>
+        <span class="rung-b"><span class="rung-n">Gridded</span>
+          <span class="pill">yours</span></span></button>
+      <button class="rung "
+              type="button" data-lvl="4" aria-pressed="false">
+        <span class="rung-l">L4</span>
+        <span class="rung-b"><span class="rung-n">Modelled</span>
+          </span></button></div>
+      <div class="lv-stage">
+      <div class="lv-panel" data-lvl="0">
+        <svg viewBox="0 0 440 150" role="img"
+             aria-label="How the data looks at Level 0"><rect width="440" height="150" fill="var(--panel)"/><rect x="74" y="46" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="96" y="64" class="lv-n">17</text><rect x="126" y="46" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="148" y="64" class="lv-n">240</text><rect x="178" y="46" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="200" y="64" class="lv-n">8</text><rect x="230" y="46" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="252" y="64" class="lv-n">91</text><rect x="282" y="46" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="304" y="64" class="lv-n">133</text><rect x="334" y="46" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="356" y="64" class="lv-n">62</text><rect x="74" y="80" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="96" y="98" class="lv-n">205</text><rect x="126" y="80" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="148" y="98" class="lv-n">44</text><rect x="178" y="80" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="200" y="98" class="lv-n">178</text><rect x="230" y="80" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="252" y="98" class="lv-n">29</text><rect x="282" y="80" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="304" y="98" class="lv-n">116</text><rect x="334" y="80" width="44" height="26" rx="2" fill="var(--tint2)"/><text x="356" y="98" class="lv-n">87</text><text x="74" y="132" class="lv-t">raw counts, in the order the instrument sent them</text></svg>
+        <div class="lv-txt"><h4>Level 0 &mdash; Raw</h4>
+          <p>Instrument counts, straight off the downlink. Nobody outside the mission team works with these.</p></div></div>
+      <div class="lv-panel" data-lvl="1">
+        <svg viewBox="0 0 440 150" role="img"
+             aria-label="How the data looks at Level 1"><rect width="440" height="150" fill="var(--panel)"/><path d="M40 118 Q92 74 148 88 Q206 102 244 72 Q288 38 348 52 Q392 62 412 44" fill="none" stroke="var(--rule)" stroke-width="1.5"/><rect x="70.0" y="104.0" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="96.0" y="99.7" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="122.0" y="95.7" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="148.0" y="91.9" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="174.0" y="88.3" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="200.0" y="85.0" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="226.0" y="81.9" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="252.0" y="79.1" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="278.0" y="76.5" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="304.0" y="74.1" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="330.0" y="72.0" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="356.0" y="70.1" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><rect x="382.0" y="68.5" width="20" height="14" fill="var(--sea)" opacity="0.35" rx="1"/><path d="M70 108 Q210 60 388 66" fill="none" stroke="var(--sea)" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/><text x="40" y="34" class="lv-t">the same counts, now in physical units and pinned to the ground</text><text x="40" y="140" class="lv-t">still one pass, still curved</text></svg>
+        <div class="lv-txt"><h4>Level 1 &mdash; Calibrated and located</h4>
+          <p>Counts converted to physical units and tagged with where and when the sensor was looking. Still organised by satellite pass, not by map.</p><p class="lv-ex"><span>a real one you could download</span><code>GPM_1CGMI</code> Brightness temperatures from the GMI radiometer on the GPM Core Observatory, along its own swath.</p></div></div>
+      <div class="lv-panel" data-lvl="2">
+        <svg viewBox="0 0 440 150" role="img"
+             aria-label="How the data looks at Level 2"><rect width="440" height="150" fill="var(--panel)"/><path d="M40 118 Q92 74 148 88 Q206 102 244 72 Q288 38 348 52 Q392 62 412 44" fill="none" stroke="var(--rule)" stroke-width="1.5"/><rect x="70.0" y="104.0" width="20" height="14" fill="#DDE6E9" opacity="1.0" rx="1"/><rect x="96.0" y="99.7" width="20" height="14" fill="#BBD3DE" opacity="1.0" rx="1"/><rect x="122.0" y="95.7" width="20" height="14" fill="#8FBBD1" opacity="1.0" rx="1"/><rect x="148.0" y="91.9" width="20" height="14" fill="#5D9EC2" opacity="1.0" rx="1"/><rect x="174.0" y="88.3" width="20" height="14" fill="#2F80AE" opacity="1.0" rx="1"/><rect x="200.0" y="85.0" width="20" height="14" fill="#1E6F9F" opacity="1.0" rx="1"/><rect x="226.0" y="81.9" width="20" height="14" fill="#2F80AE" opacity="1.0" rx="1"/><rect x="252.0" y="79.1" width="20" height="14" fill="#5D9EC2" opacity="1.0" rx="1"/><rect x="278.0" y="76.5" width="20" height="14" fill="#8FBBD1" opacity="1.0" rx="1"/><rect x="304.0" y="74.1" width="20" height="14" fill="#BBD3DE" opacity="1.0" rx="1"/><rect x="330.0" y="72.0" width="20" height="14" fill="#DDE6E9" opacity="1.0" rx="1"/><rect x="356.0" y="70.1" width="20" height="14" fill="#EDF2F3" opacity="1.0" rx="1"/><rect x="382.0" y="68.5" width="20" height="14" fill="#DDE6E9" opacity="1.0" rx="1"/><text x="40" y="34" class="lv-t">each sample turned into a quantity &#8212; rain rate, temperature, fire</text><text x="40" y="140" class="lv-t">everything off the track is still unknown</text></svg>
+        <div class="lv-txt"><h4>Level 2 &mdash; Retrieved</h4>
+          <p>A geophysical quantity derived from Level 1, still laid out along the satellite&#x27;s own ground track.</p><p class="lv-ex"><span>a real one you could download</span><code>GPM_2AGPROFGPMGMI</code> Rain rate retrieved from those temperatures — still only where GMI was looking.</p></div></div>
+      <div class="lv-panel is-on" data-lvl="3">
+        <svg viewBox="0 0 440 150" role="img"
+             aria-label="How the data looks at Level 3"><rect width="440" height="150" fill="var(--panel)"/><rect x="62" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="86" y="48" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="110" y="48" width="22" height="18" rx="1" fill="#8FBBD1" opacity="0.55"/><rect x="134" y="48" width="22" height="18" rx="1" fill="#5D9EC2" opacity="0.55"/><rect x="158" y="48" width="22" height="18" rx="1" fill="#2F80AE" opacity="0.55"/><rect x="182" y="48" width="22" height="18" rx="1" fill="#1E6F9F" opacity="0.55"/><rect x="206" y="48" width="22" height="18" rx="1" fill="#2F80AE" opacity="0.55"/><rect x="230" y="48" width="22" height="18" rx="1" fill="#5D9EC2" opacity="0.55"/><rect x="254" y="48" width="22" height="18" rx="1" fill="#8FBBD1" opacity="0.55"/><rect x="278" y="48" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="302" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="326" y="48" width="22" height="18" rx="1" fill="#EDF2F3" opacity="1"/><rect x="350" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity="1"/><rect x="374" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity="1"/><rect x="62" y="68" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="86" y="68" width="22" height="18" rx="1" fill="#8FBBD1" opacity="0.55"/><rect x="110" y="68" width="22" height="18" rx="1" fill="#5D9EC2" opacity="0.55"/><rect x="134" y="68" width="22" height="18" rx="1" fill="#2F80AE" opacity="1"/><rect x="158" y="68" width="22" height="18" rx="1" fill="#1E6F9F" opacity="1"/><rect x="182" y="68" width="22" height="18" rx="1" fill="#2F80AE" opacity="1"/><rect x="206" y="68" width="22" height="18" rx="1" fill="#5D9EC2" opacity="1"/><rect x="230" y="68" width="22" height="18" rx="1" fill="#8FBBD1" opacity="1"/><rect x="254" y="68" width="22" height="18" rx="1" fill="#BBD3DE" opacity="1"/><rect x="278" y="68" width="22" height="18" rx="1" fill="#DDE6E9" opacity="1"/><rect x="302" y="68" width="22" height="18" rx="1" fill="#EDF2F3" opacity="1"/><rect x="326" y="68" width="22" height="18" rx="1" fill="#DDE6E9" opacity="1"/><rect x="350" y="68" width="22" height="18" rx="1" fill="#DDE6E9" opacity="1"/><rect x="374" y="68" width="22" height="18" rx="1" fill="#BBD3DE" opacity="1"/><rect x="62" y="88" width="22" height="18" rx="1" fill="#8FBBD1" opacity="1"/><rect x="86" y="88" width="22" height="18" rx="1" fill="#5D9EC2" opacity="1"/><rect x="110" y="88" width="22" height="18" rx="1" fill="#2F80AE" opacity="1"/><rect x="134" y="88" width="22" height="18" rx="1" fill="#1E6F9F" opacity="1"/><rect x="158" y="88" width="22" height="18" rx="1" fill="#2F80AE" opacity="1"/><rect x="182" y="88" width="22" height="18" rx="1" fill="#5D9EC2" opacity="1"/><rect x="206" y="88" width="22" height="18" rx="1" fill="#8FBBD1" opacity="1"/><rect x="230" y="88" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="254" y="88" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="278" y="88" width="22" height="18" rx="1" fill="#EDF2F3" opacity="0.55"/><rect x="302" y="88" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="326" y="88" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="350" y="88" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="374" y="88" width="22" height="18" rx="1" fill="#8FBBD1" opacity="0.55"/><rect x="62" y="108" width="22" height="18" rx="1" fill="#5D9EC2" opacity="1"/><rect x="86" y="108" width="22" height="18" rx="1" fill="#2F80AE" opacity="0.55"/><rect x="110" y="108" width="22" height="18" rx="1" fill="#1E6F9F" opacity="0.55"/><rect x="134" y="108" width="22" height="18" rx="1" fill="#2F80AE" opacity="0.55"/><rect x="158" y="108" width="22" height="18" rx="1" fill="#5D9EC2" opacity="0.55"/><rect x="182" y="108" width="22" height="18" rx="1" fill="#8FBBD1" opacity="0.55"/><rect x="206" y="108" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="230" y="108" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="254" y="108" width="22" height="18" rx="1" fill="#EDF2F3" opacity="0.55"/><rect x="278" y="108" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="302" y="108" width="22" height="18" rx="1" fill="#DDE6E9" opacity="0.55"/><rect x="326" y="108" width="22" height="18" rx="1" fill="#BBD3DE" opacity="0.55"/><rect x="350" y="108" width="22" height="18" rx="1" fill="#8FBBD1" opacity="0.55"/><rect x="374" y="108" width="22" height="18" rx="1" fill="#5D9EC2" opacity="0.55"/><text x="62" y="34" class="lv-t">one regular grid, no holes</text><text x="62" y="142" class="lv-t">solid cells were observed; pale cells were filled in by the algorithm</text></svg>
+        <div class="lv-txt"><h4>Level 3 &mdash; Gridded</h4>
+          <p>Level 2 from many passes and many satellites, resampled onto one regular grid over one fixed time window.</p><p class="lv-ex"><span>a real one you could download</span><code>GPM_3IMERGHH</code> This file. Every Level 2 retrieval from every satellite in the constellation, merged onto one grid.</p></div></div>
+      <div class="lv-panel" data-lvl="4">
+        <svg viewBox="0 0 440 150" role="img"
+             aria-label="How the data looks at Level 4"><rect width="440" height="150" fill="var(--panel)"/><rect x="62" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="86" y="48" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="110" y="48" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="134" y="48" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="158" y="48" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="182" y="48" width="22" height="18" rx="1" fill="#1E6F9F" opacity=".45"/><rect x="206" y="48" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="230" y="48" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="254" y="48" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="278" y="48" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="302" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="326" y="48" width="22" height="18" rx="1" fill="#EDF2F3" opacity=".45"/><rect x="350" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="374" y="48" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="62" y="68" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="86" y="68" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="110" y="68" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="134" y="68" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="158" y="68" width="22" height="18" rx="1" fill="#1E6F9F" opacity=".45"/><rect x="182" y="68" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="206" y="68" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="230" y="68" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="254" y="68" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="278" y="68" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="302" y="68" width="22" height="18" rx="1" fill="#EDF2F3" opacity=".45"/><rect x="326" y="68" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="350" y="68" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="374" y="68" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="62" y="88" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="86" y="88" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="110" y="88" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="134" y="88" width="22" height="18" rx="1" fill="#1E6F9F" opacity=".45"/><rect x="158" y="88" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="182" y="88" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="206" y="88" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="230" y="88" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="254" y="88" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="278" y="88" width="22" height="18" rx="1" fill="#EDF2F3" opacity=".45"/><rect x="302" y="88" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="326" y="88" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="350" y="88" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="374" y="88" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="62" y="108" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="86" y="108" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="110" y="108" width="22" height="18" rx="1" fill="#1E6F9F" opacity=".45"/><rect x="134" y="108" width="22" height="18" rx="1" fill="#2F80AE" opacity=".45"/><rect x="158" y="108" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><rect x="182" y="108" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="206" y="108" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="230" y="108" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="254" y="108" width="22" height="18" rx="1" fill="#EDF2F3" opacity=".45"/><rect x="278" y="108" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="302" y="108" width="22" height="18" rx="1" fill="#DDE6E9" opacity=".45"/><rect x="326" y="108" width="22" height="18" rx="1" fill="#BBD3DE" opacity=".45"/><rect x="350" y="108" width="22" height="18" rx="1" fill="#8FBBD1" opacity=".45"/><rect x="374" y="108" width="22" height="18" rx="1" fill="#5D9EC2" opacity=".45"/><defs><marker id="lvar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0l8 4-8 4z" fill="var(--ink)"/></marker></defs><path d="M78 66 q34 -14 68 2" fill="none" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#lvar)" opacity=".75"/><path d="M162 78 q34 -14 68 2" fill="none" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#lvar)" opacity=".75"/><path d="M246 90 q34 -14 68 2" fill="none" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#lvar)" opacity=".75"/><path d="M330 102 q34 -14 68 2" fill="none" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#lvar)" opacity=".75"/><text x="62" y="34" class="lv-t">a model has taken over; values now come from physics, not observation</text></svg>
+        <div class="lv-txt"><h4>Level 4 &mdash; Modelled</h4>
+          <p>Output of a model that ingested observations. No longer a measurement of anything.</p><p class="lv-ex"><span>a real one you could download</span><code>MERRA-2</code> A reanalysis: a weather model run backwards over the record, ingesting observations like these along the way.</p></div></div></div>
+      <p class="cap">Every panel shows the same stretch of ground. Step through the
+      rungs to watch one satellite pass become a map.</p>
+    </div>
+    <div class="ev"><div class="ev-tab">what this means for you</div><div class="ev-in">
+      <p class="ev-lead">IMERG stands for Integrated Multi-satellitE Retrievals for GPM. The name is the method: it takes what a constellation of satellites saw, and stitches it into one continuous rainfall field covering the whole planet, with no gaps.</p>
+      <p class="ev-lead">No single satellite can watch everywhere at once. IMERG exists so that you can ask &ldquo;how much rain fell here, then&rdquo; without first working out which satellites happened to be overhead.</p></div></div>
+    
+    <p>A cell reading 0.4 is the algorithm&rsquo;s best estimate for that cell, not a
+    reading from an instrument that looked at it. Some cells were observed directly
+    seconds before the window closed. Others were last seen an hour ago and have been
+    carried forward on modelled winds. The next chapter is how to tell which.</p>
+  </div>
+</section>
+<section class="ch" id="pipeline">
+  <div class="ch-mark"><span class="ch-num">04</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Fourth, how it was made</p>
+    <h2>Your file shows its working</h2>
+    <p class="lede">Every array in here is the output of a step. Knowing the steps is how you know what the numbers mean.</p>
+    
+    <p>IMERG stands for Integrated Multi-satellitE Retrievals for GPM. The name is the method: it takes what a constellation of satellites saw, and stitches it into one continuous rainfall field covering the whole planet, with no gaps.</p>
+    <p>This is the part worth slowing down for, because the steps below are not
+    background reading &mdash; several of them <strong>left their output in your file</strong>, in the arrays named beside them. Most people take the headline variable and
+    never look. But if you want to know why a value is what it is, the working is
+    right there.</p>
+    <ol class="pipeline">
+      <li class="stage is-on">
+        <div class="stage-dot"></div>
+        <div class="stage-b"><h4>Passive microwave </h4>
+          <p>Radiometers on roughly a dozen satellites see through cloud and estimate rain rate directly. Best estimate available, but each satellite only passes over a given spot every few hours.</p><p class="stage-ev"><span>visible in your file as</span><code class="vchip">MWprecipitation</code><code class="vchip">MWobservationTime</code><code class="vchip">MWprecipSource</code></p></div></li>
+      <li class="stage is-on">
+        <div class="stage-dot"></div>
+        <div class="stage-b"><h4>Morphing </h4>
+          <p>Between passes, the last observation is pushed along using winds from a weather reanalysis, so a storm keeps moving on the grid even when nothing is watching it. The Early run can only push forward in time; Late and Final also interpolate backward from the next pass, which is more accurate.</p><p class="stage-ev stage-ev--no"><span>changes the other fields in place; leaves no variable behind</span></p></div></li>
+      <li class="stage is-on">
+        <div class="stage-dot"></div>
+        <div class="stage-b"><h4>Infrared fill </h4>
+          <p>Geostationary satellites watch continuously but only see cloud-top temperature, a weak proxy for rain. Used where microwave and morphing leave a gap.</p><p class="stage-ev"><span>visible in your file as</span><code class="vchip">IRprecipitation</code><code class="vchip">IRinfluence</code></p></div></li>
+      <li class="stage is-on">
+        <div class="stage-dot"></div>
+        <div class="stage-b"><h4>Merge </h4>
+          <p>The sources are combined into one field, weighted by how trustworthy each is at that place and time. This is the finished product for the Early and Late runs.</p><p class="stage-ev"><span>visible in your file as</span><code class="vchip">precipitationUncal</code></p></div></li>
+      <li class="stage is-on">
+        <div class="stage-dot"></div>
+        <div class="stage-b"><h4>Gauge calibration </h4>
+          <p>Final run only. Once a month of ground rain-gauge records has been collected and quality-controlled, the merged field is adjusted to agree with it. This is why Final takes months to appear, and why it is the one to use for anything you publish.</p><p class="stage-ev"><span>visible in your file as</span><code class="vchip">precipitation</code></p></div></li></ol>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead">This granule is the <strong>Final</strong> version,
+      published about 3.5 months after observation. Everything Late does, plus adjustment against ground rain gauges. Research grade, and the one to cite.</p>
+      <p class="ev-lead">These versions are not corrections of each other and do not
+      replace each other in the archive. They are different trade-offs between speed
+      and accuracy, and mixing them in one analysis produces a discontinuity you will
+      spend a day chasing.</p>
+      <table class="runs"><tr><th></th><th>Available</th><th>What it is</th></tr>
+      <tr class=""><th>Early</th><td>about 4 hours after observation</td><td>Forward morphing only, no gauge adjustment. Built for flood warning, where a number now beats a better number later.</td></tr><tr class=""><th>Late</th><td>about 14 hours after observation</td><td>Forward and backward morphing, still no gauge adjustment.</td></tr><tr class="is-this"><th>Final</th><td>about 3.5 months after observation</td><td>Everything Late does, plus adjustment against ground rain gauges. Research grade, and the one to cite.</td></tr></table></div></div>
+  </div>
+</section>
+<section class="ch" id="filename">
+  <div class="ch-mark"><span class="ch-num">05</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Fifth, the label on the outside</p>
+    <h2>The filename is a fingerprint</h2>
+    <p class="lede">Every character is doing a job. Nothing in the name is arbitrary and nothing repeats by accident.</p>
+    
+    <p>An Earthdata filename is not decoration. It is a structured record, and it is
+    the only part of the file you can read without opening anything. Once you can
+    decode it you can sort, filter and sanity-check a directory of ten thousand
+    granules from the shell.</p>
+    <p>The catch: the key to reading it is not inside the file. It lives in a
+    specification document on a different server, nowhere linked from the download
+    page. That is the gap this whole exercise exists to close.</p>
+    <div class="fname">
+      <div class="segs"><div class="seg" data-seg="0" tabindex="0"><code>3B-HHR</code><span class="seg-l">Product and cadence</span></div><div class="seg" data-seg="1" tabindex="0"><code>MS</code><span class="seg-l">Source</span></div><div class="seg" data-seg="2" tabindex="0"><code>MRG</code><span class="seg-l">Merge</span></div><div class="seg" data-seg="3" tabindex="0"><code>3IMERG</code><span class="seg-l">Algorithm</span></div><div class="seg" data-seg="4" tabindex="0"><code>20230704</code><span class="seg-l">Date</span></div><div class="seg" data-seg="5" tabindex="0"><code>133000</code><span class="seg-l">Start</span></div><div class="seg" data-seg="6" tabindex="0"><code>135959</code><span class="seg-l">End</span></div><div class="seg" data-seg="7" tabindex="0"><code>0810</code><span class="seg-l">Sequence</span></div><div class="seg" data-seg="8" tabindex="0"><code>V07B</code><span class="seg-l">Version</span></div><div class="seg" data-seg="9" tabindex="0"><code>HDF5</code><span class="seg-l">Extension</span></div></div>
+      <div class="seg-xs"><div class="seg-x" data-seg="0"><h4>Product and cadence <code>3B-HHR</code></h4><p>3B is Level 3B. HHR is half-hourly, DAY is daily, MO is monthly. A trailing -E or -L marks the Early or Late run; Final carries no letter.</p></div><div class="seg-x" data-seg="1"><h4>Source <code>MS</code></h4><p>MS: multi-satellite, as opposed to a single sensor.</p></div><div class="seg-x" data-seg="2"><h4>Merge <code>MRG</code></h4><p>MRG: the sources have been merged.</p></div><div class="seg-x" data-seg="3"><h4>Algorithm <code>3IMERG</code></h4><p>The name of the algorithm that built this.</p></div><div class="seg-x" data-seg="4"><h4>Date <code>20230704</code></h4><p>Year, month, day. UTC.</p></div><div class="seg-x" data-seg="5"><h4>Start <code>133000</code></h4><p>Hours, minutes, seconds the observation window opens.</p></div><div class="seg-x" data-seg="6"><h4>End <code>135959</code></h4><p>The last second inside the window, not the first second of the next one - E115959 means the window runs through 12:00:00. Consecutive granules butt up without overlapping, and this guide adds the second back when it reports the duration.</p></div><div class="seg-x" data-seg="7"><h4>Sequence <code>0810</code></h4><p>Minutes elapsed since midnight. Redundant with the start time, which makes it a free consistency check.</p></div><div class="seg-x" data-seg="8"><h4>Version <code>V07B</code></h4><p>Algorithm version. Variable names changed between V06 and V07, so older tutorials will mislead you.</p></div><div class="seg-x" data-seg="9"><h4>Extension <code>HDF5</code></h4><p>The claimed container format.</p></div>
+        <div class="seg-x is-idle"><p>Hover or tap a piece of the filename
+        above.</p></div></div></div>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in"><p class="ev-lead">Consistency check: the sequence field says <code>0810</code>, and 13:30 is minute 810 of the day. They agree, so the name was assembled correctly.</p></div></div>
+  </div>
+</section>
+<section class="ch" id="magic">
+  <div class="ch-mark"><span class="ch-num">06</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Sixth, the stamp inside</p>
+    <h2>The extension can lie; the opening bytes cannot</h2>
+    <p class="lede">Renaming a file changes its label and nothing else. Formats identify themselves from the inside.</p>
+    
+    <p>Every file format stamps its identity into its opening bytes. The stamp is
+    written by whatever program created the file, and unlike the extension, it does
+    not survive being renamed. Reading it is how a program knows what it is holding
+    before it commits to a parser.</p>
+    <div class="bytes"><div class="bytes-row"><div class="byte"><span class="hex">89</span><span class="asc">‹‹</span></div><div class="byte"><span class="hex">48</span><span class="asc">H</span></div><div class="byte"><span class="hex">44</span><span class="asc">D</span></div><div class="byte"><span class="hex">46</span><span class="asc">F</span></div><div class="byte"><span class="hex">0D</span><span class="asc">CR</span></div><div class="byte"><span class="hex">0A</span><span class="asc">LF</span></div><div class="byte"><span class="hex">1A</span><span class="asc">SUB</span></div><div class="byte"><span class="hex">0A</span><span class="asc">LF</span></div></div>
+      <p class="cap">The opening bytes this format always writes, regardless of what
+      is inside.</p></div>
+    <p>Bytes two through four spell HDF in plain ASCII, so a damaged file often still announces what it was trying to be. The bytes either side are deliberate traps: they are chosen to get mangled if the file crosses a connection that “helpfully” converts line endings, which turns a silent corruption into an obvious one.</p>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in"><p class="ev-lead">The extension claimed <strong>HDF5</strong>. The opening bytes say <strong>HDF5</strong>. They agree, so the name is telling the truth.</p></div></div>
+  </div>
+</section>
+<section class="ch" id="companions">
+  <div class="ch-mark"><span class="ch-num">07</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Seventh, what else you need</p>
+    <h2>One file is rarely the whole answer</h2>
+    <p class="lede">Products come in families. The one you downloaded may be a piece of a set, and useless on its own.</p>
+    
+    <p>Related products, before you write a loop. NASA splits products along lines that make sense to the production
+    system and are invisible from the download page. Knowing which sibling you
+    actually want saves more time than any amount of clever code.</p>
+    <div class="comps"><div class="comp"><code>GPM_3IMERGDF</code><p>The daily accumulation, built from these half-hours. Reach for it before you write a loop over 48 files.</p></div><div class="comp"><code>GPM_3IMERGM</code><p>Monthly. No Early or Late variant exists, because a monthly product needs the gauge data that defines Final.</p></div><div class="comp"><code>IMERG GIS (GeoTIFF)</code><p>The same estimates repackaged by PPS as GeoTIFF plus WorldFile, at 30-minute through monthly spans. If your destination is a map program, download this and skip the HDF5 entirely.</p></div></div>
+    <p>One boundary to respect: the V07 Final record stops in September 2025 while the upstream products move to V08, and a full V08 reprocessing of the record follows. Treat a version change exactly like a collection change &mdash; never mix versions in one analysis.</p>
+  </div>
+</section>
+<section class="ch" id="inside">
+  <div class="ch-mark"><span class="ch-num">08</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Opening it up</p>
+    <h2>Inside is a folder tree</h2>
+    <p class="lede">Groups, arrays and notes. Once you can see the shape of it, the file stops being opaque.</p>
+    
+    <p>Open the container and you find something laid out like the folders on your
+    computer. A <span class="dfn" tabindex="0" data-def="A folder inside the file.">group</span> is a folder. Inside it are arrays. Attached to each
+    array are <span class="dfn" tabindex="0" data-def="A labelled note attached to an array inside the file.">attributes</span> &mdash; short labelled notes saying
+    what the array is and what to watch out for.</p>
+    <ul class="kinds">
+      <li><span class="kind kind--data">data</span> The actual values. This is what
+        you came for.</li>
+      <li><span class="kind kind--axis">axis</span> Coordinate values. Row 400,
+        column 900 of a data array means nothing until you look up what position
+        those indices point at.</li>
+      <li><span class="kind kind--bounds">bounds</span> The edges of each cell rather
+        than its centre. You need edges to compute an area correctly.</li>
+    </ul>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead">19 arrays in
+      /Grid and /Grid/Intermediate:
+      10 data,
+      6 axes,
+      3 bounds.</p>
+      <div class="filters" role="group" aria-label="Filter by kind">
+        <button class="filt is-on" data-filter="all" type="button">All</button>
+        <button class="filt" data-filter="data" type="button">Data</button>
+        <button class="filt" data-filter="axis" type="button">Axes</button>
+        <button class="filt" data-filter="bounds" type="button">Bounds</button></div>
+      <div class="tw"><table class="ledger"><thead><tr><th>Array</th><th>Kind</th>
+        <th>Type</th><th>Shape</th><th>Units</th><th>Description</th><th>Fill</th>
+        </tr></thead><tbody>
+      <tr data-kind="data"><td class="c-n"><code>IRinfluence</code>
+          <span class="c-p">/Grid/Intermediate</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">int16</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">&mdash;</td>
+        <td class="c-d">Relative influence of infrared precipitation in the merged microwave-infrared precipitation estimate</td>
+        <td class="c-m">-9999</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>IRprecipitation</code>
+          <span class="c-p">/Grid/Intermediate</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">float32</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">mm/hr</td>
+        <td class="c-d">Infrared precipitation estimate</td>
+        <td class="c-m">-9999.9</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>MWobservationTime</code>
+          <span class="c-p">/Grid/Intermediate</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">int16</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">minutes</td>
+        <td class="c-d">Observed merged microwave observation time after dataset start time; formerly HQobservationTime</td>
+        <td class="c-m">-9999</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>MWprecipSource</code>
+          <span class="c-p">/Grid/Intermediate</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">int16</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">&mdash;</td>
+        <td class="c-d">Observed merged microwave satellite source; formerly HQprecipSource</td>
+        <td class="c-m">-9999</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>MWprecipitation</code>
+          <span class="c-p">/Grid/Intermediate</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">float32</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">mm/hr</td>
+        <td class="c-d">Observed merged microwave precipitation estimate; formerly HQprecipitation</td>
+        <td class="c-m">-9999.9</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>precipitationUncal</code>
+          <span class="c-p">/Grid/Intermediate</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">float32</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">mm/hr</td>
+        <td class="c-d">Merged microwave-infrared precipitation estimate</td>
+        <td class="c-m">-9999.9</td>
+      </tr>
+      <tr data-kind="axis"><td class="c-n"><code>lat</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--axis" title="holds the coordinate values for one dimension">axis</span></td>
+        <td class="c-m">float32</td><td class="c-m">1800</td>
+        <td class="c-m">degrees_north</td>
+        <td class="c-d">Latitude at the center of 0.10 degree grid intervals of latitude from -90 to 90.</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="bounds"><td class="c-n"><code>lat_bnds</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--bounds" title="holds the edges of each cell, not its centre">bounds</span></td>
+        <td class="c-m">float32</td><td class="c-m">1800&thinsp;&times;&thinsp;2</td>
+        <td class="c-m">degrees_north</td>
+        <td class="c-d">&mdash;</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="axis"><td class="c-n"><code>latv</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--axis" title="holds the coordinate values for one dimension">axis</span></td>
+        <td class="c-m">int32</td><td class="c-m">2</td>
+        <td class="c-m">&mdash;</td>
+        <td class="c-d">Number of latitude bounds.</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="axis"><td class="c-n"><code>lon</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--axis" title="holds the coordinate values for one dimension">axis</span></td>
+        <td class="c-m">float32</td><td class="c-m">3600</td>
+        <td class="c-m">degrees_east</td>
+        <td class="c-d">Longitude at the center of 0.10 degree grid intervals of longitude from -180 to 180.</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="bounds"><td class="c-n"><code>lon_bnds</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--bounds" title="holds the edges of each cell, not its centre">bounds</span></td>
+        <td class="c-m">float32</td><td class="c-m">3600&thinsp;&times;&thinsp;2</td>
+        <td class="c-m">degrees_east</td>
+        <td class="c-d">&mdash;</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="axis"><td class="c-n"><code>lonv</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--axis" title="holds the coordinate values for one dimension">axis</span></td>
+        <td class="c-m">int32</td><td class="c-m">2</td>
+        <td class="c-m">&mdash;</td>
+        <td class="c-d">Number of longitude bounds.</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="axis"><td class="c-n"><code>nv</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--axis" title="holds the coordinate values for one dimension">axis</span></td>
+        <td class="c-m">int32</td><td class="c-m">2</td>
+        <td class="c-m">&mdash;</td>
+        <td class="c-d">Number of time bounds.</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>precipitation</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">float32</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">mm/hr</td>
+        <td class="c-d">Complete merged microwave-infrared (gauge-adjusted) precipitation estimate; formerly precipitationCal</td>
+        <td class="c-m">-9999.9</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>precipitationQualityIndex</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">float32</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">&mdash;</td>
+        <td class="c-d">Precipitation quality index; qualitative indicator of skill based on the microwave-infrared merging process</td>
+        <td class="c-m">-9999.9</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>probabilityLiquidPrecipitation</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">int16</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">percent</td>
+        <td class="c-d">Probability of liquid precipitation; estimated with a diagnostic parameterization using ancillary data</td>
+        <td class="c-m">-9999</td>
+      </tr>
+      <tr data-kind="data"><td class="c-n"><code>randomError</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--data" title="a measured, derived or estimated quantity">data</span></td>
+        <td class="c-m">float32</td><td class="c-m">1&thinsp;&times;&thinsp;3600&thinsp;&times;&thinsp;1800</td>
+        <td class="c-m">mm/hr</td>
+        <td class="c-d">Root-mean-square error estimate for complete merged microwave-infrared (gauge-adjusted) precipitation</td>
+        <td class="c-m">-9999.9</td>
+      </tr>
+      <tr data-kind="axis"><td class="c-n"><code>time</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--axis" title="holds the coordinate values for one dimension">axis</span></td>
+        <td class="c-m">int32</td><td class="c-m">1</td>
+        <td class="c-m">seconds since 1980-01-06 00:00:00 UTC</td>
+        <td class="c-d">Representative time of data in seconds since 1980-01-06 00:00:00 UTC. The calculation of time does not add leap seconds. The difference due to leap seconds grows with time and in 2019 is less than 30 seconds.</td>
+        <td class="c-m">&mdash;</td>
+      </tr>
+      <tr data-kind="bounds"><td class="c-n"><code>time_bnds</code>
+          <span class="c-p">/Grid</span></td>
+        <td><span class="kind kind--bounds" title="holds the edges of each cell, not its centre">bounds</span></td>
+        <td class="c-m">int32</td><td class="c-m">1&thinsp;&times;&thinsp;2</td>
+        <td class="c-m">seconds since 1980-01-06 00:00:00 UTC</td>
+        <td class="c-d">&mdash;</td>
+        <td class="c-m">&mdash;</td>
+      </tr></tbody></table></div></div></div>
+  </div>
+</section>
+<section class="ch" id="attrs">
+  <div class="ch-mark"><span class="ch-num">09</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">The notes on the arrays</p>
+    <h2>The sticky notes are the documentation</h2>
+    <p class="lede">Units, descriptions, missing-data markers. This is the metadata everyone tells you to read, and here is what is in it.</p>
+    
+    <p>The notes attached to an array are where a self-describing file earns the name.
+    They are also where the traps are, because a note that is missing does not raise
+    an error &mdash; software just carries on without it.</p>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead">Every note attached to <code>/Grid/Intermediate/IRinfluence</code>, the
+      largest data array in this file.</p>
+      <div class="tw"><table class="ledger"><thead><tr><th>Note</th><th>Value</th>
+        <th>What it is for</th></tr></thead><tbody><tr><td class="c-n"><code>DimensionNames</code></td><td class="c-m">time,lon,lat</td><td class="c-d">Which dimension of the array is which. Read this before you plot anything.</td></tr><tr><td class="c-n"><code>coordinates</code></td><td class="c-m">time lon lat</td><td class="c-d">Which variables hold the latitude, longitude and time for this array.</td></tr><tr><td class="c-n"><code>_FillValue</code></td><td class="c-m">-9999</td><td class="c-d">The number written into cells with no estimate. Not a measurement; remove it before doing arithmetic.</td></tr><tr><td class="c-n"><code>CodeMissingValue</code></td><td class="c-m">-9999</td><td class="c-d"><span class="none">no standard meaning &mdash; product-specific</span></td></tr><tr><td class="c-n"><code>LongName</code></td><td class="c-m">Relative influence of infrared precipitation in the merged microwave-infrared precipitatio…</td><td class="c-d">A sentence describing the variable, written for a human.</td></tr><tr><td class="c-n"><code>DIMENSION_LIST</code></td><td class="c-m">&lt;3 HDF5 internal reference(s)&gt;</td><td class="c-d"><span class="none">no standard meaning &mdash; product-specific</span></td></tr></tbody></table></div></div></div>
+  </div>
+</section>
+<section class="ch" id="trap">
+  <div class="ch-mark"><span class="ch-num">10</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">The one that catches everybody</p>
+    <h2>−9999.9 is not a rainfall measurement</h2>
+    <p class="lede">Every product has a way of being silently wrong. This is this product&rsquo;s.</p>
+    <p>The algorithm cannot always produce an estimate. Those cells still need a number written into them, because the array is a rectangle and rectangles do not have holes. A fill value goes in: chosen to be so far outside the plausible range that nobody could mistake it for rain. It works right up until somebody calls <code>.mean()</code>.</p>
+    <div class="sim">
+      <div class="sim-head"><h4>What the average becomes if you forget</h4>
+        <p>Drag to change how much of the array has no estimate. Assumes a true mean
+        of 0.12 across the cells that do have one.</p></div>
+      <label class="sim-ctl"><span>Array with no estimate</span>
+        <input type="range" id="fillpct" min="0" max="90" value="40" step="1"
+               data-fill="-9999.900390625"><output id="fillout">40%</output></label>
+      <div class="sim-out">
+        <div class="sim-box sim-box--bad"><span class="sim-k">Reported by
+          <code>a.mean()</code></span>
+          <span class="sim-v" id="badmean">&minus;4,000</span></div>
+        <div class="sim-box sim-box--good"><span class="sim-k">After masking</span>
+          <span class="sim-v" id="goodmean">0.12</span></div></div>
+      <p class="sim-note">No error is raised. No warning appears. You get a number
+      and it has the right units.</p></div>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead">10 data arrays declare a fill value. Here is what
+      catches people who did everything else right:</p>
+      <div class="gotcha">
+        <div><span class="g-k">What the documentation says</span>
+             <code class="g-v">-9999.9</code></div>
+        <div><span class="g-k">What is actually stored</span>
+             <code class="g-v g-v--hot">-9999.900390625</code></div></div>
+      <p class="ev-lead">These are 32-bit floating point numbers, and 32 bits cannot
+      represent -9999.9 exactly. Writing <code>a == -9999.9</code> matches
+      <strong>nothing</strong>, masks <strong>nothing</strong>, and reports success.
+      Compare with a tolerance instead.</p>
+      <pre class="code">fill = ds[path].attrs[&#39;_FillValue&#39;]
+a = ds[path][:]
+a = np.where(np.isclose(a, fill, rtol=0, atol=0.01), np.nan, a)
+mean = np.nanmean(a)</pre><p class="ev-lead">No variable declares a <code>valid_min</code> or <code>valid_max</code> either, so you cannot mask by asking for &ldquo;everything in the sensible range.&rdquo; The exact fill value is the only handle available.</p></div></div>
+  </div>
+</section>
+<section class="ch" id="gis">
+  <div class="ch-mark"><span class="ch-num">11</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">Onto a real map</p>
+    <h2>Three maps walk in; one is right</h2>
+    <p class="lede">A regular grid loads on the first try, which is the problem: wrong axis order and wrong row direction also load on the first try.</p>
+    
+    <p>Sooner or later this file meets a map program. A gridded product is the
+    easy case &mdash; a regular lattice is exactly what raster software expects
+    &mdash; and that is precisely what makes it dangerous. The load succeeds
+    either way. Whether the map is <em>right</em> depends on two conventions the
+    software has to guess: which axis is which, and which way the rows run.</p>
+    <div class="swath"><svg viewBox="0 0 640 176" role="img" aria-label="The same gridded granule loaded three ways in a map program: correctly, transposed, and vertically flipped"><text x="10" y="16" class="svg-t">the same file, three loads</text><rect x="10" y="26" width="188" height="108" fill="var(--tint2)" stroke="var(--good)" stroke-width="1.5" rx="3"/><rect x="33.5" y="26.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="45.2" y="26.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="104.0" y="26.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="115.8" y="26.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="127.5" y="26.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="139.2" y="26.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="21.8" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="33.5" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="45.2" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="92.2" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="104.0" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="115.8" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="127.5" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="139.2" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="151.0" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="162.8" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="33.5" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="45.2" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="57.0" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="104.0" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="115.8" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="127.5" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="139.2" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="151.0" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="45.2" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="57.0" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="115.8" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="127.5" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="139.2" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="162.8" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="45.2" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="127.5" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="139.2" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="57.0" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="127.5" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="57.0" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="68.8" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="226" y="26" width="188" height="108" fill="var(--tint2)" stroke="var(--hot)" stroke-width="1.5" rx="3"/><rect x="299.8" y="32.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="293.0" y="39.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="39.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="39.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="293.0" y="46.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="46.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="46.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="313.2" y="46.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="320.0" y="46.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="53.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="313.2" y="53.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="326.8" y="53.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="333.5" y="53.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="333.5" y="59.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="73.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="293.0" y="80.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="80.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="80.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="293.0" y="86.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="86.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="86.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="313.2" y="86.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="293.0" y="93.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="93.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="93.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="313.2" y="93.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="320.0" y="93.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="326.8" y="93.5" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="293.0" y="100.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="100.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="100.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="313.2" y="100.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="320.0" y="100.2" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="107.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="306.5" y="107.0" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="299.8" y="113.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="313.2" y="113.8" width="6.8" height="6.8" fill="var(--sea)" opacity=".8"/><rect x="442" y="26" width="188" height="108" fill="var(--tint2)" stroke="var(--hot)" stroke-width="1.5" rx="3"/><rect x="489.0" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="500.8" y="39.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="489.0" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="559.5" y="53.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="477.2" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="559.5" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="571.2" y="66.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="477.2" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="489.0" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="547.8" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="559.5" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="571.2" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="594.8" y="80.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="465.5" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="477.2" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="489.0" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="536.0" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="547.8" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="559.5" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="571.2" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="583.0" y="93.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="453.8" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="465.5" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="477.2" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="524.2" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="536.0" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="547.8" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="559.5" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="571.2" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="583.0" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="594.8" y="107.0" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="465.5" y="120.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="477.2" y="120.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="536.0" y="120.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="547.8" y="120.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="559.5" y="120.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><rect x="571.2" y="120.5" width="11.8" height="13.5" fill="var(--sea)" opacity=".8"/><text x="10" y="152" class="svg-t">read as the docs describe</text><text x="10" y="166" class="svg-t">axes checked, rows top-down</text><text x="226" y="152" class="svg-t">axis order trusted blindly</text><text x="226" y="166" class="svg-t">(time, lon, lat): sideways</text><text x="442" y="152" class="svg-t">row direction assumed</text><text x="442" y="166" class="svg-t">bottom-up rows: flipped</text></svg>
+      <p class="cap">Same granule, three loads. Only one of them is the planet.</p>
+    </div>
+    <p>Two specifics for this product. First, the grid is stored in <code>(time, lon, lat)</code> order &mdash; longitude varies along the first spatial axis, backwards from what raster tools expect, so a naive load renders sideways until you transpose. Second, common netCDF readers assume rows run bottom-up, which flips the world vertically. Neither raises an error; both produce a confident, wrong map. If your destination is QGIS or ArcGIS, skip the fight: PPS publishes a GIS-ready GeoTIFF version of every IMERG granule.</p>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead"><code>DimensionNames</code> on <code>/Grid/Intermediate/IRinfluence</code>
+      reads <code>time,lon,lat</code> &mdash; the axis order is written right there,
+      which is exactly what a careful load checks first.</p></div></div>
+    
+    <p>The tell is always geography. Before trusting any load, find one coastline
+    you know and check it &mdash; a sideways or mirrored continent takes one
+    second to spot and one line of code to fix, but only if you look.</p>
+  </div>
+</section>
+<section class="ch" id="time">
+  <div class="ch-mark"><span class="ch-num">12</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">When</p>
+    <h2>The clock does not start in 1970</h2>
+    <p class="lede">Time is a count of seconds since a reference date, and the reference is rarely the one your language assumes.</p>
+    
+    <p>Time in a science data file is almost never a date. It is a count of seconds
+    since some reference moment, and the reference is written in the array&rsquo;s
+    units string. Read the wrong reference and every timestamp you produce is
+    confidently, consistently wrong. The one everyone assumes is 1 January 1970, the
+    Unix <span class="dfn" tabindex="0" data-def="The reference date that time values are counted from.">epoch</span>. Earth science products frequently do not use it.</p>
+    <div class="ev"><div class="ev-tab">in your file</div><div class="ev-in">
+      <p class="ev-lead">The units string on <code>/Grid/time</code> reads:</p>
+      <pre class="code">seconds since 1980-01-06 00:00:00 UTC</pre>
+      <div class="decode">
+        <div class="dec-row"><span class="dec-k">Stored in the file</span>
+          <code class="dec-v">1,372,512,600</code></div>
+        <div class="dec-row"><span class="dec-k">Counted from</span>
+          <code class="dec-v">06 January 1980</code></div>
+        <div class="dec-row is-right"><span class="dec-k">Correct answer</span>
+          <code class="dec-v">04 July 2023, 13:30:00 UTC</code></div>
+        <div class="dec-row is-wrong"><span class="dec-k">If you assume 1 Jan 1970</span>
+          <code class="dec-v">29 June 2013, 13:30:00 UTC</code>
+          <span class="dec-s">out by about 10 years</span>
+        </div></div></div></div>
+    <p>Two more things to internalise while you are here. Everything is UTC, never
+    local &mdash; a granule labelled 20:48 covers the evening in Lagos and the
+    afternoon in Denver. And every product picks a convention for its end stamp:
+    the last instant <em>inside</em> the window, or the first instant of the next
+    one. Get it wrong and you double-count or drop a slice everywhere two granules
+    meet. Where this guide knows the product&rsquo;s convention it has already
+    applied it &mdash; the times and durations shown above describe the true
+    window, and the filename chapter explains the raw stamp.</p>
+    
+  </div>
+</section>
+<section class="ch" id="rules">
+  <div class="ch-mark"><span class="ch-num">13</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">House rules</p>
+    <h2>Conventions, and which ones matter to you</h2>
+    <p class="lede">Conformance checking sounds like paperwork. Some of it is. Some of it is the difference between a right and a wrong answer.</p>
+    
+    <p>Now that you know what an <span class="dfn" tabindex="0" data-def="A labelled note attached to an array inside the file.">attribute</span> is, this will make sense. NASA
+    publishes house rules &mdash; the <span class="dfn" tabindex="0" data-def="NASA&#x27;s Data Interoperability Working Group, which publishes the recommendations checked at the end of this guide.">DIWG</span> recommendations &mdash; about how
+    a data file should be built, so that software written by someone who has never
+    seen your product can still read it. Alongside those sit the <span class="dfn" tabindex="0" data-def="Climate and Forecast conventions: agreed attribute names that let software read files it has never seen before.">CF</span>
+    conventions, which fix the exact spelling of common attributes.</p>
+    <p>Files break these rules all the time, including files produced by NASA. That is
+    not a scandal. What matters is <em>which</em> rule, because the consequences run
+    from &ldquo;a catalogue lists this slightly wrong&rdquo; to &ldquo;your average is
+    off by three orders of magnitude.&rdquo; Sorted that way, not by rule number:</p>
+    <div class="tier tier--wrong"><div class="tier-h"><h3>Changes your answer</h3><p>Reading the file the obvious way gives a wrong number, with no warning.</p></div><div class="rules">
+        <article class="rule"><div class="rule-h">
+          <span class="rec">2.2</span><h4>CF-compliant attribute names</h4>
+          <span class="verdict verdict--fail">Breaks the rule</span></div>
+          <p>Some attributes are capitalised (&#x27;Units&#x27;, &#x27;LongName&#x27;) instead of the lowercase CF convention (&#x27;units&#x27;, &#x27;long_name&#x27;). CF-aware tools look for the lowercase names specifically, and won&#x27;t error when they don&#x27;t find them - they&#x27;ll just treat the variable as if it carries no units or description at all. Some variables carry both the capitalised and lowercase version of the same attribute with matching values. Harmless today, but redundant fields are exactly what drifts apart when a file gets regenerated by a different code path later. Some variables don&#x27;t declare a standard_name, so tools that look variables up by their CF standard meaning - rather than this file&#x27;s own local name - won&#x27;t find them. The variable still reads fine.</p></article>
+        <article class="rule"><div class="rule-h">
+          <span class="rec">4.8</span><h4>Fill value sits outside the valid range</h4>
+          <span class="verdict verdict--undetermined">Cannot be judged from this file</span></div>
+          <p>None of this file&#x27;s variables say what their valid data range is, so there&#x27;s nothing to compare the fill value against. This doesn&#x27;t mean the file is wrong - it means the file gives you no way to confirm it&#x27;s right. You still have to mask on the exact fill value, the way section 19 does, rather than on a range.</p></article></div></div><div class="tier tier--break"><div class="tier-h"><h3>Breaks your tools</h3><p>Something will refuse to open, refuse to decode, or run out of range.</p></div><div class="rules">
+        <article class="rule"><div class="rule-h">
+          <span class="rec">2.1</span><h4>Opens through the netCDF-4 interface</h4>
+          <span class="verdict verdict--pass">Follows the rule</span></div>
+          <p>This opens in both HDF5 and netCDF tools, so xarray, Panoply and most standard software will read it without special handling.</p></article>
+        <article class="rule"><div class="rule-h">
+          <span class="rec">4.10</span><h4>Time stored at double precision</h4>
+          <span class="verdict verdict--fail">Breaks the rule</span></div>
+          <p>Time is stored as int32 rather than double precision. Concretely: int32 maxes out at 2,147,483,647 seconds past the 1980-01-06 epoch, which lands on 2048-01-24. That&#x27;s about 25 years out from this granule&#x27;s own date. This granule&#x27;s own stored value (1372512600) decodes to 2023-07-04 13:30:00 - correct today, just on a clock that eventually runs out of digits.</p></article></div></div><div class="tier tier--fine"><div class="tier-h"><h3>Neither</h3><p>Worth knowing if you catalogue or cite this data. Otherwise ignore.</p></div><div class="rules">
+        <article class="rule"><div class="rule-h">
+          <span class="rec">3.11</span><h4>Date-time information in filenames</h4>
+          <span class="verdict verdict--pass">Follows the rule</span></div>
+          <p>The filename says this granule covers a 30-minute window starting 13:30 UTC on 04 Jul 2023. All times are UTC, not local.</p></article>
+        <article class="rule"><div class="rule-h">
+          <span class="rec">3.8</span><h4>Standardised file extension</h4>
+          <span class="verdict verdict--advisory">Bends the rule, allowably</span></div>
+          <p>This is HDF5, so it will open fine - the extension just isn&#x27;t the one NASA&#x27;s own recommendation asks for. We opened it and confirmed it really is HDF5.</p></article>
+        <article class="rule"><div class="rule-h">
+          <span class="rec">3.9</span><h4>Filename carries dataset + release identifiers</h4>
+          <span class="verdict verdict--pass">Follows the rule</span></div>
+          <p>The filename identifies which dataset, which version, and when - so files from different releases can&#x27;t be confused. Whether it&#x27;s genuinely unique across the whole archive can&#x27;t be determined from one file.</p></article></div></div>
+    <p class="closing">One habit worth taking away: when a tool says a file is
+    non-conformant, the useful question is never <em>is this bad</em>. It is
+    <em>what would I have got wrong if nobody had told me</em>. Most of the time the
+    answer is nothing. Occasionally it is everything.</p>
+  </div>
+</section>
+<section class="ch" id="batch">
+  <div class="ch-mark"><span class="ch-num">14</span><span class="ch-rule"></span></div>
+  <div class="ch-in">
+    <p class="kicker">More than one file</p>
+    <h2>The same product, packaged two ways</h2>
+    <p class="lede">Checking a folder answers a question a single file cannot: is what you found true of this granule, or of the whole product?</p>
+    
+    <p>One granule tells you about one granule. Run the same checks over a folder and
+    a different question opens: does the answer change from file to file?</p>
+    <p>Mostly it should not. How a product is packaged is decided once, by the
+    algorithm team, and applies to everything they publish. A row where every file
+    agrees is telling you about the <em>product</em>. A row where they disagree is
+    telling you that two different things are sitting in your folder.</p>
+    <div class="ev"><div class="ev-tab">in your folder</div><div class="ev-in">
+      <p class="ev-lead">2 of 7 checks land differently across these 4 files. Only <strong>GPM IMERG</strong> files are
+      compared here — a rule number means different things across products, so a
+      mixed table would be meaningless. Different cadences of the same product
+      <em>are</em> compared, because that is exactly where the interesting
+      disagreements turn up.</p>
+      <div class="tw"><table class="matrix"><thead><tr><th class="mr"></th><th class="mh" title="3B-DAY-E.MS.MRG.3IMERG.20260731-S000000-E235959.V07C.nc4"><span>3B-DAY-E.MS.MRG…-E235959.V07C.nc4</span></th><th class="mh" title="3B-DAY-L.MS.MRG.3IMERG.20260804-S000000-E235959.V07C.nc4"><span>3B-DAY-L.MS.MRG…-E235959.V07C.nc4</span></th><th class="mh" title="3B-HHR.MS.MRG.3IMERG.20230704-S133000-E135959.0810.V07B.HDF5"><span>3B-HHR.MS.MRG.3…59.0810.V07B.HDF5</span></th><th class="mh" title="3B-HHR.MS.MRG.3IMERG.20250930-S113000-E115959.0690.V07B.HDF5"><span>3B-HHR.MS.MRG.3…59.0690.V07B.HDF5</span></th>
+        <th class="mv"></th></tr></thead><tbody><tr class=""><th class="mr"><span class="rec">2.1</span><span class="mrt">Opens through the netCDF-4 interface</span></th><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mv">same</td></tr><tr class="is-split"><th class="mr"><span class="rec">2.2</span><span class="mrt">CF-compliant attribute names</span></th><td class="mc mc--advisory" title="ADVISORY"><span></span></td><td class="mc mc--advisory" title="ADVISORY"><span></span></td><td class="mc mc--fail" title="FAIL"><span></span></td><td class="mc mc--fail" title="FAIL"><span></span></td><td class="mv">differs</td></tr><tr class=""><th class="mr"><span class="rec">3.8</span><span class="mrt">Standardised file extension</span></th><td class="mc mc--advisory" title="ADVISORY"><span></span></td><td class="mc mc--advisory" title="ADVISORY"><span></span></td><td class="mc mc--advisory" title="ADVISORY"><span></span></td><td class="mc mc--advisory" title="ADVISORY"><span></span></td><td class="mv">same</td></tr><tr class=""><th class="mr"><span class="rec">3.9</span><span class="mrt">Filename carries dataset + release identifiers</span></th><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mv">same</td></tr><tr class=""><th class="mr"><span class="rec">3.11</span><span class="mrt">Date-time information in filenames</span></th><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mv">same</td></tr><tr class=""><th class="mr"><span class="rec">4.8</span><span class="mrt">Fill value sits outside the valid range</span></th><td class="mc mc--undetermined" title="UNDETERMINED"><span></span></td><td class="mc mc--undetermined" title="UNDETERMINED"><span></span></td><td class="mc mc--undetermined" title="UNDETERMINED"><span></span></td><td class="mc mc--undetermined" title="UNDETERMINED"><span></span></td><td class="mv">same</td></tr><tr class="is-split"><th class="mr"><span class="rec">4.10</span><span class="mrt">Time stored at double precision</span></th><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--pass" title="PASS"><span></span></td><td class="mc mc--fail" title="FAIL"><span></span></td><td class="mc mc--fail" title="FAIL"><span></span></td><td class="mv">differs</td></tr></tbody></table></div></div></div>
+    <p>Dwell on any row marked <em>differs</em>. It usually means mixed cadences or
+    mixed containers &mdash; half-hourly HDF5 alongside daily netCDF-4, say. Same
+    algorithm, same version, but written by different code, so they store time
+    differently and spell their attributes differently. A loop that reads one
+    correctly can quietly misread the other.</p>
+  </div>
+</section>
+<footer class="end"><p><a href="index.html">&larr; back to all granules</a></p>
+<p>Built from one granule by <code>guide.py</code>, reading the same
+<code>GranuleReport</code> and <code>GranuleStructure</code> objects that
+<code>render_text</code> prints. Explanatory text is authored and keyed to this
+collection in <code>products.py</code>; anything in a tinted panel was read out of the
+file or its name, and anything with an orange edge is an inference. Rule numbers refer
+to NASA ESDS Data Interoperability Working Group recommendations. Checks not
+implemented are not claims of conformance.</p></footer>
+<script>
+document.querySelectorAll(".ladder .rung").forEach(function(b){
+  b.addEventListener("click",function(){
+    var L=b.dataset.lvl,w=b.closest(".levels");
+    w.querySelectorAll(".rung").forEach(function(x){
+      var on=x===b;x.classList.toggle("is-on",on);x.setAttribute("aria-pressed",on);});
+    w.querySelectorAll(".lv-panel").forEach(function(p){
+      p.classList.toggle("is-on",p.dataset.lvl===L);});
+  });
+});
+
+// filename segments
+(function(){
+  var segs=document.querySelectorAll('.seg'), box=document.querySelector('.seg-xs');
+  function pick(i){
+    if(!box) return;
+    box.classList.add('has-sel');
+    document.querySelectorAll('.seg').forEach(function(s){
+      s.classList.toggle('is-on', s.dataset.seg===i);});
+    document.querySelectorAll('.seg-x').forEach(function(x){
+      if(x.dataset.seg!==undefined) x.classList.toggle('is-on', x.dataset.seg===i);});
+  }
+  segs.forEach(function(s){
+    ['mouseenter','click','focus'].forEach(function(ev){
+      s.addEventListener(ev,function(){pick(s.dataset.seg);});});
+  });
+})();
+
+// fill-value simulator
+(function(){
+  var r=document.getElementById('fillpct');
+  if(!r) return;
+  var out=document.getElementById('fillout'),
+      bad=document.getElementById('badmean'), good=document.getElementById('goodmean'),
+      TRUE_MEAN=0.12, FILL=parseFloat(r.dataset.fill||'-9999.9');
+  function fmt(x){return x.toLocaleString('en-US',
+    {minimumFractionDigits:2,maximumFractionDigits:2});}
+  function upd(){
+    var f=(+r.value)/100;
+    out.textContent=r.value+'%';
+    bad.textContent=fmt((1-f)*TRUE_MEAN + f*FILL);
+    good.textContent=fmt(TRUE_MEAN);
+  }
+  r.addEventListener('input',upd); upd();
+})();
+
+// ledger filters
+document.querySelectorAll('.filt').forEach(function(b){
+  b.addEventListener('click',function(){
+    var w=b.dataset.filter, scope=b.closest('.ev')||document;
+    scope.querySelectorAll('.filt').forEach(function(x){x.classList.toggle('is-on',x===b);});
+    scope.querySelectorAll('.ledger tbody tr').forEach(function(tr){
+      tr.classList.toggle('is-hidden', w!=='all' && tr.dataset.kind!==w);});
+  });
+});
+
+// rail highlight
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.rail a'));
+  if(!links.length||!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      links.forEach(function(a){
+        a.classList.toggle('is-here', a.getAttribute('href')==='#'+e.target.id);});
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('.ch,.open').forEach(function(s){if(s.id)io.observe(s);});
+})();
+</script></body></html>
