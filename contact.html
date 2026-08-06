@@ -111,9 +111,41 @@
 
     .contact-body .container {
       display: grid;
-      grid-template-columns: 1fr 1.5fr;
+      grid-template-columns: 1fr 1fr;
       gap: 4rem;
       align-items: start;
+      max-width: 900px;
+    }
+
+    .include-card {
+      background: var(--color-bg-card);
+      border: 1px solid rgba(100,104,218,0.12);
+      border-radius: 8px;
+      padding: 2rem 2.25rem;
+    }
+
+    .include-card__label {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .include-card .expect-item__text strong {
+      color: var(--color-text);
+      font-weight: 400;
+    }
+
+    .include-card__note {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      margin-top: 1.6rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid rgba(100,104,218,0.12);
     }
 
     .contact-divider {
@@ -175,157 +207,11 @@
       line-height: 1.65;
     }
 
-    /* ---- Form ---- */
-    .contact-form {
-      background: var(--color-bg-card);
-      border: 1px solid rgba(100,104,218,0.12);
-      border-radius: 8px;
-      padding: 2.5rem;
-    }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-      margin-bottom: 1.2rem;
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      margin-bottom: 1.2rem;
-    }
-
-    .form-field:last-of-type {
-      margin-bottom: 0;
-    }
-
-    .form-field label {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text-muted);
-    }
-
-    .form-field input,
-    .form-field textarea,
-    .form-field select {
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      color: var(--color-text);
-      background: var(--color-bg);
-      border: 1px solid rgba(100,104,218,0.18);
-      border-radius: 4px;
-      padding: 0.7rem 1rem;
-      outline: none;
-      width: 100%;
-      transition: border-color 0.2s ease, background 0.2s ease;
-      -webkit-appearance: none;
-    }
-
-    .form-field input::placeholder,
-    .form-field textarea::placeholder {
-      color: rgba(154,154,176,0.4);
-    }
-
-    .form-field input:focus,
-    .form-field textarea:focus,
-    .form-field select:focus {
-      border-color: var(--color-periwinkle);
-      background: #111224;
-    }
-
-    .form-field textarea {
-      resize: vertical;
-      min-height: 128px;
-      line-height: 1.65;
-    }
-
-    .form-field select {
-      cursor: pointer;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9ab0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 36px;
-      background-color: var(--color-bg);
-    }
-
-    .form-field select option {
-      background: var(--color-bg-card);
-    }
-
-    .form-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 1.8rem;
-      gap: 1rem;
-    }
-
-    .form-note {
-      font-size: 0.82rem;
-      color: var(--color-text-muted);
-      line-height: 1.5;
-    }
-
-    /* Success state */
-    .success-state {
-      display: none;
-      text-align: center;
-      padding: 3rem 1rem;
-    }
-
-    .success-state.visible {
-      display: block;
-    }
-
-    .success-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: rgba(100,104,218,0.12);
-      border: 1px solid var(--color-periwinkle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.2rem;
-    }
-
-    .success-state h3 {
-      font-family: var(--font-heading);
-      font-weight: 900;
-      font-size: 1.3rem;
-      color: var(--color-text-heading);
-      margin-bottom: 0.6rem;
-    }
-
-    .success-state p {
-      color: var(--color-text-muted);
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-
-    /* ---- Responsive ---- */
     @media (max-width: 720px) {
       .contact-body .container {
         grid-template-columns: 1fr;
         gap: 2.5rem;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .form-footer {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .contact-form {
-        padding: 1.75rem;
       }
     }
   </style>
@@ -403,68 +289,35 @@
         </div>
       </div>
 
-      <!-- Right: Form -->
-      <div class="contact-form" id="formWrapper">
+      <!-- Right: What a useful first email looks like -->
+      <div class="include-card">
+        <p class="include-card__label">Worth Including in Your Note</p>
 
-        <form id="contactForm" onsubmit="handleSubmit(event)" novalidate>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label for="fname">First Name</label>
-              <input type="text" id="fname" name="fname" placeholder="Jane" required>
-            </div>
-            <div class="form-field">
-              <label for="lname">Last Name</label>
-              <input type="text" id="lname" name="lname" placeholder="Smith" required>
-            </div>
-          </div>
-
-          <div class="form-field">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" placeholder="jane@organization.gov" required>
-          </div>
-
-          <div class="form-field">
-            <label for="org">Organization</label>
-            <input type="text" id="org" name="org" placeholder="Agency, company, or firm">
-          </div>
-
-          <div class="form-field">
-            <label for="project">Type of Work</label>
-            <select id="project" name="project">
-              <option value="" disabled selected>Select a category</option>
-              <option value="dashboard">Dashboard / Visualization</option>
-              <option value="pipeline">Data Pipeline / ETL</option>
-              <option value="governance">Data Governance</option>
-              <option value="strategy">Analytics Strategy</option>
-              <option value="training">Training / Documentation</option>
-              <option value="other">Other / Not Sure Yet</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="message">Tell us about your project</label>
-            <textarea id="message" name="message" placeholder="What's the problem you're trying to solve? What have you tried so far?" required></textarea>
-          </div>
-
-          <div class="form-footer">
-            <p class="form-note">We'll respond within one business day.</p>
-            <button type="submit" class="btn btn--primary">Send Message &rarr;</button>
-          </div>
-
-        </form>
-
-        <div class="success-state" id="successMsg">
-          <div class="success-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <path d="M4 11l5 5 9-9" stroke="#6468DA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3>Message received.</h3>
-          <p>Thanks for reaching out. We'll review your project and be in touch within one business day at the email you provided.</p>
+        <div class="expect-item">
+          <div class="expect-item__dot"></div>
+          <p class="expect-item__text"><strong>The problem in one or two sentences.</strong> What's broken, slow, or impossible right now?</p>
         </div>
 
+        <div class="expect-item">
+          <div class="expect-item__dot"></div>
+          <p class="expect-item__text"><strong>What the data lives in.</strong> Spreadsheets, a database, a vendor platform, paper — no judgment, we've seen all of it.</p>
+        </div>
+
+        <div class="expect-item">
+          <div class="expect-item__dot"></div>
+          <p class="expect-item__text"><strong>What you've already tried,</strong> if anything. It saves us both a week.</p>
+        </div>
+
+        <div class="expect-item">
+          <div class="expect-item__dot"></div>
+          <p class="expect-item__text"><strong>Rough timeline or constraint.</strong> A grant deadline, an audit, a board meeting — whatever is driving the clock.</p>
+        </div>
+
+        <p class="include-card__note">
+          Two sentences and a screenshot is a perfectly good first email. You don't need to have the problem well-defined — defining it is part of the work.
+        </p>
       </div>
+
     </div>
   </section>
 
@@ -475,13 +328,6 @@
     </div>
   </footer>
 
-  <script>
-    function handleSubmit(e) {
-      e.preventDefault();
-      document.getElementById('contactForm').style.display = 'none';
-      document.getElementById('successMsg').classList.add('visible');
-    }
-  </script>
 
 </body>
 </html>
