@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Missing Date: Dog Grooming Platform — JJW Insights Analytics LLC</title>
+  <meta name="description" content="My dog's rabies shot had no expiry date. The story of what a small grooming shop should do about that, and the system built to answer it.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .case { max-width: 780px; }
+    .case h2 {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--color-text-heading);
+      margin: 3rem 0 0.8rem;
+    }
+    .case p, .case ul { margin-bottom: 1.2rem; }
+    .case ul { padding-left: 1.4rem; }
+    .case li { margin-bottom: 0.5rem; }
+    .case code {
+      font-size: 0.9em;
+      background: var(--color-bg-card);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    .case-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .stat {
+      background: var(--color-bg-card);
+      border: 1px solid rgba(100,104,218,0.1);
+      border-radius: 8px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat__num {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 2rem;
+      color: var(--color-gold);
+      line-height: 1.2;
+    }
+    .stat__label {
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+    }
+    .callout {
+      border-left: 3px solid var(--color-gold);
+      background: var(--color-bg-card);
+      padding: 1.2rem 1.5rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .case table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .case th, .case td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid rgba(100,104,218,0.15);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .case th {
+      font-family: var(--font-heading);
+      color: var(--color-text-heading);
+    }
+    .case td.num, .case th.num { text-align: right; }
+    .try-list li strong { color: var(--color-text-heading); }
+    .stack { color: var(--color-text-muted); font-size: 0.95rem; }
+    .lead { font-size: 1.15rem; color: var(--color-text-heading); }
+    .eyebrow {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-gold);
+      margin-bottom: 0.4rem;
+    }
+    .case h2.case-first { margin-top: 0; }
+    .case .eyebrow { margin-top: 3.5rem; }
+    .case > .eyebrow:first-child { margin-top: 0; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+    .feature-grid .value-card { padding: 1.4rem; }
+    .turn {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .turn p {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      color: var(--color-text-heading);
+      line-height: 1.3;
+    }
+    .turn .accent { color: var(--color-gold); }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="container">
+      <a href="../index.html">
+        <img src="../assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
+      </a>
+      <ul class="site-nav__links">
+        <li><a href="../index.html">Home </a></li>
+        <li><a href="../capability-tree.html"> Capabilities </a></li>
+        <li><a href="../portfolio.html" class="active"> Portfolio </a></li>
+        <li><a href="../about.html"> About </a></li>
+        <li><a href="../contact.html"> Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">A case study in one missing date</p>
+      <h1 class="hero__tagline">My dog's rabies shot <span class="accent">had no expiry date.</span></h1>
+      <p class="hero__sub">
+        This is the story of what a small grooming shop should do about that, and the system I built to answer it.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="case">
+
+        <p class="eyebrow">Chapter 1</p>
+        <h2 class="case-first">It started with Jaddi</h2>
+        <p>
+          Jaddi gets groomed regularly, and like every dog at every grooming shop, he needs proof of a current
+          rabies vaccination before he goes on the table.
+        </p>
+        <p>
+          The proof I had was an invoice from his vet. It named the rabies vaccine. It gave the date he got it.
+          And nowhere on the page did it say when that vaccination expires.
+        </p>
+        <div class="callout">
+          <p>One question, and a small business has to answer it every day: <strong>is this dog covered?</strong></p>
+        </div>
+
+        <p class="eyebrow">Chapter 2</p>
+        <h2 class="case-first">The guess that becomes the record</h2>
+        <p>
+          A rabies vaccine can be good for one year or three. Both are legal. Which one Jaddi got is printed
+          on the certificate, and the certificate is what the health department will want to see.
+        </p>
+        <p>
+          A grooming shop doesn't have a data team. It has a front counter, a folder of paper, and whoever is
+          working today. So somebody looks at the invoice, makes a reasonable guess, and writes it down. From that
+          moment on, the guess <em>is</em> the record. Nothing downstream will ever question it, because in a
+          small business there is no downstream.
+        </p>
+
+        <p class="eyebrow">Chapter 3</p>
+        <h2 class="case-first">So I asked an AI to read it</h2>
+        <p>
+          The obvious modern fix is to photograph the paperwork and let AI read it. So I tested that, field by
+          field, against answer keys I labelled by hand.
+        </p>
+        <div class="stats">
+          <div class="stat"><div class="stat__num">492 / 492</div><div class="stat__label">fields right on clean PDFs</div></div>
+          <div class="stat"><div class="stat__num">~15</div><div class="stat__label">confident dates invented from one phone photo</div></div>
+        </div>
+        <p>
+          On clean documents it was perfect. On a phone photo, which is what a busy counter actually produces,
+          it read a smudged <code>Jan 2?, 2027</code> as a crisp <code>Jan 29, 2027</code>. It did that about
+          fifteen times on one page, and a better prompt didn't fix it.
+        </p>
+        <p>
+          The AI wasn't failing. It was doing exactly what the person at the counter does: filling the gap with
+          a confident guess. It was just doing it faster.
+        </p>
+
+        <p class="eyebrow">Chapter 4</p>
+        <h2 class="case-first">A system that's allowed to say "I don't know"</h2>
+        <p>
+          So the rule I built everything around is simple: <strong>no expiry date, no record.</strong> Jaddi's
+          invoice is kept, what was read from it is kept, and no vaccination record is created. He stays
+          "not cleared" until the shop has the real certificate.
+        </p>
+        <p>
+          That rule doesn't live in a training manual or in the app's screens, where a busy day could route
+          around it. It lives in the database itself, alongside the shop's other judgment calls:
+        </p>
+        <ul>
+          <li>A dog can't start a groom while a required vaccine is expired, missing, or disputed.</li>
+          <li>A date the AI read becomes a record only after a person checks it.</li>
+          <li>A date nobody can read becomes a request to the owner for a better copy, not a guess.</li>
+          <li>A shave-down can't be recorded without a coat assessment that justifies it.</li>
+          <li>A reminder can't go to an owner who opted out.</li>
+        </ul>
+        <p class="stack">
+          37 rules in all, each one proven by a test that checks the database says no: 483 of them, all passing.
+        </p>
+
+        <p class="eyebrow">Chapter 5</p>
+        <h2 class="case-first">Now you're at the counter</h2>
+        <p>
+          The groomers never see any of that. They see one screen: who's grooming today, every dog with a green
+          check when it's cleared, its usual haircut, its allergies, the note that it hates having its back feet
+          touched, and a calendar of what's coming up.
+        </p>
+        <p>
+          The demo below is that screen, running the shop's real database in your browser with invented dogs, and
+          Jaddi. Try to book him in.
+        </p>
+        <ul class="try-list">
+          <li><strong>Jaddi</strong>: his rabies has expired. See what the counter tells you.</li>
+          <li><strong>A new walk-in</strong> whose paperwork has no expiry date. Try to save the shot.</li>
+          <li><strong>A regular client booked with a different groomer</strong>: it asks why.</li>
+        </ul>
+        <div class="case-actions" style="justify-content: flex-start; margin: 2rem 0;">
+          <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Step up to the counter &rarr;</a>
+        </div>
+        <p class="stack">Nothing leaves your browser, and a reload starts over. Admin, photos, and the AI reader need a server, so they're left out of the demo.</p>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="turn">
+        <p>Anyone can demo a clean extraction.<br><span class="accent">The harder story is a system that knows what it doesn't know.</span></p>
+      </div>
+      <div class="case-actions" style="margin-top: 2.5rem;">
+        <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Try the live demo &rarr;</a>
+        <a href="https://github.com/jasonrwilliams-maker/dog-groomer-platform" class="btn btn--outline" target="_blank" rel="noopener">Read the source</a>
+      </div>
+      <p class="stack" style="text-align: center; margin-top: 2rem;">PostgreSQL 16 · pgTAP · FastAPI · Next.js · Tailwind · Claude (vision) · Docker · PGlite</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 JJW Insights Analytics LLC. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
