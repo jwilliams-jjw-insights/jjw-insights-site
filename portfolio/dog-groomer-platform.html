@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dog Grooming Platform — JJW Insights Analytics LLC</title>
+  <meta name="description" content="A system of record for a small grooming practice, with 37 business rules enforced in the database. Case study and live demo.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .case { max-width: 780px; }
+    .case h2 {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--color-text-heading);
+      margin: 3rem 0 0.8rem;
+    }
+    .case p, .case ul { margin-bottom: 1.2rem; }
+    .case ul { padding-left: 1.4rem; }
+    .case li { margin-bottom: 0.5rem; }
+    .case code {
+      font-size: 0.9em;
+      background: var(--color-bg-card);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    .case-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .stat {
+      background: var(--color-bg-card);
+      border: 1px solid rgba(100,104,218,0.1);
+      border-radius: 8px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat__num {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 2rem;
+      color: var(--color-gold);
+      line-height: 1.2;
+    }
+    .stat__label {
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+    }
+    .callout {
+      border-left: 3px solid var(--color-gold);
+      background: var(--color-bg-card);
+      padding: 1.2rem 1.5rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .case table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .case th, .case td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid rgba(100,104,218,0.15);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .case th {
+      font-family: var(--font-heading);
+      color: var(--color-text-heading);
+    }
+    .case td.num, .case th.num { text-align: right; }
+    .try-list li strong { color: var(--color-text-heading); }
+    .stack { color: var(--color-text-muted); font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="container">
+      <a href="../index.html">
+        <img src="../assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
+      </a>
+      <ul class="site-nav__links">
+        <li><a href="../index.html">Home </a></li>
+        <li><a href="../capability-tree.html"> Capabilities </a></li>
+        <li><a href="../portfolio.html" class="active"> Portfolio </a></li>
+        <li><a href="../about.html"> About </a></li>
+        <li><a href="../contact.html"> Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero__tagline">Dog Grooming Platform</h1>
+      <p class="hero__sub">
+        A system of record for a small grooming practice, with the business rules enforced
+        <em>in the database</em> rather than in the application.
+      </p>
+      <div class="case-actions">
+        <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Open live demo &rarr;</a>
+        <a href="https://github.com/jasonrwilliams-maker/dog-groomer-platform" class="btn btn--outline" target="_blank" rel="noopener">View source</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="case">
+
+        <div class="stats">
+          <div class="stat"><div class="stat__num">37</div><div class="stat__label">business rules, each with its own error code</div></div>
+          <div class="stat"><div class="stat__num">483</div><div class="stat__label">test assertions, all passing</div></div>
+          <div class="stat"><div class="stat__num">199</div><div class="stat__label">breeds, each with its usual coat</div></div>
+          <div class="stat"><div class="stat__num">0</div><div class="stat__label">expiry dates invented</div></div>
+        </div>
+
+        <h2>Why this is not a reporting project</h2>
+        <p>
+          Most analytics work describes data that some other system produced. If a row is wrong,
+          that is upstream's problem.
+        </p>
+        <p>
+          This system is first in the chain. Nothing upstream will catch a bad row, so every rule a
+          person would otherwise apply by judgment is written down as something the database will
+          refuse. Each rule is proven by a test that asserts the <em>refusal</em>, not the happy path:
+        </p>
+        <ul>
+          <li>A shave-down cannot be recorded without a coat assessment that justifies it.</li>
+          <li>A haircut cannot be recorded on a bath-only visit.</li>
+          <li>A reminder cannot be sent to an owner who opted out.</li>
+          <li>A dog cannot start a groom while a required vaccine is expired, missing, or disputed.</li>
+          <li>A vaccination record cannot be created from a document that does not state an expiry date.</li>
+        </ul>
+        <p>
+          How strictly each groom-time rule is enforced (block, warn, or off) is itself a row of data,
+          changed by an <code>UPDATE</code> and recorded in the audit log, not by a code change.
+        </p>
+
+        <h2>The document that proves the point</h2>
+        <div class="callout">
+          <p>
+            A real vet invoice for Jaddi, the dog whose grooming routine started this project, names a
+            rabies vaccination and the date it was given. It contains no expiry date anywhere on the page.
+          </p>
+          <p>
+            The system keeps the document, keeps the extraction, and creates <strong>no vaccination
+            record</strong>. It does not assume a one-year or three-year validity, because both are legal
+            and the certificate is what the health department will actually see.
+          </p>
+        </div>
+        <p>
+          A pipeline that correctly declines to invent a date is a better result than one that extracts
+          cleanly. Anyone can demo a clean extraction.
+        </p>
+
+        <h2>What the AI actually did</h2>
+        <p>
+          Vaccination paperwork is read by a vision model (Claude), then scored field by field against
+          hand-labelled answer keys. Every run below is re-scored with the same ruler so the rows compare.
+          <em>Overconfident</em> means a character the page prints but no one can read, returned as a clean,
+          specific value: a smudged <code>Jan 2?, 2027</code> read back as <code>Jan 29, 2027</code>.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Run</th><th>Prompt</th><th>Documents</th><th class="num">Correct</th><th class="num">Invented</th><th class="num">Overconfident</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>2026-09-22</td><td>v1</td><td>3 clean PDFs + 1 screenshot</td><td class="num">501 / 504</td><td class="num">1</td><td class="num">0</td></tr>
+              <tr><td>2026-09-22</td><td>v2</td><td>3 clean PDFs + 1 screenshot</td><td class="num"><strong>492 / 492</strong></td><td class="num">0</td><td class="num">0</td></tr>
+              <tr><td>2026-09-24</td><td>v2</td><td>phone photo, held out</td><td class="num">141 / 159</td><td class="num">2</td><td class="num">14</td></tr>
+              <tr><td>2026-09-25</td><td>v3</td><td>phone photo</td><td class="num">141 / 159</td><td class="num">2</td><td class="num">13</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          On clean pages the model transcribes perfectly. On a phone photo of the same kind of page it makes
+          the same mistake every time, whatever the prompt: about fifteen confident dates the page does not
+          support. A third prompt did not fix it.
+        </p>
+        <p>
+          That is why the database does not trust a date just because it is present. A line becomes a
+          vaccination record only after a person has checked every field it carries. A reviewer who can't
+          read a date says so, which asks the owner for a better copy instead of recording a guess.
+        </p>
+
+        <h2>Try it yourself</h2>
+        <p>
+          The live demo is the groomer's check-in screen with the shop's real database running in your
+          browser tab: PostgreSQL compiled to WebAssembly, loaded with the project's schema and invented demo
+          dogs. Nothing is mocked. Every refusal you meet is the database's own, and nothing leaves your tab.
+          A reload starts over. Things to try:
+        </p>
+        <ul class="try-list">
+          <li><strong>Jaddi</strong>: rabies expired, so the groom is refused.</li>
+          <li><strong>A new walk-in client</strong> whose paperwork has no expiry date: no expiry, no record.</li>
+          <li><strong>Booking a regular client with a different groomer</strong>: it asks why.</li>
+          <li><strong>Recording a shave-down of a pelted coat</strong>: the coat assessment decides whether it is allowed.</li>
+        </ul>
+        <p>
+          The admin view, dog and paperwork photos, and the AI reader need a server, so they are left out of
+          the browser demo.
+        </p>
+        <div class="case-actions" style="justify-content: flex-start; margin: 2rem 0;">
+          <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Open live demo &rarr;</a>
+          <a href="https://github.com/jasonrwilliams-maker/dog-groomer-platform" class="btn btn--outline" target="_blank" rel="noopener">View source</a>
+        </div>
+
+        <h2>Built with</h2>
+        <p class="stack">PostgreSQL 16 · pgTAP · FastAPI · Next.js · Tailwind · Claude (vision) · Docker · PGlite</p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 JJW Insights Analytics LLC. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
