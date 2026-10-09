@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dog Grooming Platform — JJW Insights Analytics LLC</title>
-  <meta name="description" content="How a small grooming shop with no IT support can keep vaccination records, groom history and bookings in one place, built on a database that enforces the rules.">
+  <title>The Missing Date: Dog Grooming Platform — JJW Insights Analytics LLC</title>
+  <meta name="description" content="My dog's rabies shot had no expiry date. The story of what a small grooming shop should do about that, and the system built to answer it.">
   <link rel="stylesheet" href="../assets/css/style.css">
   <style>
     .case { max-width: 780px; }
@@ -32,7 +32,7 @@
     }
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin: 2rem 0;
     }
@@ -92,6 +92,8 @@
       margin-bottom: 0.4rem;
     }
     .case h2.case-first { margin-top: 0; }
+    .case .eyebrow { margin-top: 3.5rem; }
+    .case > .eyebrow:first-child { margin-top: 0; }
     .feature-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -135,15 +137,11 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h1 class="hero__tagline">A grooming shop's records, <span class="accent">finally in one place</span></h1>
+      <p class="eyebrow">A case study in one missing date</p>
+      <h1 class="hero__tagline">My dog's rabies shot <span class="accent">had no expiry date.</span></h1>
       <p class="hero__sub">
-        Vaccination certificates, groom history, allergies and bookings for a small business with no IT
-        department, on a screen the groomers actually want to use.
+        This is the story of what a small grooming shop should do about that, and the system I built to answer it.
       </p>
-      <div class="case-actions">
-        <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Try the live demo &rarr;</a>
-        <a href="#foundation" class="btn btn--outline">See what's underneath</a>
-      </div>
     </div>
   </section>
 
@@ -151,167 +149,110 @@
     <div class="container">
       <div class="case">
 
-        <p class="eyebrow">The problem</p>
-        <h2 class="case-first">Small shop, big responsibility, no data team</h2>
+        <p class="eyebrow">Chapter 1</p>
+        <h2 class="case-first">It started with Jaddi</h2>
         <p>
-          A neighborhood grooming shop handles dozens of dogs a week, and every one of them needs a current
-          rabies vaccination before it goes on the table. In a typical shop, that proof lives in a folder of
-          paper certificates and a few emailed PDFs. The dog's last haircut, its allergies, and the fact that it
-          hates having its back feet touched live in a groomer's memory or on an index card.
+          Jaddi gets groomed regularly, and like every dog at every grooming shop, he needs proof of a current
+          rabies vaccination before he goes on the table.
         </p>
         <p>
-          Nobody on staff is a database administrator, and nobody should have to be. But when the records are
-          scattered, an expired vaccine slips through, a new groomer doesn't know about the allergy, and a
-          regular's "the usual, please" means something different every visit.
+          The proof I had was an invoice from his vet. It named the rabies vaccine. It gave the date he got it.
+          And nowhere on the page did it say when that vaccination expires.
         </p>
-      </div>
-    </div>
-  </section>
+        <div class="callout">
+          <p>One question, and a small business has to answer it every day: <strong>is this dog covered?</strong></p>
+        </div>
 
-  <section class="section" style="padding-top: 0;">
-    <div class="container">
-      <div class="case">
-        <p class="eyebrow">What the shop gets</p>
-        <h2 class="case-first">One screen at the front counter</h2>
-        <p class="lead">
-          Pick who's grooming, find the dog, and see at a glance whether it's cleared for today, and why not if it isn't.
-        </p>
-      </div>
-      <div class="feature-grid">
-        <div class="value-card">
-          <h3 class="value-card__title">Cleared for today?</h3>
-          <p class="value-card__text">Every dog shows a green check when its vaccines are current. If rabies has expired, the groom can't start, and the screen says why.</p>
-        </div>
-        <div class="value-card">
-          <h3 class="value-card__title">Paperwork in seconds</h3>
-          <p class="value-card__text">Snap the owner's certificate with the counter tablet. AI fills in the dates, and a person checks them before anything is saved.</p>
-        </div>
-        <div class="value-card">
-          <h3 class="value-card__title">Every dog's history</h3>
-          <p class="value-card__text">The usual style, last cut zone by zone, coat condition, allergies, and handling notes, all on the dog's card for whoever is grooming.</p>
-        </div>
-        <div class="value-card">
-          <h3 class="value-card__title">Calendar and booking</h3>
-          <p class="value-card__text">A month of grooms and upcoming vaccine expiries, with the ones that stop a groom in red. Book a dog with a groomer's free times.</p>
-        </div>
-        <div class="value-card">
-          <h3 class="value-card__title">Easy to fix, safe to change</h3>
-          <p class="value-card__text">Typos are corrected right on the card, and every change keeps its before and after, so nothing quietly disappears.</p>
-        </div>
-        <div class="value-card">
-          <h3 class="value-card__title">Manager sign-off</h3>
-          <p class="value-card__text">Sensitive changes, like removing an allergy, wait for a manager, who unlocks Admin with a fingerprint or PIN.</p>
-        </div>
-      </div>
-      <div class="case">
-        <h2>Try it in your browser</h2>
+        <p class="eyebrow">Chapter 2</p>
+        <h2 class="case-first">The guess that becomes the record</h2>
         <p>
-          The demo runs the shop's real database inside your browser tab, loaded with invented demo dogs.
-          Nothing leaves your tab, and a reload starts over. A few things to try:
+          A rabies vaccine can be good for one year or three. Both are legal. Which one Jaddi got is printed
+          on the certificate, and the certificate is what the health department will want to see.
         </p>
-        <ul class="try-list">
-          <li><strong>Jaddi</strong>: rabies expired, so the groom is refused.</li>
-          <li><strong>A new walk-in client</strong> whose paperwork has no expiry date: no expiry, no record.</li>
-          <li><strong>Booking a regular client with a different groomer</strong>: it asks why.</li>
-          <li><strong>Recording a shave-down of a pelted coat</strong>: the coat assessment decides whether it is allowed.</li>
-        </ul>
-        <p class="stack">
-          Admin, photos, and the AI reader need a server, so they're left out of the browser demo.
-        </p>
-        <div class="case-actions" style="justify-content: flex-start; margin: 2rem 0 0;">
-          <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Try the live demo &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="foundation">
-    <div class="container">
-      <div class="turn">
-        <p>The screens are what people see.<br><span class="accent">The database is why they can trust them.</span></p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top: 0;">
-    <div class="container">
-      <div class="case">
-
-        <p class="eyebrow">The foundation</p>
-        <h2 class="case-first">The rules live in the database, not in anyone's memory</h2>
         <p>
-          A small shop's system is first in the chain. There's no data team downstream to catch a bad row, so
-          every rule a careful groomer would apply by judgment is written down as something the database itself
-          will refuse. No screen, script, or tired employee can get around it:
+          A grooming shop doesn't have a data team. It has a front counter, a folder of paper, and whoever is
+          working today. So somebody looks at the invoice, makes a reasonable guess, and writes it down. From that
+          moment on, the guess <em>is</em> the record. Nothing downstream will ever question it, because in a
+          small business there is no downstream.
+        </p>
+
+        <p class="eyebrow">Chapter 3</p>
+        <h2 class="case-first">So I asked an AI to read it</h2>
+        <p>
+          The obvious modern fix is to photograph the paperwork and let AI read it. So I tested that, field by
+          field, against answer keys I labelled by hand.
+        </p>
+        <div class="stats">
+          <div class="stat"><div class="stat__num">492 / 492</div><div class="stat__label">fields right on clean PDFs</div></div>
+          <div class="stat"><div class="stat__num">~15</div><div class="stat__label">confident dates invented from one phone photo</div></div>
+        </div>
+        <p>
+          On clean documents it was perfect. On a phone photo, which is what a busy counter actually produces,
+          it read a smudged <code>Jan 2?, 2027</code> as a crisp <code>Jan 29, 2027</code>. It did that about
+          fifteen times on one page, and a better prompt didn't fix it.
+        </p>
+        <p>
+          The AI wasn't failing. It was doing exactly what the person at the counter does: filling the gap with
+          a confident guess. It was just doing it faster.
+        </p>
+
+        <p class="eyebrow">Chapter 4</p>
+        <h2 class="case-first">A system that's allowed to say "I don't know"</h2>
+        <p>
+          So the rule I built everything around is simple: <strong>no expiry date, no record.</strong> Jaddi's
+          invoice is kept, what was read from it is kept, and no vaccination record is created. He stays
+          "not cleared" until the shop has the real certificate.
+        </p>
+        <p>
+          That rule doesn't live in a training manual or in the app's screens, where a busy day could route
+          around it. It lives in the database itself, alongside the shop's other judgment calls:
         </p>
         <ul>
-          <li>A dog cannot start a groom while a required vaccine is expired, missing, or disputed.</li>
-          <li>A vaccination record cannot be created from a document that does not state an expiry date.</li>
-          <li>A shave-down cannot be recorded without a coat assessment that justifies it.</li>
-          <li>A haircut cannot be recorded on a bath-only visit.</li>
-          <li>A reminder cannot be sent to an owner who opted out.</li>
+          <li>A dog can't start a groom while a required vaccine is expired, missing, or disputed.</li>
+          <li>A date the AI read becomes a record only after a person checks it.</li>
+          <li>A date nobody can read becomes a request to the owner for a better copy, not a guess.</li>
+          <li>A shave-down can't be recorded without a coat assessment that justifies it.</li>
+          <li>A reminder can't go to an owner who opted out.</li>
         </ul>
-        <p>
-          How strictly each rule is enforced (block, warn, or off) is itself a setting the owner can change,
-          and every change is recorded in the audit log.
+        <p class="stack">
+          37 rules in all, each one proven by a test that checks the database says no: 483 of them, all passing.
         </p>
 
-        <div class="stats">
-          <div class="stat"><div class="stat__num">37</div><div class="stat__label">business rules, each with its own error code</div></div>
-          <div class="stat"><div class="stat__num">483</div><div class="stat__label">tests proving each rule refuses what it should</div></div>
-          <div class="stat"><div class="stat__num">0</div><div class="stat__label">vaccine expiry dates invented</div></div>
-        </div>
-
-        <h2>The document that proves the point</h2>
-        <div class="callout">
-          <p>
-            A real vet invoice for Jaddi, the dog whose grooming routine started this project, names a
-            rabies vaccination and the date it was given. It contains no expiry date anywhere on the page.
-          </p>
-          <p>
-            The system keeps the document, keeps what was read from it, and creates <strong>no vaccination
-            record</strong>. It does not assume a one-year or three-year validity, because both are legal and
-            the certificate is what the health department will actually see.
-          </p>
-        </div>
+        <p class="eyebrow">Chapter 5</p>
+        <h2 class="case-first">Now you're at the counter</h2>
         <p>
-          A system that correctly declines to invent a date is worth more to a business than one that always
-          produces an answer.
+          The groomers never see any of that. They see one screen: who's grooming today, every dog with a green
+          check when it's cleared, its usual haircut, its allergies, the note that it hates having its back feet
+          touched, and a calendar of what's coming up.
         </p>
-
-        <h2>Why a person still checks the AI</h2>
         <p>
-          The AI that reads certificates was scored field by field against hand-labelled answer keys.
-          <em>Overconfident</em> means a smudged character returned as a clean, specific value: a blurry
-          <code>Jan 2?, 2027</code> read back as <code>Jan 29, 2027</code>.
+          The demo below is that screen, running the shop's real database in your browser with invented dogs, and
+          Jaddi. Try to book him in.
         </p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Documents</th><th class="num">Fields correct</th><th class="num">Invented</th><th class="num">Overconfident</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Clean PDFs and a screenshot</td><td class="num"><strong>492 / 492</strong></td><td class="num">0</td><td class="num">0</td></tr>
-              <tr><td>Phone photo of the same kind of page</td><td class="num">141 / 159</td><td class="num">2</td><td class="num">14</td></tr>
-            </tbody>
-          </table>
+        <ul class="try-list">
+          <li><strong>Jaddi</strong>: his rabies has expired. See what the counter tells you.</li>
+          <li><strong>A new walk-in</strong> whose paperwork has no expiry date. Try to save the shot.</li>
+          <li><strong>A regular client booked with a different groomer</strong>: it asks why.</li>
+        </ul>
+        <div class="case-actions" style="justify-content: flex-start; margin: 2rem 0;">
+          <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Step up to the counter &rarr;</a>
         </div>
-        <p>
-          On clean pages it's perfect. On a phone photo, which is what a busy counter actually produces, it
-          returns about fifteen confident dates the page doesn't support, and a better prompt didn't fix it.
-          So the database doesn't trust a date just because one is present. A line becomes a vaccination
-          record only after a person has checked it, and a date nobody can read becomes a request to the
-          owner for a better copy, not a guess.
-        </p>
-
-        <h2>Built with</h2>
-        <p class="stack">PostgreSQL 16 · pgTAP · FastAPI · Next.js · Tailwind · Claude (vision) · Docker · PGlite</p>
-        <div class="case-actions" style="justify-content: flex-start; margin: 2rem 0 0;">
-          <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Try the live demo &rarr;</a>
-          <a href="https://github.com/jasonrwilliams-maker/dog-groomer-platform" class="btn btn--outline" target="_blank" rel="noopener">View source</a>
-        </div>
+        <p class="stack">Nothing leaves your browser, and a reload starts over. Admin, photos, and the AI reader need a server, so they're left out of the demo.</p>
 
       </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="turn">
+        <p>Anyone can demo a clean extraction.<br><span class="accent">The harder story is a system that knows what it doesn't know.</span></p>
+      </div>
+      <div class="case-actions" style="margin-top: 2.5rem;">
+        <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" class="btn btn--primary" target="_blank" rel="noopener">Try the live demo &rarr;</a>
+        <a href="https://github.com/jasonrwilliams-maker/dog-groomer-platform" class="btn btn--outline" target="_blank" rel="noopener">Read the source</a>
+      </div>
+      <p class="stack" style="text-align: center; margin-top: 2rem;">PostgreSQL 16 · pgTAP · FastAPI · Next.js · Tailwind · Claude (vision) · Docker · PGlite</p>
     </div>
   </section>
 
