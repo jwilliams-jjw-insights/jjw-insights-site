@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Missing Date: Dog Grooming Platform — JJW Insights Analytics LLC</title>
-  <meta name="description" content="My dog's rabies shot had no expiry date. The story of what a small grooming shop should do about that, and the system built to answer it.">
+  <meta name="description" content="Jaddi's rabies shot had no expiry date. The story of what a small grooming shop should do about that, and the system built to answer it.">
   <link rel="stylesheet" href="../assets/css/style.css">
   <style>
     .case { max-width: 780px; }
@@ -114,6 +114,23 @@
       line-height: 1.3;
     }
     .turn .accent { color: var(--color-gold); }
+    .shot { margin: 2rem 0; }
+    .shot img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(100,104,218,0.25);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .shot a:hover img { transform: translateY(-4px); border-color: var(--color-gold); }
+    .shot figcaption {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+      margin-top: 0.8rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -138,9 +155,9 @@
   <section class="hero">
     <div class="container">
       <p class="eyebrow">A case study in one missing date</p>
-      <h1 class="hero__tagline">My dog's rabies shot <span class="accent">had no expiry date.</span></h1>
+      <h1 class="hero__tagline">Jaddi's rabies shot <span class="accent">had no expiry date.</span></h1>
       <p class="hero__sub">
-        This is the story of what a small grooming shop should do about that, and the system I built to answer it.
+        This is the story of what a small grooming shop should do about that, and the system we built to answer it.
       </p>
     </div>
   </section>
@@ -152,11 +169,11 @@
         <p class="eyebrow">Chapter 1</p>
         <h2 class="case-first">It started with Jaddi</h2>
         <p>
-          Jaddi gets groomed regularly, and like every dog at every grooming shop, he needs proof of a current
+          Jaddi is our founder's Shih Tzu. He gets groomed regularly, and like every dog at every grooming shop, he needs proof of a current
           rabies vaccination before he goes on the table.
         </p>
         <p>
-          The proof I had was an invoice from his vet. It named the rabies vaccine. It gave the date he got it.
+          The proof we had was an invoice from his vet. It named the rabies vaccine. It gave the date he got it.
           And nowhere on the page did it say when that vaccination expires.
         </p>
         <div class="callout">
@@ -177,10 +194,10 @@
         </p>
 
         <p class="eyebrow">Chapter 3</p>
-        <h2 class="case-first">So I asked an AI to read it</h2>
+        <h2 class="case-first">So we asked an AI to read it</h2>
         <p>
-          The obvious modern fix is to photograph the paperwork and let AI read it. So I tested that, field by
-          field, against answer keys I labelled by hand.
+          The obvious modern fix is to photograph the paperwork and let AI read it. So we tested that, field by
+          field, against answer keys we labelled by hand.
         </p>
         <div class="stats">
           <div class="stat"><div class="stat__num">492 / 492</div><div class="stat__label">fields right on clean PDFs</div></div>
@@ -199,7 +216,7 @@
         <p class="eyebrow">Chapter 4</p>
         <h2 class="case-first">A system that's allowed to say "I don't know"</h2>
         <p>
-          So the rule I built everything around is simple: <strong>no expiry date, no record.</strong> Jaddi's
+          So the rule we built everything around is simple: <strong>no expiry date, no record.</strong> Jaddi's
           invoice is kept, what was read from it is kept, and no vaccination record is created. He stays
           "not cleared" until the shop has the real certificate.
         </p>
@@ -225,8 +242,15 @@
           check when it's cleared, its usual haircut, its allergies, the note that it hates having its back feet
           touched, and a calendar of what's coming up.
         </p>
+        <figure class="shot">
+          <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/" target="_blank" rel="noopener">
+            <img src="../assets/images/dog-groomer-checkin.png" width="1408" height="987" loading="lazy"
+                 alt="The shop's check-in screen showing Jaddi's card: Can't groom today. Rabies: expired. Ask the owner for a current certificate.">
+          </a>
+          <figcaption>What the counter says about Jaddi. No guess, no exception, and a clear next step.</figcaption>
+        </figure>
         <p>
-          The demo below is that screen, running the shop's real database in your browser with invented dogs, and
+          The demo is that screen, running the shop's real database in your browser with invented dogs, and
           Jaddi. Try to book him in.
         </p>
         <ul class="try-list">
