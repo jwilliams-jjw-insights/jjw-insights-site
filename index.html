@@ -43,7 +43,7 @@
   <nav class="site-nav">
     <div class="container">
       <a href="index.html">
-        <img src="assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
+        <img src="assets/images/jjw-logo.png" alt="JJW Insights Analytics" class="site-nav__logo">
       </a>
       <ul class="site-nav__links">
         <li><a href="index.html" class="active">Home</a></li>
@@ -105,67 +105,68 @@
     </div>
   </section>
 
-  <!-- Featured Work Preview -->
-  <section class="section" style="background: var(--color-bg-card);">
+  <!-- Featured Work -->
+  <section class="section section--alt">
     <div class="container">
       <h2 class="section__title">Selected Work</h2>
       <p class="section__subtitle">
-        Interactive dashboards and data products — built to be used, not just presented.
+        Every project starts with a person and a problem. Here's one of them.
       </p>
+
+      <article class="story-feature">
+        <a href="portfolio/dog-groomer-platform.html" class="story-feature__media"><img src="assets/images/dog-groomer-checkin-card.png" alt="The grooming shop's check-in screen: Jaddi can't be groomed today because his rabies has expired."></a>
+        <div>
+          <p class="kicker">Featured story</p>
+          <h3 class="story-feature__title"><a href="portfolio/dog-groomer-platform.html">The Missing Date</a></h3>
+          <p class="story-feature__desc">
+            Jaddi's rabies shot came with an invoice, a date, and no expiry. A small grooming shop has to decide whether he's covered, and so does the AI it might use to read the paperwork. This is the story of a system built to say "I don't know" instead of guessing.
+          </p>
+          <a href="portfolio/dog-groomer-platform.html" class="portfolio-card__link">Read the story &rarr;</a>
+        </div>
+      </article>
+
       <div class="portfolio-grid">
 
-        <!-- NASA Earthdata Granule Guide -->
         <div class="portfolio-card">
-          <a href="portfolio.html" style="display: block;"><img src="assets/images/granule-guide-card.png" class="portfolio-card__img" alt="The opening of one granule walkthrough, headed &ldquo;You downloaded this. Here is what it is.&rdquo;"></a>
+          <a href="portfolio/dog-groomer-sop.html" style="display: block;"><img src="assets/images/dog-groomer-sop-card.png" class="portfolio-card__img" alt="The shop's paperwork screen, telling the groomer that a shot with no expiry date can't be recorded."></a>
+          <div class="portfolio-card__body">
+            <h3 class="portfolio-card__title">The Day We're Not There</h3>
+            <p class="portfolio-card__desc">
+              The sequel: three manuals a new hire can follow on their first morning, written so they can't quietly fall out of date.
+            </p>
+            <a href="portfolio/dog-groomer-sop.html" class="portfolio-card__link">Read the story &rarr;</a>
+          </div>
+        </div>
+
+        <div class="portfolio-card">
+          <a href="portfolio/imerg-granule-guide.html" style="display: block;"><img src="assets/images/granule-guide-card.png" class="portfolio-card__img" alt="The opening of one granule walkthrough, headed &ldquo;You downloaded this. Here is what it is.&rdquo;"></a>
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">NASA Earthdata Granule Guide</h3>
             <p class="portfolio-card__desc">
-              A Python engine that turns a NASA satellite data file into a self-explaining, interactive guide — filename decoding, processing-level ladder, GIS pitfalls — with every claim marked as evidence or inference.
+              You download a satellite file and your map comes out quietly wrong. We built a guide that explains the file to you, and shows exactly where it will mislead.
             </p>
-            <a href="portfolio.html" class="portfolio-card__link">View project &rarr;</a>
+            <a href="portfolio/imerg-granule-guide.html" class="portfolio-card__link">Open the guide &rarr;</a>
           </div>
         </div>
 
-        <!-- ABA Medicaid Dashboard -->
         <div class="portfolio-card">
-          <a href="portfolio.html" style="display: block;"><img src="assets/images/aba-dashboard-card.png" class="portfolio-card__img" alt="The ABA dashboard with Maryland selected, showing which provider roles can bill and supervise."></a>
+          <a href="portfolio/aba_dashboard.html" style="display: block;"><img src="assets/images/aba-dashboard-card.png" class="portfolio-card__img" alt="The ABA dashboard with Maryland selected, showing which provider roles can bill and supervise."></a>
           <div class="portfolio-card__body">
-            <h3 class="portfolio-card__title">ABA Medicaid Reimbursement Dashboard</h3>
+            <h3 class="portfolio-card__title">ABA Medicaid Reimbursement</h3>
             <p class="portfolio-card__desc">
-              A multi-state reference tool mapping provider roles, reimbursement rates, qualification pathways, and regulatory models for Applied Behavior Analysis Medicaid coverage across the Mid-Atlantic region.
+              Five Medicaid programs, five different answers to who can deliver and bill for behavior therapy. One map that puts them side by side.
             </p>
-            <a href="portfolio.html" class="portfolio-card__link">View project &rarr;</a>
-          </div>
-        </div>
-
-        <!-- CMMC Dashboard -->
-        <div class="portfolio-card">
-          <a href="portfolio.html" style="display: block;"><img src="assets/images/cmmc-dashboard-card.png" class="portfolio-card__img" alt="The CMMC dashboard browsing the Access Control domain."></a>
-          <div class="portfolio-card__body">
-            <h3 class="portfolio-card__title">CMMC Level 1 Assessment Dashboard</h3>
-            <p class="portfolio-card__desc">
-              An interactive compliance tool for navigating Cybersecurity Maturity Model Certification requirements — 58 objectives, 15 requirements, 6 domains — with AI summaries and policy templates.
-            </p>
-            <a href="portfolio.html" class="portfolio-card__link">View project &rarr;</a>
-          </div>
-        </div>
-
-        <!-- DC Property Tax Map -->
-        <div class="portfolio-card">
-          <a href="portfolio.html" style="display: block;"><img src="assets/images/dc-property-tax-card.png" class="portfolio-card__img" alt="A parcel-level map of Washington, DC, shaded by effective property tax rate."></a>
-          <div class="portfolio-card__body">
-            <h3 class="portfolio-card__title">DC Property Tax Geospatial Analysis</h3>
-            <p class="portfolio-card__desc">
-              An interactive Leaflet-based choropleth map of Washington, DC property tax parameters — annual tax, assessment value, and effective tax rates — at the parcel level.
-            </p>
-            <a href="portfolio.html" class="portfolio-card__link">View project &rarr;</a>
+            <a href="portfolio/aba_dashboard.html" class="portfolio-card__link">Open the dashboard &rarr;</a>
           </div>
         </div>
 
       </div>
+
+      <p class="section__more">
+        <a href="portfolio.html" class="btn btn--outline">See All Work</a>
+      </p>
     </div>
   </section>
-
   <!-- Bottom CTA -->
   <section class="cta-section">
     <div class="container">

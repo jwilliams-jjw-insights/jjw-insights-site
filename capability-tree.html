@@ -1,505 +1,566 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JJW Insights Analytics — Capability Statement</title>
-<link rel="stylesheet" href="assets/css/style.css">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --periwinkle: #6468DA;
-    --periwinkle-dark: #4a4eb8;
-    --periwinkle-light: #8a8de6;
-    --periwinkle-pale: rgba(100,104,218,0.12);
-    --gold: #FBDA18;
-    --gold-dark: #d4b810;
-    --gold-dim: rgba(251,218,24,0.15);
-    --bg: #0e0f1a;
-    --bg-card: #1a1b2e;
-    --bg-card-hover: #22243a;
-    --text: #e0e0e8;
-    --text-muted: #9a9ab0;
-    --text-heading: #ffffff;
-    --font-heading: 'Lato', sans-serif;
-    --font-body: 'Source Serif 4', Georgia, serif;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capabilities — JJW Insights Analytics LLC</title>
+  <meta name="description" content="What JJW Insights Analytics delivers, how we work, and the federal and research experience it all grows from.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    :root {
+      --leaf: #5cbf73;
+      --bark: #9a7b6f;
+      --root: #c9a227;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
 
-    /* tree palette */
-    --leaf: #4CAF50;
-    --leaf-dark: #2E7D32;
-    --leaf-glow: rgba(76,175,80,0.15);
-    --bark: #8D6E63;
-    --bark-dark: #5D4037;
-    --root: #A1887F;
-    --root-glow: rgba(161,136,127,0.12);
-  }
+    /* ── Header ── */
+    .cap-hero {
+      padding: 5rem 0 1rem;
+      text-align: center;
+      background: radial-gradient(ellipse 55% 80% at 50% 0%, rgba(92,191,115,0.10) 0%, transparent 100%);
+    }
+    .cap-hero h1 {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: clamp(2rem, 4.6vw, 3rem);
+      line-height: 1.15;
+      color: var(--color-text-heading);
+      max-width: 760px;
+      margin: 0 auto 1.2rem;
+    }
+    .cap-hero h1 .accent { color: var(--color-gold); }
+    .cap-hero p:not(.kicker) {
+      color: var(--color-text-muted);
+      max-width: 640px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+    /* ── The tree: one picture, with the content hanging off it ── */
+    .tree-story {
+      position: relative;
+      padding: 1rem 0 4rem;
+    }
+    .tree-svg {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .tier { position: relative; z-index: 1; }
+    .tier__grid {
+      display: grid;
+      grid-template-columns: 1fr 160px 1fr;
+      row-gap: 2rem;
+      align-items: start;
+    }
+    .side-l { grid-column: 1; }
+    .side-r { grid-column: 3; }
 
-  body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    font-size: 17px;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-  }
+    .tier__head .kicker { display: inline-flex; align-items: center; gap: 0.55rem; }
+    .tier__head .kicker::before {
+      content: ''; width: 9px; height: 9px; border-radius: 50%; background: currentColor;
+    }
+    .tier--canopy .kicker { color: var(--leaf); }
+    .tier--trunk  .kicker { color: var(--color-periwinkle-light); }
+    .tier--roots  .kicker { color: var(--root); }
+    .tier__head h2 {
+      font-family: var(--font-heading); font-weight: 900;
+      font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2;
+      color: var(--color-text-heading); margin-bottom: 0.7rem;
+    }
+    .tier__head p:not(.kicker) { color: var(--color-text-muted); }
+    .tier__head--center { text-align: center; max-width: 620px; margin: 0 auto 2.5rem; }
+    .tier__head.side-l { text-align: right; padding-top: 0.6rem; }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 50% 30%, var(--leaf-glow) 0%, transparent 50%),
-      radial-gradient(ellipse at 30% 80%, var(--root-glow) 0%, transparent 40%),
-      radial-gradient(ellipse at 70% 60%, var(--periwinkle-pale) 0%, transparent 45%);
-    pointer-events: none;
-    z-index: 0;
-  }
+    .tier--canopy { padding: 2rem 0 0; }
+    .tier--trunk  { padding: 5rem 0 2rem; }
+    .ground { position: relative; height: 5rem; }
+    .ground span {
+      position: absolute; right: 0; top: 50%; transform: translateY(-140%);
+      font-family: var(--font-heading); font-weight: 700; font-size: 0.68rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text-muted);
+    }
+    .tier--roots { padding: 1rem 0 0; }
 
-  .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem; }
+    /* ── Capability cards ── */
+    .cap {
+      position: relative;
+      background: var(--color-bg-card);
+      border: 1px solid rgba(100,104,218,0.1);
+      border-radius: 8px;
+      padding: 1.3rem 1.5rem 1.2rem;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    /* The coloured edge faces the trunk */
+    .cap::before {
+      content: ''; position: absolute; left: 0; top: 1.2rem; bottom: 1.2rem;
+      width: 3px; border-radius: 0 3px 3px 0;
+    }
+    .side-l.cap::before { left: auto; right: 0; border-radius: 3px 0 0 3px; }
+    .tier--canopy .cap::before { background: var(--leaf); }
+    .tier--trunk  .cap::before { background: var(--color-periwinkle-light); }
+    .tier--roots  .cap::before { background: var(--root); }
+    .cap.lit { border-color: rgba(251,218,24,0.45); background: var(--color-bg-card-hover); }
+    .cap__title {
+      font-family: var(--font-heading); font-weight: 900; font-size: 1.1rem;
+      color: var(--color-text-heading); line-height: 1.3;
+    }
+    .cap__sub { color: var(--color-gold); font-size: 0.92rem; font-style: italic; margin: 0.15rem 0 0.7rem; }
+    .cap__list { list-style: none; }
+    .cap__list li {
+      position: relative; padding-left: 1.1rem; margin-bottom: 0.35rem;
+      font-size: 0.92rem; line-height: 1.6; color: var(--color-text-muted);
+    }
+    .cap__list li::before {
+      content: ''; position: absolute; left: 0; top: 0.7em;
+      width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.25);
+    }
 
-  /* ── Header ── */
-  .header { text-align: center; padding: 3rem 0 1.5rem; }
-  .logo { height: 120px; width: auto; margin: 0 auto 0.75rem; display: block; }
-  .tagline {
-    font-family: var(--font-heading);
-    font-weight: 300;
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  .intro {
-    max-width: 680px; margin: 0 auto;
-    font-size: 0.95rem; color: var(--text-muted);
-    line-height: 1.75;
-  }
+    /* ── Tree strokes (drawn by the script below) ── */
+    .tp { fill: none; stroke-linecap: round; transition: stroke 0.2s ease; }
+    .tp--trunk  { stroke: var(--bark); }
+    .tp--branch { stroke: var(--bark); stroke-width: 4; opacity: 0.9; }
+    .tp--root   { stroke: var(--root); stroke-width: 3; opacity: 0.75; }
+    .tp--tap    { stroke: var(--root); opacity: 0.8; }
+    .tp--ground { stroke: rgba(255,255,255,0.14); stroke-width: 1.5; stroke-dasharray: 4 8; }
+    .tp.lit     { stroke: var(--color-gold); opacity: 1; }
+    .tn { transition: opacity 0.3s ease, fill 0.2s ease; stroke: var(--color-bg); stroke-width: 3; }
+    .tn--canopy { fill: var(--leaf); }
+    .tn--trunk  { fill: var(--color-periwinkle-light); }
+    .tn--roots  { fill: var(--root); }
+    .tn.lit     { fill: var(--color-gold); }
+    .tip { fill: var(--color-gold); transition: opacity 0.3s ease; }
+    .leaf { transform-box: fill-box; transform-origin: center; }
 
-  /* ── Controls ── */
-  .controls { display: flex; justify-content: flex-end; margin: 1.5rem 0 0.5rem; opacity:0; animation: fadeIn .6s .3s forwards; }
-  .expand-btn {
-    font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--periwinkle-light); background: transparent;
-    border: 1px solid rgba(100,104,218,0.25); border-radius: 4px;
-    padding: 0.45rem 1.2rem; cursor: pointer;
-    transition: all 0.25s;
-  }
-  .expand-btn:hover { background: var(--periwinkle); color: #fff; }
+    /* Growth, only when the script is running */
+    .js .grow { stroke-dashoffset: var(--len); stroke-dasharray: var(--len); }
+    .js .grow.on {
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.7s var(--ease-out) var(--d, 0s), stroke 0.2s ease;
+    }
+    .js .tn { opacity: 0; }
+    .js .tn.on { opacity: 1; transition-delay: var(--d, 0s); }
+    .js .leaf { opacity: 0; transform: scale(0.92); }
+    .js .leaf.on {
+      opacity: 1; transform: none;
+      transition: opacity 0.8s ease var(--d, 0s), transform 0.9s var(--ease-out) var(--d, 0s);
+    }
+    .instant * { transition: none !important; }
 
-  /* ── Tree Structure ── */
-  .tree { position: relative; }
+    /* Cards rise in as they scroll into view */
+    .js .cap { opacity: 0; transform: translateY(12px); }
+    .js .cap.in {
+      opacity: 1; transform: none;
+      transition: opacity 0.5s ease var(--d, 0s), transform 0.5s var(--ease-out) var(--d, 0s),
+                  border-color 0.2s ease, background-color 0.2s ease;
+    }
 
-  /* SVG trunk connector */
-  .trunk-svg { display: flex; justify-content: center; position: relative; z-index: 1; }
-  .trunk-svg svg { width: 4px; overflow: visible; }
+    /* ── Proof and next step ── */
+    .proof { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem; }
+    .panel {
+      background: var(--color-bg); border: 1px solid rgba(100,104,218,0.12);
+      border-radius: 10px; padding: 1.8rem 2rem;
+    }
+    .panel h3 {
+      font-family: var(--font-heading); font-weight: 900; font-size: 1.2rem;
+      color: var(--color-text-heading); margin-bottom: 1rem;
+    }
+    .panel ul { list-style: none; }
+    .panel li {
+      position: relative; padding-left: 1.2rem; margin-bottom: 0.7rem;
+      font-size: 0.95rem; color: var(--color-text-muted);
+    }
+    .panel li::before {
+      content: ''; position: absolute; left: 0; top: 0.65em;
+      width: 6px; height: 6px; border-radius: 50%; background: var(--color-gold);
+    }
+    .panel p { color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 1.3rem; }
+    .panel .certs { font-size: 0.82rem; margin: 1.3rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }
 
-  .trunk-line {
-    stroke: var(--bark);
-    stroke-width: 4;
-    stroke-linecap: round;
-  }
-  .trunk-line-glow {
-    stroke: var(--bark);
-    stroke-width: 12;
-    stroke-linecap: round;
-    opacity: 0.08;
-  }
-
-  /* Branch lines from trunk to cards */
-  .branch-container {
-    display: flex; justify-content: center; padding: 0;
-    position: relative; z-index: 1;
-  }
-  .branch-line {
-    width: 2px; height: 28px;
-    position: relative; overflow: hidden;
-  }
-  .branch-line::after {
-    content:''; position:absolute; inset:0;
-    transform-origin: top; animation: growDown 0.7s ease forwards;
-  }
-  .branch-canopy .branch-line::after { background: linear-gradient(var(--leaf), var(--bark)); animation-delay:.4s; }
-  .branch-roots .branch-line::after { background: linear-gradient(var(--bark), var(--root)); animation-delay:.7s; }
-
-  /* ── Tier ── */
-  .tier { margin-bottom: 0; position: relative; }
-  .tier-label {
-    font-family: var(--font-heading); font-weight: 700;
-    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-    text-align: center; margin-bottom: 0.6rem;
-    opacity: 0; animation: fadeIn 0.5s ease forwards;
-  }
-  .tier-canopy .tier-label { color: var(--leaf); animation-delay: .15s; }
-  .tier-trunk .tier-label  { color: var(--periwinkle-light); animation-delay: .45s; }
-  .tier-roots .tier-label  { color: var(--gold-dark); animation-delay: .75s; }
-
-  .tier-grid {
-    display: grid; gap: 1rem;
-    opacity: 0; animation: riseIn 0.6s ease forwards;
-  }
-  .tier-canopy .tier-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); animation-delay: .25s; }
-  .tier-trunk .tier-grid  { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); animation-delay: .55s; }
-  .tier-roots .tier-grid  { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); animation-delay: .85s; }
-
-  /* ── Card ── */
-  .card {
-    background: var(--bg-card);
-    border: 1px solid rgba(100,104,218,0.1);
-    border-radius: 8px; padding: 1.2rem 1.3rem;
-    cursor: pointer; position: relative; overflow: hidden;
-    transition: border-color .3s, transform .3s, box-shadow .3s;
-  }
-  .card::before {
-    content:''; position:absolute; top:0; left:0;
-    width: 3px; height:100%; transition: width .25s;
-  }
-  .card:hover { border-color: var(--periwinkle); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
-  .card:hover::before { width: 5px; }
-  .tier-canopy .card::before { background: var(--leaf); }
-  .tier-trunk .card::before { background: var(--periwinkle); }
-  .tier-roots .card::before { background: var(--gold-dark); }
-
-  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: .6rem; }
-  .card-icon { font-size: 1.2rem; flex-shrink:0; line-height:1; margin-top:2px; }
-  .card-titles { flex:1; }
-  .card-title { font-family: var(--font-heading); font-weight: 900; font-size: 1rem; color: var(--text-heading); line-height:1.3; }
-  .card-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: .15rem; line-height:1.4; }
-  .card-toggle {
-    flex-shrink:0; width:20px; height:20px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:.7rem; color: var(--text-muted); background: rgba(255,255,255,0.04);
-    transition: all .25s;
-  }
-  .card:hover .card-toggle { background: rgba(255,255,255,0.08); }
-  .card.open .card-toggle { transform: rotate(180deg); }
-
-  .card-body {
-    max-height: 0; overflow: hidden; opacity: 0;
-    transition: max-height .4s cubic-bezier(.25,.46,.45,.94), opacity .3s;
-  }
-  .card.open .card-body { max-height: 400px; opacity: 1; }
-  .card-body-inner {
-    padding-top: .85rem; margin-top: .7rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-  .detail {
-    display: flex; align-items: flex-start; gap: .55rem;
-    margin-bottom: .5rem; font-size: .85rem; line-height: 1.55; color: var(--text-muted);
-  }
-  .dot { flex-shrink:0; width:5px; height:5px; border-radius:50%; margin-top:.5em; }
-  .tier-canopy .dot { background: var(--leaf); }
-  .tier-trunk .dot  { background: var(--periwinkle-light); }
-  .tier-roots .dot  { background: var(--gold); }
-
-  /* ── Bottom Panels ── */
-  .bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; opacity:0; animation: riseIn .6s 1s forwards; }
-  .panel {
-    background: var(--bg-card); border: 1px solid rgba(100,104,218,0.1);
-    border-radius: 8px; padding: 1.5rem 1.75rem;
-  }
-  .panel h3 {
-    font-family: var(--font-heading); font-weight: 900; font-size: 1.05rem;
-    color: var(--text-heading); margin-bottom: .85rem;
-  }
-  .perf-item { display: flex; align-items: flex-start; gap: .55rem; margin-bottom: .55rem; font-size: .85rem; line-height: 1.55; color: var(--text-muted); }
-  .perf-dot { flex-shrink:0; width:6px; height:6px; border-radius:50%; background: var(--gold); margin-top:.45em; }
-  .contact-item { display: flex; align-items: center; gap: .7rem; margin-bottom: .55rem; font-size: .88rem; color: var(--text-muted); }
-  .contact-icon { flex-shrink:0; width:26px; height:26px; border-radius:6px; background: rgba(100,104,218,0.15); display:flex; align-items:center; justify-content:center; font-size:.75rem; color: var(--periwinkle-light); }
-  .contact-item a { color: var(--periwinkle-light); text-decoration: none; transition: color .2s; }
-  .contact-item a:hover { color: var(--gold); }
-  .certs { margin-top: .85rem; padding-top: .7rem; border-top: 1px solid rgba(255,255,255,0.06); font-size: .8rem; color: var(--text-muted); }
-
-  /* ── Footer ── */
-  .footer {
-    text-align: center; margin-top: 3rem; padding-top: 1.5rem;
-    border-top: 1px solid rgba(100,104,218,0.15);
-    font-size: .8rem; color: var(--text-muted);
-    opacity: 0; animation: fadeIn .5s 1.2s forwards;
-  }
-  .footer a { color: var(--text-muted); text-decoration: none; }
-  .footer a:hover { color: var(--gold); }
-
-  /* ── Animations ── */
-  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-  @keyframes riseIn { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
-  @keyframes growDown { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-
-  /* ── Responsive ── */
-  @media (max-width: 720px) {
-    .page { padding: 0 1.25rem 3rem; }
-    .tier-grid { grid-template-columns: 1fr !important; }
-    .bottom { grid-template-columns: 1fr; }
-    .logo { height: 60px; }
-  }
-</style>
+    /* ── Phones: the trunk runs down the left edge, cards to its right ── */
+    @media (max-width: 760px) {
+      .tree-story { padding-left: 2.4rem; }
+      .tier__grid { grid-template-columns: 1fr; row-gap: 1.25rem; }
+      .side-l, .side-r { grid-column: 1; }
+      .tier__head--center, .tier__head.side-l { text-align: left; margin-left: 0; }
+      .side-l.cap::before { left: 0; right: auto; border-radius: 0 3px 3px 0; }
+      .tier--trunk { padding-top: 3.5rem; }
+      .ground { height: 4rem; }
+      .proof { grid-template-columns: 1fr; }
+      .cap-hero { padding: 3rem 0 0.5rem; }
+    }
+  </style>
 </head>
 <body>
-  
+
   <!-- Navigation -->
   <nav class="site-nav">
     <div class="container">
       <a href="index.html">
-        <img src="assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
+        <img src="assets/images/jjw-logo.png" alt="JJW Insights Analytics" class="site-nav__logo">
       </a>
       <ul class="site-nav__links">
-        <li><a href="index.html">Home </a></li>
-        <li><a href="capability-tree.html" class="active"> Capabilities </a></li>
-        <li><a href="portfolio.html"> Portfolio </a></li>
-        <li><a href="about.html"> About </a></li>
-        <li><a href="contact.html"> Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="capability-tree.html" class="active">Capabilities</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </div>
   </nav>
 
-<div class="page">
-
   <!-- Header -->
-  <header class="header">
-    <img class="logo" src="assets/images/JJW_Logo.svg" alt="JJW Insights Analytics LLC">
-    <div class="tagline">Grounded Expertise · Actionable Intelligence</div>
-    <p class="intro">
-      Platform-agnostic data consulting rooted in a decade of federal program delivery —
-      from EPA water systems to FEMA preparedness dashboards.
-      We turn fragmented data into governed pipelines, clear dashboards, and narratives that move decisions.
-    </p>
+  <header class="cap-hero">
+    <div class="container">
+      <p class="kicker">Capabilities</p>
+      <h1>Everything we deliver grows from <span class="accent">what's underneath it.</span></h1>
+      <p>
+        Platform-agnostic data consulting rooted in a decade of federal program delivery, from EPA water systems to FEMA preparedness dashboards. Scroll down the tree, from what you get, through how we work, to why it holds.
+      </p>
+    </div>
   </header>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button class="expand-btn" id="toggleBtn" onclick="toggleAll()">Expand All</button>
+  <div class="container">
+    <div class="tree-story" id="story">
+      <svg class="tree-svg" id="tree" aria-hidden="true"></svg>
+
+      <section class="tier tier--canopy" aria-labelledby="ch-canopy">
+        <header class="tier__head tier__head--center">
+        <p class="kicker">The canopy &middot; What you get</p>
+        <h2 id="ch-canopy">The part you can see</h2>
+        <p class="chapter__lead">Dashboards, pipelines, structure and stories: the things our clients actually hold in their hands when the work is done.</p>
+        </header>
+        <div class="tier__grid">
+        <article class="cap side-l" id="cap-dashboards">
+          <h3 class="cap__title">Interactive Dashboards</h3>
+          <p class="cap__sub">Decision-ready reporting</p>
+          <ul class="cap__list">
+            <li>Power BI and web-based dashboards built for executive and program-level audiences</li>
+            <li>Change detection and snapshot comparison across reporting periods</li>
+            <li>Colorblind-accessible design with stakeholder-specific views</li>
+          </ul>
+        </article>
+        <article class="cap side-r" id="cap-pipelines">
+          <h3 class="cap__title">Governed Data Pipelines</h3>
+          <p class="cap__sub">From messy sources to a single source of truth</p>
+          <ul class="cap__list">
+            <li>Power Query / M-language pipelines with deduplication, fuzzy matching, and normalization</li>
+            <li>Cross-platform integration across federal data ecosystems</li>
+            <li>Automated ingestion from SharePoint, APIs, and flat file sources</li>
+          </ul>
+        </article>
+        <article class="cap side-l" id="cap-architecture">
+          <h3 class="cap__title">Data Architecture &amp; Governance</h3>
+          <p class="cap__sub">Structure that scales</p>
+          <ul class="cap__list">
+            <li>Workbook and tracker design with embedded QA workflows</li>
+            <li>Consolidation of parallel data entry into single-source systems</li>
+            <li>Metadata schema design and classification pipelines</li>
+          </ul>
+        </article>
+        <article class="cap side-r" id="cap-narratives">
+          <h3 class="cap__title">Data-Driven Narratives</h3>
+          <p class="cap__sub">Translating analysis into action</p>
+          <ul class="cap__list">
+            <li>Stakeholder-ready reports with embedded visualizations</li>
+            <li>Exploratory analysis with interpretive hypotheses and recommendations</li>
+            <li>Technical documentation and SOPs for reproducible workflows</li>
+          </ul>
+        </article>
+        </div>
+      </section>
+
+      <section class="tier tier--trunk" aria-labelledby="ch-trunk">
+        <div class="tier__grid">
+        <header class="tier__head side-l">
+        <p class="kicker">The trunk &middot; How we work</p>
+        <h2 id="ch-trunk">How the work gets done</h2>
+        <p class="chapter__lead">Everything in the canopy passes through the same way of working: pick the right tool, show the work as it happens, and respect the rules of the room.</p>
+        </header>
+        <article class="cap side-r" id="cap-agnostic">
+          <h3 class="cap__title">Platform-Agnostic Problem Solving</h3>
+          <p class="cap__sub">The right tool for the job, not the trendy one</p>
+          <ul class="cap__list">
+            <li>Proficient across BI, statistical, GIS, and cloud environments</li>
+            <li>AI-augmented workflows where appropriate, traditional methods where they're better</li>
+            <li>No vendor lock-in; solutions designed for portability and handoff</li>
+          </ul>
+        </article>
+        <article class="cap side-l" id="cap-iterative">
+          <h3 class="cap__title">Iterative &amp; Transparent Process</h3>
+          <p class="cap__sub">Clients see the work, not just the output</p>
+          <ul class="cap__list">
+            <li>Incremental delivery with review checkpoints, no black boxes</li>
+            <li>Documentation-first approach ensures institutional knowledge transfer</li>
+            <li>Designed for maintainability by non-technical staff after the engagement ends</li>
+          </ul>
+        </article>
+        <article class="cap side-r" id="cap-compliance">
+          <h3 class="cap__title">Compliance-Aware Delivery</h3>
+          <p class="cap__sub">Built for the federal context</p>
+          <ul class="cap__list">
+            <li>Familiar with CMMC, FedRAMP, and federal data handling expectations</li>
+            <li>Experience navigating multi-agency stakeholder dynamics</li>
+            <li>Scope definition and boundary-setting for security and governance frameworks</li>
+          </ul>
+        </article>
+        </div>
+      </section>
+
+      <div class="ground" id="ground"><span>Ground level</span></div>
+
+      <section class="tier tier--roots" aria-labelledby="ch-roots">
+        <div class="tier__grid">
+        <header class="tier__head side-l">
+        <p class="kicker">The roots &middot; Why it holds</p>
+        <h2 id="ch-roots">Why it holds</h2>
+        <p class="chapter__lead">Under it all is a decade of federal delivery and research training. It's the part nobody sees, and the reason the rest stays standing.</p>
+        </header>
+        <article class="cap side-r" id="cap-academic">
+          <h3 class="cap__title">Academic Depth</h3>
+          <p class="cap__sub">Research-trained analytical rigor</p>
+          <ul class="cap__list">
+            <li>Ph.D. in Geosciences: machine learning, spatial analysis, contaminant transport</li>
+            <li>M.S. in Healthcare Analytics: EDA, predictive modeling, health informatics</li>
+            <li>Published researcher with peer-reviewed analytical methodology</li>
+          </ul>
+        </article>
+        <article class="cap side-l" id="cap-federal">
+          <h3 class="cap__title">Federal Program Experience</h3>
+          <p class="cap__sub">10+ years across four agencies</p>
+          <ul class="cap__list">
+            <li>EPA: water program technical assistance, regulatory data systems</li>
+            <li>USGS: national water information systems, geochemical data integration</li>
+            <li>DHS / FEMA: national preparedness dashboards, grant program data</li>
+          </ul>
+        </article>
+        <article class="cap side-r" id="cap-govcon">
+          <h3 class="cap__title">GovCon Fluency</h3>
+          <p class="cap__sub">Speaks contractor and client</p>
+          <ul class="cap__list">
+            <li>Joint venture and subcontracting experience in federal consulting</li>
+            <li>Capability statement and proposal-ready documentation</li>
+            <li>Understands the dynamics of prime–sub relationships from the inside</li>
+          </ul>
+        </article>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <!-- Tree -->
-  <div class="tree">
-
-    <!-- ═══ CANOPY ═══ -->
-    <div class="tier tier-canopy">
-      <div class="tier-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:4px;">
-          <path d="M12 2C8 2 4 6 4 10c0 3 2 6 5 7.5V22h6v-4.5c3-1.5 5-4.5 5-7.5 0-4-4-8-8-8z" fill="currentColor" opacity=".5"/>
-        </svg>
-        Canopy — What Clients Get
+  <!-- Proof and next step -->
+  <section class="section section--alt">
+    <div class="container proof">
+      <div class="panel">
+        <h3>Selected Performance</h3>
+        <ul>
+          <li>Resolved reporting discrepancies across EPA program data by rebuilding the entire dashboard pipeline</li>
+          <li>Consolidated 44 fragmented data queries into a single dynamic query architecture, cutting maintenance overhead substantially</li>
+          <li>Designed and deployed e-signature automation workflows for multi-agency federal partners</li>
+          <li>Built change-detection dashboards enabling month-over-month tracking for national grant programs</li>
+        </ul>
       </div>
-      <div class="tier-grid" id="canopy"></div>
-    </div>
-
-    <!-- Trunk connector -->
-    <div class="branch-container branch-canopy"><div class="branch-line"></div></div>
-
-    <!-- ═══ TRUNK ═══ -->
-    <div class="tier tier-trunk">
-      <div class="tier-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:4px;">
-          <rect x="10" y="4" width="4" height="16" rx="2" fill="currentColor" opacity=".5"/>
-        </svg>
-        Trunk — How We Work
+      <div class="panel">
+        <h3>Let's talk</h3>
+        <p>Tell us what's broken. We'll tell you what it takes to fix it, and what that costs.</p>
+        <a href="contact.html" class="btn btn--primary">Start a Conversation</a>
+        <p class="certs">
+          <a href="mailto:info@jjw-insights.org">info@jjw-insights.org</a> &middot; Baltimore, MD<br>
+          NAICS codes: 541512 (Primary), 541511, 541690, and 541990. Current SBA certification.
+        </p>
       </div>
-      <div class="tier-grid" id="trunk"></div>
     </div>
+  </section>
 
-    <!-- Root connector -->
-    <div class="branch-container branch-roots"><div class="branch-line"></div></div>
-
-    <!-- ═══ ROOTS ═══ -->
-    <div class="tier tier-roots">
-      <div class="tier-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px; margin-right:4px;">
-          <path d="M12 12c-2 2-5 4-7 8h4l3-4 3 4h4c-2-4-5-6-7-8z" fill="currentColor" opacity=".5"/>
-        </svg>
-        Roots — Why It Holds
-      </div>
-      <div class="tier-grid" id="roots"></div>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 JJW Insights Analytics LLC. All rights reserved.</p>
     </div>
+  </footer>
 
-  </div>
+  <script>
+  (function () {
+    var story = document.getElementById('story');
+    var svg = document.getElementById('tree');
+    var NS = 'http://www.w3.org/2000/svg';
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var parts = null;   // everything the scroll handler needs, rebuilt on resize
 
-  <!-- Bottom -->
-  <div class="bottom">
-    <div class="panel">
-      <h3>Selected Performance</h3>
-      <div id="perf"></div>
-    </div>
-    <div class="panel">
-      <h3>Connect</h3>
-      <div id="contact"></div>
-      <div class="certs" id="certs"></div>
-    </div>
-  </div>
-
-  <div class="footer">
-    &copy; 2026 JJW Insights Analytics LLC &middot; Baltimore, MD
-  </div>
-
-</div>
-
-<script>
-const DATA = {
-  canopy: [
-    {
-      icon: "📊", title: "Interactive Dashboards",
-      sub: "Decision-ready reporting",
-      details: [
-        "Power BI and web-based dashboards built for executive and program-level audiences",
-        "Change detection and snapshot comparison across reporting periods",
-        "Colorblind-accessible design with stakeholder-specific views"
-      ]
-    },
-    {
-      icon: "🔗", title: "Governed Data Pipelines",
-      sub: "From messy sources to single source of truth",
-      details: [
-        "Power Query / M-language pipelines with deduplication, fuzzy matching, and normalization",
-        "Cross-platform integration across federal data ecosystems",
-        "Automated ingestion from SharePoint, APIs, and flat file sources"
-      ]
-    },
-    {
-      icon: "📐", title: "Data Architecture & Governance",
-      sub: "Structure that scales",
-      details: [
-        "Workbook and tracker design with embedded QA workflows",
-        "Consolidation of parallel data entry into single-source systems",
-        "Metadata schema design and classification pipelines"
-      ]
-    },
-    {
-      icon: "📝", title: "Data-Driven Narratives",
-      sub: "Translating analysis into action",
-      details: [
-        "Stakeholder-ready reports with embedded visualizations",
-        "Exploratory analysis with interpretive hypotheses and recommendations",
-        "Technical documentation and SOPs for reproducible workflows"
-      ]
+    function el(tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      (parent || svg).appendChild(e);
+      return e;
     }
-  ],
-  trunk: [
-    {
-      icon: "🧩", title: "Platform-Agnostic Problem Solving",
-      sub: "The right tool for the job — not the trendy one",
-      details: [
-        "Proficient across BI, statistical, GIS, and cloud environments",
-        "AI-augmented workflows where appropriate, traditional methods where they're better",
-        "No vendor lock-in; solutions designed for portability and handoff"
-      ]
-    },
-    {
-      icon: "🔄", title: "Iterative & Transparent Process",
-      sub: "Clients see the work, not just the output",
-      details: [
-        "Incremental delivery with review checkpoints — no black boxes",
-        "Documentation-first approach ensures institutional knowledge transfer",
-        "Designed for maintainability by non-technical staff after engagement ends"
-      ]
-    },
-    {
-      icon: "🛡️", title: "Compliance-Aware Delivery",
-      sub: "Built for the federal context",
-      details: [
-        "Familiar with CMMC, FedRAMP, and federal data handling expectations",
-        "Experience navigating multi-agency stakeholder dynamics",
-        "Scope definition and boundary-setting for security and governance frameworks"
-      ]
+    // Position of an element inside the tree area
+    function box(node) {
+      var r = node.getBoundingClientRect(), s = story.getBoundingClientRect();
+      return { l: r.left - s.left, r: r.right - s.left, t: r.top - s.top, b: r.bottom - s.top,
+               w: r.width, h: r.height };
     }
-  ],
-  roots: [
-    {
-      icon: "🎓", title: "Academic Depth",
-      sub: "Research-trained analytical rigor",
-      details: [
-        "Ph.D. in Geosciences — machine learning, spatial analysis, contaminant transport",
-        "M.S. in Healthcare Analytics — EDA, predictive modeling, health informatics",
-        "Published researcher with peer-reviewed analytical methodology"
-      ]
-    },
-    {
-      icon: "🏛️", title: "Federal Program Experience",
-      sub: "10+ years across four agencies",
-      details: [
-        "EPA — water program technical assistance, regulatory data systems",
-        "USGS — national water information systems, geochemical data integration",
-        "DHS / FEMA — national preparedness dashboards, grant program data"
-      ]
-    },
-    {
-      icon: "🤝", title: "GovCon Fluency",
-      sub: "Speaks contractor and client",
-      details: [
-        "Joint venture and subcontracting experience in federal consulting",
-        "Capability statement and proposal-ready documentation",
-        "Understands the dynamics of prime–sub relationships from the inside"
-      ]
+    function measure(path) {
+      var len = Math.ceil(path.getTotalLength()) + 1;
+      path.style.setProperty('--len', len);
+      return len;
     }
-  ],
-  performance: [
-    "Resolved reporting discrepancies across EPA program data by rebuilding the entire dashboard pipeline",
-    "Consolidated 44 fragmented data queries into a single dynamic query architecture, cutting maintenance overhead substantially",
-    "Designed and deployed e-signature automation workflows for multi-agency federal partners",
-    "Built change-detection dashboards enabling month-over-month tracking for national grant programs",
-  ],
-  contact: [
-    { icon: "🌐", label: "jjw-insights.org", href: "#" },
-    { icon: "✉️", label: "info@jjw-insights.org", href: "mailto:jwilliams@jjw-insights.org" },
-  ],
-  certs: "NAICS codes: 541512 (Primary), 541511, 541690, and 541990. Current SBA certification."
-};
 
-function makeCard(item) {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-head">
-      <span class="card-icon">${item.icon}</span>
-      <div class="card-titles">
-        <div class="card-title">${item.title}</div>
-        <div class="card-sub">${item.sub}</div>
-      </div>
-      <span class="card-toggle">▾</span>
-    </div>
-    <div class="card-body"><div class="card-body-inner">
-      ${item.details.map(d => `<div class="detail"><span class="dot"></span><span>${d}</span></div>`).join('')}
-    </div></div>`;
-  el.addEventListener('click', () => { el.classList.toggle('open'); syncBtn(); });
-  return el;
-}
+    // 1. Draw the tree around wherever the cards ended up.
+    function build() {
+      var narrow = window.innerWidth <= 760;
+      var W = story.clientWidth, H = story.offsetHeight;
+      svg.innerHTML = '';
+      svg.setAttribute('width', W); svg.setAttribute('height', H);
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
 
-function render() {
-  ['canopy','trunk','roots'].forEach(tier => {
-    const g = document.getElementById(tier);
-    DATA[tier].forEach(item => g.appendChild(makeCard(item)));
-  });
+      var x = narrow ? 14 : W / 2;
+      var canopyGrid = box(story.querySelector('.tier--canopy .tier__grid'));
+      var crownTop = canopyGrid.t - (narrow ? 10 : 30);
+      var crownBase = canopyGrid.b;
+      var groundY = box(document.getElementById('ground')).t + (narrow ? 32 : 40);
+      var rootCards = story.querySelectorAll('.tier--roots .cap');
+      var end = box(rootCards[rootCards.length - 1]).t + 34;
 
-  const pf = document.getElementById('perf');
-  DATA.performance.forEach(t => {
-    pf.innerHTML += `<div class="perf-item"><span class="perf-dot"></span><span>${t}</span></div>`;
-  });
+      // Leaves first, so everything else sits on top of them
+      var defs = el('defs', {});
+      [['leafA', '#5cbf73', 0.30], ['leafB', '#8a8de6', 0.26]].forEach(function (g) {
+        var rg = el('radialGradient', { id: g[0], cx: '50%', cy: '50%', r: '50%' }, defs);
+        el('stop', { offset: '0%', 'stop-color': g[1], 'stop-opacity': g[2] }, rg);
+        el('stop', { offset: '100%', 'stop-color': g[1], 'stop-opacity': 0 }, rg);
+      });
+      var leaves = [];
+      story.querySelectorAll('.tier--canopy .cap').forEach(function (c, i) {
+        var b = box(c);
+        leaves.push(el('circle', { class: 'leaf', cx: b.l + b.w / 2, cy: b.t + b.h / 2,
+          r: Math.max(b.w, b.h) * (narrow ? 0.75 : 0.85), fill: 'url(#' + (i % 2 ? 'leafB' : 'leafA') + ')' }));
+      });
+      if (!narrow) {
+        leaves.push(el('circle', { class: 'leaf', cx: x, cy: canopyGrid.t + canopyGrid.h * 0.45,
+          r: canopyGrid.h * 0.75, fill: 'url(#leafA)' }));
+      }
 
-  const cf = document.getElementById('contact');
-  DATA.contact.forEach(c => {
-    cf.innerHTML += `<div class="contact-item"><span class="contact-icon">${c.icon}</span><a href="${c.href}">${c.label}</a></div>`;
-  });
+      el('line', { class: 'tp tp--ground', x1: 0, y1: groundY, x2: W, y2: groundY });
 
-  document.getElementById('certs').textContent = DATA.certs;
-}
+      var crown = el('path', { class: 'tp tp--trunk grow', 'stroke-width': narrow ? 5 : 10,
+        d: 'M' + x + ' ' + crownTop + ' L' + x + ' ' + crownBase });
+      var trunk = el('path', { class: 'tp tp--trunk grow', 'stroke-width': narrow ? 5 : 10,
+        d: 'M' + x + ' ' + crownBase + ' L' + x + ' ' + groundY });
+      var tap = el('path', { class: 'tp tp--tap grow', 'stroke-width': narrow ? 3 : 5,
+        d: 'M' + x + ' ' + groundY + ' L' + x + ' ' + end });
+      measure(crown);
 
-function toggleAll() {
-  const cards = document.querySelectorAll('.card');
-  const anyCollapsed = [...cards].some(c => !c.classList.contains('open'));
-  cards.forEach(c => anyCollapsed ? c.classList.add('open') : c.classList.remove('open'));
-  syncBtn();
-}
+      // A branch from the trunk to the trunk-facing edge of every card
+      var branches = [];
+      story.querySelectorAll('.cap').forEach(function (c) {
+        var tier = c.closest('.tier--canopy') ? 'canopy' : c.closest('.tier--trunk') ? 'trunk' : 'roots';
+        var b = box(c);
+        var x1 = b.l > x ? b.l : b.r;
+        var y1 = b.t + 34;
+        var y0;
+        if (narrow) y0 = tier === 'roots' ? y1 - 20 : y1 + 20;
+        else if (tier === 'canopy') y0 = Math.min(y1 + 70, crownBase - 8);
+        else if (tier === 'trunk') y0 = y1 + 36;
+        else y0 = y1 - 48;
+        var dx = x1 - x;
+        var d = 'M' + x + ' ' + y0 + ' C' + (x + dx * 0.3) + ' ' + y0 + ', ' +
+                (x + dx * 0.55) + ' ' + y1 + ', ' + x1 + ' ' + y1;
+        var path = el('path', { class: 'tp grow ' + (tier === 'roots' ? 'tp--root' : 'tp--branch'), d: d });
+        if (narrow) path.setAttribute('stroke-width', tier === 'roots' ? 2 : 2.5);
+        measure(path);
+        var node = el('circle', { class: 'tn tn--' + tier, cx: x, cy: y0, r: narrow ? 4.5 : 6 });
+        branches.push({ path: path, node: node, card: c, y0: y0, tier: tier });
+      });
 
-function syncBtn() {
-  const cards = document.querySelectorAll('.card');
-  const allOpen = [...cards].every(c => c.classList.contains('open'));
-  document.getElementById('toggleBtn').textContent = allOpen ? 'Collapse All' : 'Expand All';
-}
+      var tip = el('circle', { class: 'tip', cx: x, cy: crownBase, r: narrow ? 4 : 6, opacity: 0 });
 
-render();
-</script>
+      parts = { crown: crown, trunk: trunk, tap: tap, tip: tip, leaves: leaves, branches: branches,
+                crownBase: crownBase, groundY: groundY, end: end,
+                trunkLen: groundY - crownBase, tapLen: end - groundY };
+      trunk.style.setProperty('--len', parts.trunkLen);
+      tap.style.setProperty('--len', parts.tapLen);
+    }
+
+    // 2. The canopy grows on its own when the page opens.
+    function growCrown(instant) {
+      var p = parts;
+      p.crown.classList.add('on');
+      p.leaves.forEach(function (l, i) { l.style.setProperty('--d', instant ? '0s' : (0.25 + i * 0.06) + 's'); l.classList.add('on'); });
+      p.branches.forEach(function (br, i) {
+        if (br.tier !== 'canopy') return;
+        var d = instant ? '0s' : (0.35 + i * 0.08) + 's';
+        br.path.style.setProperty('--d', d); br.node.style.setProperty('--d', d);
+        br.path.classList.add('on'); br.node.classList.add('on');
+      });
+    }
+
+    // 3. Below the canopy, the trunk follows your reading position down the page,
+    //    and each branch reaches out as the trunk passes it.
+    function onScroll() {
+      var p = parts; if (!p) return;
+      var top = story.getBoundingClientRect().top;
+      var tipY = reduce ? Infinity : window.innerHeight * 0.72 - top;
+      var t = Math.max(0, Math.min(p.trunkLen, tipY - p.crownBase));
+      var r = Math.max(0, Math.min(p.tapLen, tipY - p.groundY));
+      p.trunk.style.strokeDashoffset = p.trunkLen - t;
+      p.tap.style.strokeDashoffset = p.tapLen - r;
+      var growing = tipY > p.crownBase && tipY < p.end;
+      p.tip.setAttribute('cy', Math.min(tipY, p.end));
+      p.tip.setAttribute('opacity', growing ? 1 : 0);
+      p.branches.forEach(function (br) {
+        if (br.tier !== 'canopy' && tipY >= br.y0 && !br.path.classList.contains('on')) {
+          br.path.style.setProperty('--d', '0s'); br.node.style.setProperty('--d', '0s');
+          br.path.classList.add('on'); br.node.classList.add('on');
+        }
+      });
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; onScroll(); });
+    }, { passive: true });
+
+    function rebuild() {
+      svg.classList.add('instant');
+      build(); growCrown(true); onScroll();
+      requestAnimationFrame(function () { requestAnimationFrame(function () { svg.classList.remove('instant'); }); });
+    }
+    var resizeTimer;
+    window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(rebuild, 150); });
+
+    build(); onScroll();
+    requestAnimationFrame(function () { requestAnimationFrame(function () { growCrown(reduce); }); });
+    // Web fonts can change card heights after first paint; redraw once they settle.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (document.fonts.status === 'loaded') rebuild(); });
+
+    // 4. Cards rise in, a beat apart, as they scroll into view.
+    var cardObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e, i) {
+        if (!e.isIntersecting) return;
+        e.target.style.setProperty('--d', reduce ? '0s' : (i * 0.06) + 's');
+        e.target.classList.add('in');
+        cardObserver.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    story.querySelectorAll('.cap').forEach(function (c) { cardObserver.observe(c); });
+
+    // 5. Pointing at a card lights its branch.
+    story.querySelectorAll('.cap').forEach(function (c) {
+      function light(on) {
+        c.classList.toggle('lit', on);
+        if (!parts) return;
+        parts.branches.forEach(function (br) {
+          if (br.card === c) { br.path.classList.toggle('lit', on); br.node.classList.toggle('lit', on); }
+        });
+      }
+      c.addEventListener('mouseenter', function () { light(true); });
+      c.addEventListener('mouseleave', function () { light(false); });
+    });
+  })();
+  </script>
 </body>
 </html>

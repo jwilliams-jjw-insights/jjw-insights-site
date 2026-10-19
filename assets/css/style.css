@@ -54,6 +54,23 @@ img {
   display: block;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Small-caps label above a heading, e.g. "Featured story" */
+.kicker {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 0.6rem;
+}
+
 /* ---- Layout ---- */
 .container {
   max-width: 1100px;
@@ -109,19 +126,8 @@ img {
   padding: 6rem 0 4rem;
   text-align: center;
   position: relative;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -120px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, rgba(100,104,218,0.12) 0%, transparent 70%);
-  pointer-events: none;
+  /* Soft glow that fades out inside the section, so it never shows an edge */
+  background: radial-gradient(ellipse 55% 75% at 50% 0%, rgba(100,104,218,0.14) 0%, transparent 100%);
 }
 
 .hero__tagline {
@@ -155,7 +161,7 @@ img {
   letter-spacing: 0.06em;
   padding: 0.85rem 2.2rem;
   border-radius: 4px;
-  transition: all 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease;
 }
 
 .btn--primary {
@@ -165,7 +171,6 @@ img {
 .btn--primary:hover {
   background: var(--color-periwinkle-dark);
   color: #fff;
-  transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(100,104,218,0.35);
 }
 
@@ -177,12 +182,22 @@ img {
 .btn--outline:hover {
   background: var(--color-periwinkle);
   color: #fff;
-  transform: translateY(-2px);
+}
+.btn:active {
+  transform: scale(0.97);
 }
 
 /* ---- Section Headings ---- */
 .section {
   padding: 5rem 0;
+}
+
+.section--alt {
+  background: var(--color-bg-card);
+}
+.section--alt .story-feature,
+.section--alt .portfolio-card {
+  background: var(--color-bg);
 }
 
 .section__title {
@@ -211,11 +226,10 @@ img {
   border: 1px solid rgba(100,104,218,0.1);
   border-radius: 8px;
   padding: 2rem;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.2s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .value-card:hover {
   border-color: var(--color-periwinkle);
-  transform: translateY(-4px);
 }
 
 .value-card__icon {
@@ -249,11 +263,17 @@ img {
   border: 1px solid rgba(100,104,218,0.1);
   border-radius: 8px;
   overflow: hidden;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.2s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .portfolio-card:hover {
   border-color: var(--color-gold);
-  transform: translateY(-4px);
+}
+
+/* Lift on hover only where there is a real pointer; taps on phones fire false hovers */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-2px); }
+  .value-card:hover,
+  .portfolio-card:hover { transform: translateY(-4px); }
 }
 
 .portfolio-card__img {
@@ -294,6 +314,52 @@ img {
   color: var(--color-gold-dark);
 }
 
+/* ---- Story feature (image beside text) ---- */
+.story-feature {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 2.5rem;
+  background: var(--color-bg-card);
+  border: 1px solid rgba(100,104,218,0.12);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transition: border-color 0.3s ease;
+}
+.story-feature:hover {
+  border-color: var(--color-gold);
+}
+.story-feature--flip .story-feature__media {
+  order: 2;
+}
+.story-feature__media img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.story-feature__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--color-text-heading);
+  margin-bottom: 0.8rem;
+}
+.story-feature__title a {
+  color: inherit;
+}
+.story-feature__desc {
+  color: var(--color-text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.section__more {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
 /* ---- About Page ---- */
 .about-content {
   max-width: 740px;
@@ -329,13 +395,51 @@ img {
 
 /* ---- Responsive ---- */
 @media (max-width: 720px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+  .site-nav .container {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.4rem;
+  }
+  .site-nav__logo {
+    height: 40px;
+  }
   .site-nav__links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+  }
+  .site-nav__links a {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+  .story-feature {
+    grid-template-columns: 1fr;
     gap: 1.2rem;
+    padding: 1rem;
+  }
+  .story-feature--flip .story-feature__media {
+    order: 0;
   }
   .hero {
     padding: 4rem 0 2.5rem;
   }
   .section {
     padding: 3rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

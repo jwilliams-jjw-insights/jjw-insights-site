@@ -13,7 +13,7 @@
   <nav class="site-nav">
     <div class="container">
       <a href="index.html">
-        <img src="assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
+        <img src="assets/images/jjw-logo.png" alt="JJW Insights Analytics" class="site-nav__logo">
       </a>
       <ul class="site-nav__links">
         <li><a href="index.html">Home </a></li>
@@ -30,55 +30,74 @@
     <div class="container">
       <h1 class="hero__tagline">Portfolio</h1>
       <p class="hero__sub">
-        Each project below is fully interactive, from self-contained dashboards to working applications you can try in your browser. Click through to explore them live.
+        Every project here started with someone stuck on a problem. Read the stories, then try the tools yourself: each one runs live in your browser.
       </p>
     </div>
   </section>
 
-  <!-- Portfolio -->
+  <!-- Stories -->
   <section class="section">
     <div class="container">
+      <p class="kicker">Stories</p>
+      <h2 class="section__title">Start here</h2>
+      <p class="section__subtitle">
+        The problem, the people it affected, and what we built. Each story ends with something you can use.
+      </p>
+
+      <article class="story-feature">
+        <a href="portfolio/dog-groomer-platform.html" class="story-feature__media"><img src="assets/images/dog-groomer-checkin-card.png" alt="The grooming shop's check-in screen: Jaddi can't be groomed today because his rabies has expired."></a>
+        <div>
+          <p class="kicker">Part one &middot; A dog grooming platform</p>
+          <h3 class="story-feature__title"><a href="portfolio/dog-groomer-platform.html">The Missing Date</a></h3>
+          <p class="story-feature__desc">
+            Jaddi's rabies shot came with an invoice, a date, and no expiry. A small grooming shop has to decide whether he's covered, and so does the AI it might use to read the paperwork. This is the story of a system built to say "I don't know" instead of guessing, with a live demo where you get to stand at the counter.
+          </p>
+          <a href="portfolio/dog-groomer-platform.html" class="portfolio-card__link">Read the story &rarr;</a>
+        </div>
+      </article>
+
+      <article class="story-feature story-feature--flip">
+        <a href="portfolio/dog-groomer-sop.html" class="story-feature__media"><img src="assets/images/dog-groomer-sop-card.png" alt="The shop's paperwork screen, telling the groomer that a shot with no expiry date can't be recorded and the system never guesses one."></a>
+        <div>
+          <p class="kicker">Part two &middot; A grooming shop's manual</p>
+          <h3 class="story-feature__title"><a href="portfolio/dog-groomer-sop.html">The Day We're Not There</a></h3>
+          <p class="story-feature__desc">
+            The grooming system says no when Jaddi's paperwork is missing a date. Then what? A small shop has no IT department, so we wrote three manuals, for groomers, managers, and whoever looks after the system, that a new hire can follow on their first morning and that can't quietly fall out of date.
+          </p>
+          <a href="portfolio/dog-groomer-sop.html" class="portfolio-card__link">Read the story &rarr;</a>
+        </div>
+      </article>
+
+      <article class="story-feature">
+        <a href="portfolio/imerg-granule-guide.html" class="story-feature__media"><img src="assets/images/granule-guide-card.png" alt="The opening of one granule walkthrough, headed &ldquo;You downloaded this. Here is what it is.&rdquo;, above a summary of the file's time, processing level, layout and contents."></a>
+        <div>
+          <p class="kicker">NASA Earthdata Granule Guide</p>
+          <h3 class="story-feature__title"><a href="portfolio/imerg-granule-guide.html">You Downloaded This. Here Is What It Is.</a></h3>
+          <p class="story-feature__desc">
+            You download a NASA satellite file, open it in GIS software, and the map comes out quietly wrong. We built a Python engine that reads the file and writes a guide to it: what each piece of the filename means, how the numbers were made, and exactly where it will mislead you, with every claim marked as read from the file or inferred.
+          </p>
+          <a href="portfolio/imerg-granule-guide.html" class="portfolio-card__link">Open the guide &rarr;</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section class="section section--alt">
+    <div class="container">
+      <p class="kicker">Tools and dashboards</p>
+      <h2 class="section__title">Try them yourself</h2>
+      <p class="section__subtitle">
+        Self-contained dashboards, each built around one question someone needed answered.
+      </p>
       <div class="portfolio-grid">
-
-        <div class="portfolio-card">
-          <a href="portfolio/dog-groomer-platform.html" style="display: block;"><img src="assets/images/dog-groomer-checkin-card.png" class="portfolio-card__img" alt="The grooming shop's check-in screen: Jaddi can't be groomed today because his rabies has expired."></a>
-          <div class="portfolio-card__body">
-            <h3 class="portfolio-card__title">The Missing Date: A Dog Grooming Platform</h3>
-            <p class="portfolio-card__desc">
-              Jaddi's rabies shot came with an invoice, a date, and no expiry. A small grooming shop has to decide whether he's covered, and so does the AI it might use to read the paperwork. This is the story of a system built to say "I don't know" instead of guessing, with a live demo where you get to stand at the counter.
-            </p>
-            <a href="portfolio/dog-groomer-platform.html" class="portfolio-card__link">Read the story &rarr;</a>
-          </div>
-        </div>
-
-        <div class="portfolio-card">
-          <a href="portfolio/dog-groomer-sop.html" style="display: block;"><img src="assets/images/dog-groomer-sop-card.png" class="portfolio-card__img" alt="The shop's paperwork screen, telling the groomer that a shot with no expiry date can't be recorded and the system never guesses one."></a>
-          <div class="portfolio-card__body">
-            <h3 class="portfolio-card__title">The Day We're Not There: A Grooming Shop's Manual</h3>
-            <p class="portfolio-card__desc">
-              The grooming system says no when Jaddi's paperwork is missing a date. Then what? A small shop has no IT department, so we wrote three manuals, for groomers, managers, and whoever looks after the system, that a new hire can follow on their first morning and that can't quietly fall out of date.
-            </p>
-            <a href="portfolio/dog-groomer-sop.html" class="portfolio-card__link">Read the story &rarr;</a>
-          </div>
-        </div>
-
-        <div class="portfolio-card">
-          <a href="portfolio/imerg-granule-guide.html" target="_blank" style="display: block;"><img src="assets/images/granule-guide-card.png" class="portfolio-card__img" alt="The opening of one granule walkthrough, headed &ldquo;You downloaded this. Here is what it is.&rdquo;, above a summary of the file's time, processing level, layout and contents."></a>
-          <div class="portfolio-card__body">
-            <h3 class="portfolio-card__title">NASA Earthdata Granule Guide</h3>
-            <p class="portfolio-card__desc">
-              A self-explaining validation report for NASA satellite data files. Point the Python engine at a GPM IMERG or VIIRS granule and it renders an interactive, plain-language guide — decoding the filename segment by segment, walking the processing-level ladder, and demonstrating exactly how the file silently breaks in GIS software. Every claim is visually marked as read-from-your-file, product knowledge, or flagged inference. Single-file HTML, generated entirely in Python.
-            </p>
-            <a href="portfolio/imerg-granule-guide.html" class="portfolio-card__link" target="_blank">Launch guide &rarr;</a>
-          </div>
-        </div>
 
         <div class="portfolio-card">
           <a href="portfolio/aba_dashboard.html" target="_blank" style="display: block;"><img src="assets/images/aba-dashboard-card.png" class="portfolio-card__img" alt="The ABA dashboard with Maryland selected on the state map, showing its regulatory model and which provider roles can bill and supervise."></a>
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">ABA Medicaid Reimbursement Dashboard</h3>
             <p class="portfolio-card__desc">
-              A comprehensive, interactive reference for Applied Behavior Analysis Medicaid coverage across Mid-Atlantic states. Navigate by state or regulatory model to compare provider roles, reimbursement rates, qualification pathways, and billing/supervision authority. Built as a capstone academic project with real-world policy data.
+              Five Mid-Atlantic Medicaid programs give five different answers to who can deliver Applied Behavior Analysis, who can bill for it, and at what rate. We pulled the regulations into one reference: pick a state and see its roles, rates and qualification pathways. A capstone project built from published state policy.
             </p>
             <a href="portfolio/aba_dashboard.html" class="portfolio-card__link" target="_blank">Launch dashboard &rarr;</a>
           </div>
@@ -89,7 +108,7 @@
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">CMMC Level 1 Assessment Dashboard</h3>
             <p class="portfolio-card__desc">
-              An interactive compliance navigation tool for Cybersecurity Maturity Model Certification (CMMC) Level 1. Browse 58 objectives across 6 domains, review AI-generated summaries, explore policy templates, and understand assessment methods — all from a single, searchable interface. Built from PDF-extracted requirements data.
+              A small contractor going after defense work has to show it meets CMMC Level 1, and the requirements are buried in long PDFs. We extracted all 58 assessment objectives into one searchable tool, with plain-language summaries, policy templates, and how each objective gets assessed.
             </p>
             <a href="portfolio/CMMC_Level1_Dashboard.html" class="portfolio-card__link" target="_blank">Launch dashboard &rarr;</a>
           </div>
@@ -100,7 +119,7 @@
           <div class="portfolio-card__body">
             <h3 class="portfolio-card__title">DC Property Tax Geospatial Analysis</h3>
             <p class="portfolio-card__desc">
-              An interactive Leaflet-based choropleth map visualizing Washington, DC property tax data at the parcel level. Toggle between annual tax per assessment value, assessment value per annual tax, raw assessment values, tax amounts, and effective tax rates. A demonstration of geospatial analytics applied to public finance data.
+              Does what a DC owner pays line up with what the city says their property is worth? We mapped every parcel's assessment, tax bill and effective rate, so the pattern shows block by block. Switch between five measures to see it from different angles.
             </p>
             <a href="portfolio/2D_map.html" class="portfolio-card__link" target="_blank">Launch map &rarr;</a>
           </div>
