@@ -161,7 +161,7 @@ img {
   letter-spacing: 0.06em;
   padding: 0.85rem 2.2rem;
   border-radius: 4px;
-  transition: all 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease;
 }
 
 .btn--primary {
@@ -171,7 +171,6 @@ img {
 .btn--primary:hover {
   background: var(--color-periwinkle-dark);
   color: #fff;
-  transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(100,104,218,0.35);
 }
 
@@ -183,7 +182,9 @@ img {
 .btn--outline:hover {
   background: var(--color-periwinkle);
   color: #fff;
-  transform: translateY(-2px);
+}
+.btn:active {
+  transform: scale(0.97);
 }
 
 /* ---- Section Headings ---- */
@@ -225,11 +226,10 @@ img {
   border: 1px solid rgba(100,104,218,0.1);
   border-radius: 8px;
   padding: 2rem;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.2s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .value-card:hover {
   border-color: var(--color-periwinkle);
-  transform: translateY(-4px);
 }
 
 .value-card__icon {
@@ -263,11 +263,17 @@ img {
   border: 1px solid rgba(100,104,218,0.1);
   border-radius: 8px;
   overflow: hidden;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.2s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .portfolio-card:hover {
   border-color: var(--color-gold);
-  transform: translateY(-4px);
+}
+
+/* Lift on hover only where there is a real pointer; taps on phones fire false hovers */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-2px); }
+  .value-card:hover,
+  .portfolio-card:hover { transform: translateY(-4px); }
 }
 
 .portfolio-card__img {

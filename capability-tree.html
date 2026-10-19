@@ -17,7 +17,8 @@
 
     /* ── Header ── */
     .cap-hero {
-      padding: 5rem 0 2rem;
+      padding: 5rem 0 1rem;
+      text-align: center;
       background: radial-gradient(ellipse 55% 80% at 50% 0%, rgba(92,191,115,0.10) 0%, transparent 100%);
     }
     .cap-hero h1 {
@@ -27,124 +28,82 @@
       line-height: 1.15;
       color: var(--color-text-heading);
       max-width: 760px;
-      margin-bottom: 1.2rem;
+      margin: 0 auto 1.2rem;
     }
     .cap-hero h1 .accent { color: var(--color-gold); }
     .cap-hero p:not(.kicker) {
       color: var(--color-text-muted);
       max-width: 640px;
+      margin: 0 auto;
       font-size: 1.05rem;
     }
 
-    /* ── Layout: sticky tree beside the chapters ── */
-    .cap-layout {
-      display: grid;
-      grid-template-columns: minmax(280px, 400px) 1fr;
-      gap: 3.5rem;
-      align-items: start;
-      padding-bottom: 3rem;
+    /* ── The tree: one picture, with the content hanging off it ── */
+    .tree-story {
+      position: relative;
+      padding: 1rem 0 4rem;
     }
-    .cap-tree {
-      position: sticky;
-      top: 96px;
-    }
-    .cap-tree svg {
-      width: 100%;
-      height: auto;
-      max-height: calc(100vh - 120px);
+    .tree-svg {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
       overflow: visible;
     }
-
-    /* ── Tree drawing ── */
-    .t-trunk  { stroke: var(--bark); stroke-width: 16; stroke-linecap: round; fill: none; }
-    .t-branch { stroke: var(--bark); stroke-width: 6;  stroke-linecap: round; fill: none; }
-    .t-root   { stroke: var(--bark); stroke-width: 6;  stroke-linecap: round; fill: none; opacity: 0.85; }
-    .t-rootlet{ stroke: var(--bark); stroke-width: 2.5; stroke-linecap: round; fill: none; opacity: 0.5; }
-    .t-ground { stroke: rgba(255,255,255,0.12); stroke-width: 1.5; stroke-dasharray: 4 7; }
-    .t-leaf   { transform-box: fill-box; transform-origin: center; }
-    .t-label  {
-      font-family: var(--font-heading); font-weight: 700; font-size: 11px;
-      letter-spacing: 0.2em; fill: var(--color-text-muted);
+    .tier { position: relative; z-index: 1; }
+    .tier__grid {
+      display: grid;
+      grid-template-columns: 1fr 160px 1fr;
+      row-gap: 2rem;
+      align-items: start;
     }
+    .side-l { grid-column: 1; }
+    .side-r { grid-column: 3; }
 
-    .t-node circle {
-      transform-box: fill-box; transform-origin: center;
-      stroke: var(--color-bg); stroke-width: 3;
-      transition: transform 0.2s var(--ease-out), fill 0.3s ease;
-    }
-    .t-node .halo {
-      fill: none; stroke-width: 2; opacity: 0;
-      transition: opacity 0.2s ease, transform 0.25s var(--ease-out);
-    }
-    .tier-canopy .t-node circle:not(.halo) { fill: var(--leaf); }
-    .tier-trunk  .t-node circle:not(.halo) { fill: var(--color-periwinkle-light); }
-    .tier-roots  .t-node circle:not(.halo) { fill: var(--root); }
-    .tier-canopy .halo { stroke: var(--leaf); }
-    .tier-trunk  .halo { stroke: var(--color-periwinkle-light); }
-    .tier-roots  .halo { stroke: var(--root); }
-    .t-node:focus { outline: none; }
-    .t-node.lit circle:not(.halo),
-    .t-node:hover circle:not(.halo),
-    .t-node:focus-visible circle:not(.halo) { transform: scale(1.45); }
-    .t-node.lit .halo,
-    .t-node:hover .halo,
-    .t-node:focus-visible .halo { opacity: 0.9; transform: scale(1.15); }
-
-    /* Dim the tiers you are not reading about */
-    .tier { transition: opacity 0.5s var(--ease-out); }
-    svg[data-active] .tier { opacity: 0.32; }
-    svg[data-active="canopy"] .tier-canopy,
-    svg[data-active="trunk"]  .tier-trunk,
-    svg[data-active="roots"]  .tier-roots { opacity: 1; }
-
-    /* Growth on load (only when JS is running; otherwise the tree just shows) */
-    .js .grow-line { stroke-dashoffset: var(--len); stroke-dasharray: var(--len); }
-    .js .grown .grow-line {
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset var(--dur, 0.9s) var(--ease-out) var(--d, 0s);
-    }
-    .js .t-leaf, .js .t-node { opacity: 0; }
-    .js .t-leaf { transform: scale(0.4); }
-    .js .grown .t-leaf {
-      opacity: 1; transform: scale(1);
-      transition: opacity 0.6s ease var(--d, 0s), transform 0.9s var(--ease-out) var(--d, 0s);
-    }
-    .js .grown .t-node { opacity: 1; transition: opacity 0.4s ease var(--d, 0s); }
-
-    /* ── Chapters ── */
-    .chapter { padding: 2.5rem 0 3.5rem; }
-    .chapter + .chapter { border-top: 1px solid rgba(100,104,218,0.12); }
-    .chapter .kicker { display: flex; align-items: center; gap: 0.55rem; }
-    .chapter .kicker::before {
+    .tier__head .kicker { display: inline-flex; align-items: center; gap: 0.55rem; }
+    .tier__head .kicker::before {
       content: ''; width: 9px; height: 9px; border-radius: 50%; background: currentColor;
     }
-    .chapter[data-tier="canopy"] .kicker { color: var(--leaf); }
-    .chapter[data-tier="trunk"]  .kicker { color: var(--color-periwinkle-light); }
-    .chapter[data-tier="roots"]  .kicker { color: var(--root); }
-    .chapter h2 {
+    .tier--canopy .kicker { color: var(--leaf); }
+    .tier--trunk  .kicker { color: var(--color-periwinkle-light); }
+    .tier--roots  .kicker { color: var(--root); }
+    .tier__head h2 {
       font-family: var(--font-heading); font-weight: 900;
       font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2;
       color: var(--color-text-heading); margin-bottom: 0.7rem;
     }
-    .chapter__lead { color: var(--color-text-muted); max-width: 600px; margin-bottom: 2rem; }
+    .tier__head p:not(.kicker) { color: var(--color-text-muted); }
+    .tier__head--center { text-align: center; max-width: 620px; margin: 0 auto 2.5rem; }
+    .tier__head.side-l { text-align: right; padding-top: 0.6rem; }
 
+    .tier--canopy { padding: 2rem 0 0; }
+    .tier--trunk  { padding: 5rem 0 2rem; }
+    .ground { position: relative; height: 5rem; }
+    .ground span {
+      position: absolute; right: 0; top: 50%; transform: translateY(-140%);
+      font-family: var(--font-heading); font-weight: 700; font-size: 0.68rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text-muted);
+    }
+    .tier--roots { padding: 1rem 0 0; }
+
+    /* ── Capability cards ── */
     .cap {
       position: relative;
       background: var(--color-bg-card);
       border: 1px solid rgba(100,104,218,0.1);
       border-radius: 8px;
-      padding: 1.3rem 1.5rem 1.2rem 1.5rem;
-      margin-bottom: 1rem;
+      padding: 1.3rem 1.5rem 1.2rem;
       transition: border-color 0.2s ease, background-color 0.2s ease;
     }
+    /* The coloured edge faces the trunk */
     .cap::before {
       content: ''; position: absolute; left: 0; top: 1.2rem; bottom: 1.2rem;
       width: 3px; border-radius: 0 3px 3px 0;
     }
-    .chapter[data-tier="canopy"] .cap::before { background: var(--leaf); }
-    .chapter[data-tier="trunk"]  .cap::before { background: var(--color-periwinkle-light); }
-    .chapter[data-tier="roots"]  .cap::before { background: var(--root); }
-    .cap:hover, .cap.lit { border-color: rgba(251,218,24,0.45); background: var(--color-bg-card-hover); }
+    .side-l.cap::before { left: auto; right: 0; border-radius: 3px 0 0 3px; }
+    .tier--canopy .cap::before { background: var(--leaf); }
+    .tier--trunk  .cap::before { background: var(--color-periwinkle-light); }
+    .tier--roots  .cap::before { background: var(--root); }
+    .cap.lit { border-color: rgba(251,218,24,0.45); background: var(--color-bg-card-hover); }
     .cap__title {
       font-family: var(--font-heading); font-weight: 900; font-size: 1.1rem;
       color: var(--color-text-heading); line-height: 1.3;
@@ -160,18 +119,47 @@
       width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.25);
     }
 
-    /* Cards rise in as their chapter scrolls into view */
-    .js .cap { opacity: 0; transform: translateY(14px); }
+    /* ── Tree strokes (drawn by the script below) ── */
+    .tp { fill: none; stroke-linecap: round; transition: stroke 0.2s ease; }
+    .tp--trunk  { stroke: var(--bark); }
+    .tp--branch { stroke: var(--bark); stroke-width: 4; opacity: 0.9; }
+    .tp--root   { stroke: var(--root); stroke-width: 3; opacity: 0.75; }
+    .tp--tap    { stroke: var(--root); opacity: 0.8; }
+    .tp--ground { stroke: rgba(255,255,255,0.14); stroke-width: 1.5; stroke-dasharray: 4 8; }
+    .tp.lit     { stroke: var(--color-gold); opacity: 1; }
+    .tn { transition: opacity 0.3s ease, fill 0.2s ease; stroke: var(--color-bg); stroke-width: 3; }
+    .tn--canopy { fill: var(--leaf); }
+    .tn--trunk  { fill: var(--color-periwinkle-light); }
+    .tn--roots  { fill: var(--root); }
+    .tn.lit     { fill: var(--color-gold); }
+    .tip { fill: var(--color-gold); transition: opacity 0.3s ease; }
+    .leaf { transform-box: fill-box; transform-origin: center; }
+
+    /* Growth, only when the script is running */
+    .js .grow { stroke-dashoffset: var(--len); stroke-dasharray: var(--len); }
+    .js .grow.on {
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.7s var(--ease-out) var(--d, 0s), stroke 0.2s ease;
+    }
+    .js .tn { opacity: 0; }
+    .js .tn.on { opacity: 1; transition-delay: var(--d, 0s); }
+    .js .leaf { opacity: 0; transform: scale(0.92); }
+    .js .leaf.on {
+      opacity: 1; transform: none;
+      transition: opacity 0.8s ease var(--d, 0s), transform 0.9s var(--ease-out) var(--d, 0s);
+    }
+    .instant * { transition: none !important; }
+
+    /* Cards rise in as they scroll into view */
+    .js .cap { opacity: 0; transform: translateY(12px); }
     .js .cap.in {
       opacity: 1; transform: none;
-      transition: opacity 0.5s ease var(--d, 0s), transform 0.6s var(--ease-out) var(--d, 0s),
+      transition: opacity 0.5s ease var(--d, 0s), transform 0.5s var(--ease-out) var(--d, 0s),
                   border-color 0.2s ease, background-color 0.2s ease;
     }
 
     /* ── Proof and next step ── */
-    .proof {
-      display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem;
-    }
+    .proof { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem; }
     .panel {
       background: var(--color-bg); border: 1px solid rgba(100,104,218,0.12);
       border-radius: 10px; padding: 1.8rem 2rem;
@@ -192,14 +180,17 @@
     .panel p { color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 1.3rem; }
     .panel .certs { font-size: 0.82rem; margin: 1.3rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }
 
-    /* ── Phones and tablets: the tree sits above the chapters ── */
-    @media (max-width: 900px) {
-      .cap-layout { grid-template-columns: 1fr; gap: 0; }
-      .cap-tree { position: relative; top: 0; max-width: 300px; margin: 0 auto; }
-      .cap-tree svg { max-height: 420px; }
+    /* ── Phones: the trunk runs down the left edge, cards to its right ── */
+    @media (max-width: 760px) {
+      .tree-story { padding-left: 2.4rem; }
+      .tier__grid { grid-template-columns: 1fr; row-gap: 1.25rem; }
+      .side-l, .side-r { grid-column: 1; }
+      .tier__head--center, .tier__head.side-l { text-align: left; margin-left: 0; }
+      .side-l.cap::before { left: 0; right: auto; border-radius: 0 3px 3px 0; }
+      .tier--trunk { padding-top: 3.5rem; }
+      .ground { height: 4rem; }
       .proof { grid-template-columns: 1fr; }
-      .cap-hero { padding: 3rem 0 1rem; text-align: center; }
-      .cap-hero h1, .cap-hero p:not(.kicker) { margin-left: auto; margin-right: auto; }
+      .cap-hero { padding: 3rem 0 0.5rem; }
     }
   </style>
 </head>
@@ -227,104 +218,23 @@
       <p class="kicker">Capabilities</p>
       <h1>Everything we deliver grows from <span class="accent">what's underneath it.</span></h1>
       <p>
-        Platform-agnostic data consulting rooted in a decade of federal program delivery, from EPA water systems to FEMA preparedness dashboards. Scroll down the tree: what you get, how we work, and why it holds.
+        Platform-agnostic data consulting rooted in a decade of federal program delivery, from EPA water systems to FEMA preparedness dashboards. Scroll down the tree, from what you get, through how we work, to why it holds.
       </p>
     </div>
   </header>
 
-  <div class="container cap-layout">
+  <div class="container">
+    <div class="tree-story" id="story">
+      <svg class="tree-svg" id="tree" aria-hidden="true"></svg>
 
-    <!-- The tree -->
-    <div class="cap-tree">
-      <svg id="tree" viewBox="0 0 420 680" role="img" aria-labelledby="tree-title">
-        <title id="tree-title">A tree: four capabilities in the canopy, three ways of working along the trunk, and three foundations in the roots.</title>
-        <defs>
-          <radialGradient id="leafA" cx="50%" cy="45%" r="60%">
-            <stop offset="0%" stop-color="#5cbf73" stop-opacity="0.34"/>
-            <stop offset="100%" stop-color="#5cbf73" stop-opacity="0.06"/>
-          </radialGradient>
-          <radialGradient id="leafB" cx="50%" cy="45%" r="60%">
-            <stop offset="0%" stop-color="#8a8de6" stop-opacity="0.30"/>
-            <stop offset="100%" stop-color="#8a8de6" stop-opacity="0.05"/>
-          </radialGradient>
-        </defs>
-
-        <line class="t-ground" x1="30" y1="432" x2="390" y2="432"/>
-        <text class="t-label" x="410" y="40" text-anchor="end">CANOPY</text>
-        <text class="t-label" x="410" y="300" text-anchor="end">TRUNK</text>
-        <text class="t-label" x="410" y="470" text-anchor="end">ROOTS</text>
-
-        <!-- Roots: why it holds -->
-        <g class="tier tier-roots">
-          <path class="t-rootlet grow-line" style="--d:.55s;--dur:.7s" d="M150 497 C 135 512, 118 518, 92 514"/>
-          <path class="t-rootlet grow-line" style="--d:.6s;--dur:.7s" d="M268 497 C 285 510, 302 516, 328 510"/>
-          <path class="t-rootlet grow-line" style="--d:.65s;--dur:.7s" d="M210 520 C 196 545, 178 560, 160 590"/>
-          <path class="t-rootlet grow-line" style="--d:.7s;--dur:.7s" d="M211 540 C 226 562, 246 575, 262 600"/>
-          <path class="t-root grow-line" style="--d:.1s" d="M210 432 C 190 470, 150 500, 105 560"/>
-          <path class="t-root grow-line" style="--d:.2s" d="M210 432 C 213 490, 207 545, 210 612"/>
-          <path class="t-root grow-line" style="--d:.15s" d="M210 432 C 230 470, 270 500, 315 560"/>
-          <a class="t-node" href="#cap-academic" data-cap="cap-academic" style="--d:.9s" aria-label="Academic depth">
-            <circle class="halo" cx="105" cy="560" r="15"/><circle cx="105" cy="560" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-federal" data-cap="cap-federal" style="--d:1s" aria-label="Federal program experience">
-            <circle class="halo" cx="210" cy="612" r="15"/><circle cx="210" cy="612" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-govcon" data-cap="cap-govcon" style="--d:1.1s" aria-label="GovCon fluency">
-            <circle class="halo" cx="315" cy="560" r="15"/><circle cx="315" cy="560" r="9"/>
-          </a>
-        </g>
-
-        <!-- Trunk: how we work -->
-        <g class="tier tier-trunk">
-          <path class="t-trunk grow-line" style="--d:.35s;--dur:1s" d="M210 434 C 207 380, 213 330, 210 262"/>
-          <a class="t-node" href="#cap-agnostic" data-cap="cap-agnostic" style="--d:1.1s" aria-label="Platform-agnostic problem solving">
-            <circle class="halo" cx="210" cy="400" r="15"/><circle cx="210" cy="400" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-iterative" data-cap="cap-iterative" style="--d:1.2s" aria-label="Iterative and transparent process">
-            <circle class="halo" cx="210" cy="362" r="15"/><circle cx="210" cy="362" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-compliance" data-cap="cap-compliance" style="--d:1.3s" aria-label="Compliance-aware delivery">
-            <circle class="halo" cx="210" cy="324" r="15"/><circle cx="210" cy="324" r="9"/>
-          </a>
-        </g>
-
-        <!-- Canopy: what clients get -->
-        <g class="tier tier-canopy">
-          <path class="t-branch grow-line" style="--d:1s;--dur:.7s"   d="M210 300 C 170 282, 128 250, 95 185"/>
-          <path class="t-branch grow-line" style="--d:1.08s;--dur:.7s" d="M210 272 C 190 230, 170 170, 158 110"/>
-          <path class="t-branch grow-line" style="--d:1.16s;--dur:.7s" d="M210 268 C 230 225, 250 170, 262 105"/>
-          <path class="t-branch grow-line" style="--d:1.24s;--dur:.7s" d="M210 296 C 255 276, 295 245, 325 180"/>
-          <circle class="t-leaf" style="--d:1.35s" cx="210" cy="150" r="70" fill="url(#leafA)"/>
-          <circle class="t-leaf" style="--d:1.4s"  cx="100" cy="178" r="56" fill="url(#leafB)"/>
-          <circle class="t-leaf" style="--d:1.45s" cx="320" cy="174" r="56" fill="url(#leafB)"/>
-          <circle class="t-leaf" style="--d:1.5s"  cx="155" cy="100" r="58" fill="url(#leafA)"/>
-          <circle class="t-leaf" style="--d:1.55s" cx="265" cy="96"  r="58" fill="url(#leafA)"/>
-          <circle class="t-leaf" style="--d:1.6s"  cx="210" cy="60"  r="48" fill="url(#leafB)"/>
-          <a class="t-node" href="#cap-dashboards" data-cap="cap-dashboards" style="--d:1.6s" aria-label="Interactive dashboards">
-            <circle class="halo" cx="95" cy="185" r="15"/><circle cx="95" cy="185" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-pipelines" data-cap="cap-pipelines" style="--d:1.68s" aria-label="Governed data pipelines">
-            <circle class="halo" cx="158" cy="110" r="15"/><circle cx="158" cy="110" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-architecture" data-cap="cap-architecture" style="--d:1.76s" aria-label="Data architecture and governance">
-            <circle class="halo" cx="262" cy="105" r="15"/><circle cx="262" cy="105" r="9"/>
-          </a>
-          <a class="t-node" href="#cap-narratives" data-cap="cap-narratives" style="--d:1.84s" aria-label="Data-driven narratives">
-            <circle class="halo" cx="325" cy="180" r="15"/><circle cx="325" cy="180" r="9"/>
-          </a>
-        </g>
-      </svg>
-    </div>
-
-    <!-- The chapters -->
-    <div class="cap-chapters">
-
-      <section class="chapter" data-tier="canopy" aria-labelledby="ch-canopy">
+      <section class="tier tier--canopy" aria-labelledby="ch-canopy">
+        <header class="tier__head tier__head--center">
         <p class="kicker">The canopy &middot; What you get</p>
         <h2 id="ch-canopy">The part you can see</h2>
         <p class="chapter__lead">Dashboards, pipelines, structure and stories: the things our clients actually hold in their hands when the work is done.</p>
-
-        <article class="cap" id="cap-dashboards">
+        </header>
+        <div class="tier__grid">
+        <article class="cap side-l" id="cap-dashboards">
           <h3 class="cap__title">Interactive Dashboards</h3>
           <p class="cap__sub">Decision-ready reporting</p>
           <ul class="cap__list">
@@ -333,8 +243,7 @@
             <li>Colorblind-accessible design with stakeholder-specific views</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-pipelines">
+        <article class="cap side-r" id="cap-pipelines">
           <h3 class="cap__title">Governed Data Pipelines</h3>
           <p class="cap__sub">From messy sources to a single source of truth</p>
           <ul class="cap__list">
@@ -343,8 +252,7 @@
             <li>Automated ingestion from SharePoint, APIs, and flat file sources</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-architecture">
+        <article class="cap side-l" id="cap-architecture">
           <h3 class="cap__title">Data Architecture &amp; Governance</h3>
           <p class="cap__sub">Structure that scales</p>
           <ul class="cap__list">
@@ -353,8 +261,7 @@
             <li>Metadata schema design and classification pipelines</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-narratives">
+        <article class="cap side-r" id="cap-narratives">
           <h3 class="cap__title">Data-Driven Narratives</h3>
           <p class="cap__sub">Translating analysis into action</p>
           <ul class="cap__list">
@@ -363,14 +270,17 @@
             <li>Technical documentation and SOPs for reproducible workflows</li>
           </ul>
         </article>
+        </div>
       </section>
 
-      <section class="chapter" data-tier="trunk" aria-labelledby="ch-trunk">
+      <section class="tier tier--trunk" aria-labelledby="ch-trunk">
+        <div class="tier__grid">
+        <header class="tier__head side-l">
         <p class="kicker">The trunk &middot; How we work</p>
         <h2 id="ch-trunk">How the work gets done</h2>
         <p class="chapter__lead">Everything in the canopy passes through the same way of working: pick the right tool, show the work as it happens, and respect the rules of the room.</p>
-
-        <article class="cap" id="cap-agnostic">
+        </header>
+        <article class="cap side-r" id="cap-agnostic">
           <h3 class="cap__title">Platform-Agnostic Problem Solving</h3>
           <p class="cap__sub">The right tool for the job, not the trendy one</p>
           <ul class="cap__list">
@@ -379,8 +289,7 @@
             <li>No vendor lock-in; solutions designed for portability and handoff</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-iterative">
+        <article class="cap side-l" id="cap-iterative">
           <h3 class="cap__title">Iterative &amp; Transparent Process</h3>
           <p class="cap__sub">Clients see the work, not just the output</p>
           <ul class="cap__list">
@@ -389,8 +298,7 @@
             <li>Designed for maintainability by non-technical staff after the engagement ends</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-compliance">
+        <article class="cap side-r" id="cap-compliance">
           <h3 class="cap__title">Compliance-Aware Delivery</h3>
           <p class="cap__sub">Built for the federal context</p>
           <ul class="cap__list">
@@ -399,14 +307,19 @@
             <li>Scope definition and boundary-setting for security and governance frameworks</li>
           </ul>
         </article>
+        </div>
       </section>
 
-      <section class="chapter" data-tier="roots" aria-labelledby="ch-roots">
+      <div class="ground" id="ground"><span>Ground level</span></div>
+
+      <section class="tier tier--roots" aria-labelledby="ch-roots">
+        <div class="tier__grid">
+        <header class="tier__head side-l">
         <p class="kicker">The roots &middot; Why it holds</p>
         <h2 id="ch-roots">Why it holds</h2>
         <p class="chapter__lead">Under it all is a decade of federal delivery and research training. It's the part nobody sees, and the reason the rest stays standing.</p>
-
-        <article class="cap" id="cap-academic">
+        </header>
+        <article class="cap side-r" id="cap-academic">
           <h3 class="cap__title">Academic Depth</h3>
           <p class="cap__sub">Research-trained analytical rigor</p>
           <ul class="cap__list">
@@ -415,8 +328,7 @@
             <li>Published researcher with peer-reviewed analytical methodology</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-federal">
+        <article class="cap side-l" id="cap-federal">
           <h3 class="cap__title">Federal Program Experience</h3>
           <p class="cap__sub">10+ years across four agencies</p>
           <ul class="cap__list">
@@ -425,8 +337,7 @@
             <li>DHS / FEMA: national preparedness dashboards, grant program data</li>
           </ul>
         </article>
-
-        <article class="cap" id="cap-govcon">
+        <article class="cap side-r" id="cap-govcon">
           <h3 class="cap__title">GovCon Fluency</h3>
           <p class="cap__sub">Speaks contractor and client</p>
           <ul class="cap__list">
@@ -435,8 +346,8 @@
             <li>Understands the dynamics of prime–sub relationships from the inside</li>
           </ul>
         </article>
+        </div>
       </section>
-
     </div>
   </div>
 
@@ -473,62 +384,181 @@
 
   <script>
   (function () {
-    var tree = document.getElementById('tree');
+    var story = document.getElementById('story');
+    var svg = document.getElementById('tree');
+    var NS = 'http://www.w3.org/2000/svg';
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var parts = null;   // everything the scroll handler needs, rebuilt on resize
 
-    // 1. Grow the tree: measure each line so it can draw itself.
-    tree.querySelectorAll('.grow-line').forEach(function (p) {
-      p.style.setProperty('--len', Math.ceil(p.getTotalLength()));
-    });
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { tree.classList.add('grown'); });
-    });
+    function el(tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      (parent || svg).appendChild(e);
+      return e;
+    }
+    // Position of an element inside the tree area
+    function box(node) {
+      var r = node.getBoundingClientRect(), s = story.getBoundingClientRect();
+      return { l: r.left - s.left, r: r.right - s.left, t: r.top - s.top, b: r.bottom - s.top,
+               w: r.width, h: r.height };
+    }
+    function measure(path) {
+      var len = Math.ceil(path.getTotalLength()) + 1;
+      path.style.setProperty('--len', len);
+      return len;
+    }
 
-    // 2. As each chapter reaches the middle of the screen, light up its part of the tree.
-    var chapters = document.querySelectorAll('.chapter');
-    var tierObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) tree.setAttribute('data-active', e.target.dataset.tier);
+    // 1. Draw the tree around wherever the cards ended up.
+    function build() {
+      var narrow = window.innerWidth <= 760;
+      var W = story.clientWidth, H = story.offsetHeight;
+      svg.innerHTML = '';
+      svg.setAttribute('width', W); svg.setAttribute('height', H);
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+      var x = narrow ? 14 : W / 2;
+      var canopyGrid = box(story.querySelector('.tier--canopy .tier__grid'));
+      var crownTop = canopyGrid.t - (narrow ? 10 : 30);
+      var crownBase = canopyGrid.b;
+      var groundY = box(document.getElementById('ground')).t + (narrow ? 32 : 40);
+      var rootCards = story.querySelectorAll('.tier--roots .cap');
+      var end = box(rootCards[rootCards.length - 1]).t + 34;
+
+      // Leaves first, so everything else sits on top of them
+      var defs = el('defs', {});
+      [['leafA', '#5cbf73', 0.30], ['leafB', '#8a8de6', 0.26]].forEach(function (g) {
+        var rg = el('radialGradient', { id: g[0], cx: '50%', cy: '50%', r: '50%' }, defs);
+        el('stop', { offset: '0%', 'stop-color': g[1], 'stop-opacity': g[2] }, rg);
+        el('stop', { offset: '100%', 'stop-color': g[1], 'stop-opacity': 0 }, rg);
       });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    chapters.forEach(function (c) { tierObserver.observe(c); });
+      var leaves = [];
+      story.querySelectorAll('.tier--canopy .cap').forEach(function (c, i) {
+        var b = box(c);
+        leaves.push(el('circle', { class: 'leaf', cx: b.l + b.w / 2, cy: b.t + b.h / 2,
+          r: Math.max(b.w, b.h) * (narrow ? 0.75 : 0.85), fill: 'url(#' + (i % 2 ? 'leafB' : 'leafA') + ')' }));
+      });
+      if (!narrow) {
+        leaves.push(el('circle', { class: 'leaf', cx: x, cy: canopyGrid.t + canopyGrid.h * 0.45,
+          r: canopyGrid.h * 0.75, fill: 'url(#leafA)' }));
+      }
 
-    // 3. Cards rise in, a beat apart, when their chapter scrolls into view.
+      el('line', { class: 'tp tp--ground', x1: 0, y1: groundY, x2: W, y2: groundY });
+
+      var crown = el('path', { class: 'tp tp--trunk grow', 'stroke-width': narrow ? 5 : 10,
+        d: 'M' + x + ' ' + crownTop + ' L' + x + ' ' + crownBase });
+      var trunk = el('path', { class: 'tp tp--trunk grow', 'stroke-width': narrow ? 5 : 10,
+        d: 'M' + x + ' ' + crownBase + ' L' + x + ' ' + groundY });
+      var tap = el('path', { class: 'tp tp--tap grow', 'stroke-width': narrow ? 3 : 5,
+        d: 'M' + x + ' ' + groundY + ' L' + x + ' ' + end });
+      measure(crown);
+
+      // A branch from the trunk to the trunk-facing edge of every card
+      var branches = [];
+      story.querySelectorAll('.cap').forEach(function (c) {
+        var tier = c.closest('.tier--canopy') ? 'canopy' : c.closest('.tier--trunk') ? 'trunk' : 'roots';
+        var b = box(c);
+        var x1 = b.l > x ? b.l : b.r;
+        var y1 = b.t + 34;
+        var y0;
+        if (narrow) y0 = tier === 'roots' ? y1 - 20 : y1 + 20;
+        else if (tier === 'canopy') y0 = Math.min(y1 + 70, crownBase - 8);
+        else if (tier === 'trunk') y0 = y1 + 36;
+        else y0 = y1 - 48;
+        var dx = x1 - x;
+        var d = 'M' + x + ' ' + y0 + ' C' + (x + dx * 0.3) + ' ' + y0 + ', ' +
+                (x + dx * 0.55) + ' ' + y1 + ', ' + x1 + ' ' + y1;
+        var path = el('path', { class: 'tp grow ' + (tier === 'roots' ? 'tp--root' : 'tp--branch'), d: d });
+        if (narrow) path.setAttribute('stroke-width', tier === 'roots' ? 2 : 2.5);
+        measure(path);
+        var node = el('circle', { class: 'tn tn--' + tier, cx: x, cy: y0, r: narrow ? 4.5 : 6 });
+        branches.push({ path: path, node: node, card: c, y0: y0, tier: tier });
+      });
+
+      var tip = el('circle', { class: 'tip', cx: x, cy: crownBase, r: narrow ? 4 : 6, opacity: 0 });
+
+      parts = { crown: crown, trunk: trunk, tap: tap, tip: tip, leaves: leaves, branches: branches,
+                crownBase: crownBase, groundY: groundY, end: end,
+                trunkLen: groundY - crownBase, tapLen: end - groundY };
+      trunk.style.setProperty('--len', parts.trunkLen);
+      tap.style.setProperty('--len', parts.tapLen);
+    }
+
+    // 2. The canopy grows on its own when the page opens.
+    function growCrown(instant) {
+      var p = parts;
+      p.crown.classList.add('on');
+      p.leaves.forEach(function (l, i) { l.style.setProperty('--d', instant ? '0s' : (0.25 + i * 0.06) + 's'); l.classList.add('on'); });
+      p.branches.forEach(function (br, i) {
+        if (br.tier !== 'canopy') return;
+        var d = instant ? '0s' : (0.35 + i * 0.08) + 's';
+        br.path.style.setProperty('--d', d); br.node.style.setProperty('--d', d);
+        br.path.classList.add('on'); br.node.classList.add('on');
+      });
+    }
+
+    // 3. Below the canopy, the trunk follows your reading position down the page,
+    //    and each branch reaches out as the trunk passes it.
+    function onScroll() {
+      var p = parts; if (!p) return;
+      var top = story.getBoundingClientRect().top;
+      var tipY = reduce ? Infinity : window.innerHeight * 0.72 - top;
+      var t = Math.max(0, Math.min(p.trunkLen, tipY - p.crownBase));
+      var r = Math.max(0, Math.min(p.tapLen, tipY - p.groundY));
+      p.trunk.style.strokeDashoffset = p.trunkLen - t;
+      p.tap.style.strokeDashoffset = p.tapLen - r;
+      var growing = tipY > p.crownBase && tipY < p.end;
+      p.tip.setAttribute('cy', Math.min(tipY, p.end));
+      p.tip.setAttribute('opacity', growing ? 1 : 0);
+      p.branches.forEach(function (br) {
+        if (br.tier !== 'canopy' && tipY >= br.y0 && !br.path.classList.contains('on')) {
+          br.path.style.setProperty('--d', '0s'); br.node.style.setProperty('--d', '0s');
+          br.path.classList.add('on'); br.node.classList.add('on');
+        }
+      });
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; onScroll(); });
+    }, { passive: true });
+
+    function rebuild() {
+      svg.classList.add('instant');
+      build(); growCrown(true); onScroll();
+      requestAnimationFrame(function () { requestAnimationFrame(function () { svg.classList.remove('instant'); }); });
+    }
+    var resizeTimer;
+    window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(rebuild, 150); });
+
+    build(); onScroll();
+    requestAnimationFrame(function () { requestAnimationFrame(function () { growCrown(reduce); }); });
+    // Web fonts can change card heights after first paint; redraw once they settle.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (document.fonts.status === 'loaded') rebuild(); });
+
+    // 4. Cards rise in, a beat apart, as they scroll into view.
     var cardObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
+      entries.forEach(function (e, i) {
         if (!e.isIntersecting) return;
-        e.target.querySelectorAll('.cap').forEach(function (card, i) {
-          card.style.setProperty('--d', reduce ? '0s' : (i * 0.07) + 's');
-          card.classList.add('in');
-        });
+        e.target.style.setProperty('--d', reduce ? '0s' : (i * 0.06) + 's');
+        e.target.classList.add('in');
         cardObserver.unobserve(e.target);
       });
-    }, { rootMargin: '0px 0px -12% 0px' });
-    chapters.forEach(function (c) { cardObserver.observe(c); });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    story.querySelectorAll('.cap').forEach(function (c) { cardObserver.observe(c); });
 
-    // 4. Pointing at a card lights its node on the tree, and the other way round.
-    function link(capId, on) {
-      var card = document.getElementById(capId);
-      var node = tree.querySelector('[data-cap="' + capId + '"]');
-      if (card) card.classList.toggle('lit', on);
-      if (node) node.classList.toggle('lit', on);
-    }
-    document.querySelectorAll('.cap').forEach(function (card) {
-      card.addEventListener('mouseenter', function () { link(card.id, true); });
-      card.addEventListener('mouseleave', function () { link(card.id, false); });
-    });
-    tree.querySelectorAll('.t-node').forEach(function (node) {
-      var id = node.dataset.cap;
-      node.addEventListener('mouseenter', function () { link(id, true); });
-      node.addEventListener('mouseleave', function () { link(id, false); });
-      node.addEventListener('focus', function () { link(id, true); });
-      node.addEventListener('blur', function () { link(id, false); });
-      node.addEventListener('click', function (ev) {
-        ev.preventDefault();
-        var card = document.getElementById(id);
-        card.classList.add('in');
-        card.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-      });
+    // 5. Pointing at a card lights its branch.
+    story.querySelectorAll('.cap').forEach(function (c) {
+      function light(on) {
+        c.classList.toggle('lit', on);
+        if (!parts) return;
+        parts.branches.forEach(function (br) {
+          if (br.card === c) { br.path.classList.toggle('lit', on); br.node.classList.toggle('lit', on); }
+        });
+      }
+      c.addEventListener('mouseenter', function () { light(true); });
+      c.addEventListener('mouseleave', function () { light(false); });
     });
   })();
   </script>
