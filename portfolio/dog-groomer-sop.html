@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Day We're Not There: A Grooming Shop's Manual — JJW Insights Analytics LLC</title>
+  <meta name="description" content="A system that refuses to guess is only useful if the person at the counter knows what to do next. The story of the three manuals we wrote so a small grooming shop can run its software without us.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .case { max-width: 780px; }
+    .case h2 {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--color-text-heading);
+      margin: 3rem 0 0.8rem;
+    }
+    .case p, .case ul { margin-bottom: 1.2rem; }
+    .case ul { padding-left: 1.4rem; }
+    .case li { margin-bottom: 0.5rem; }
+    .case code {
+      font-size: 0.9em;
+      background: var(--color-bg-card);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    .case-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .stat {
+      background: var(--color-bg-card);
+      border: 1px solid rgba(100,104,218,0.1);
+      border-radius: 8px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat__num {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 2rem;
+      color: var(--color-gold);
+      line-height: 1.2;
+    }
+    .stat__label {
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+    }
+    .callout {
+      border-left: 3px solid var(--color-gold);
+      background: var(--color-bg-card);
+      padding: 1.2rem 1.5rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .case table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .case th, .case td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid rgba(100,104,218,0.15);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .case th {
+      font-family: var(--font-heading);
+      color: var(--color-text-heading);
+    }
+    .case td.num, .case th.num { text-align: right; }
+    .try-list li strong { color: var(--color-text-heading); }
+    .stack { color: var(--color-text-muted); font-size: 0.95rem; }
+    .lead { font-size: 1.15rem; color: var(--color-text-heading); }
+    .eyebrow {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-gold);
+      margin-bottom: 0.4rem;
+    }
+    .case h2.case-first { margin-top: 0; }
+    .case .eyebrow { margin-top: 3.5rem; }
+    .case > .eyebrow:first-child { margin-top: 0; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+    .feature-grid .value-card { padding: 1.4rem; }
+    .turn {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .turn p {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      color: var(--color-text-heading);
+      line-height: 1.3;
+    }
+    .turn .accent { color: var(--color-gold); }
+    .shot { margin: 2rem 0; }
+    .shot img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(100,104,218,0.25);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .shot a:hover img { transform: translateY(-4px); border-color: var(--color-gold); }
+    .shot figcaption {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+      margin-top: 0.8rem;
+      text-align: center;
+    }
+    .eyebrow a { color: inherit; }
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare__col {
+      background: var(--color-bg-card);
+      border: 1px solid rgba(100,104,218,0.15);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
+    }
+    .compare__col--strong { border-color: var(--color-gold); }
+    .compare__col p:last-child, .compare__col ol { margin-bottom: 0; }
+    .compare__col ol { padding-left: 1.2rem; }
+    .compare__label {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted);
+      margin-bottom: 0.6rem;
+    }
+    .compare__col--strong .compare__label { color: var(--color-gold); }
+    .manual-page {
+      background: #fdfcf8;
+      color: #222;
+      border-radius: 8px;
+      padding: 1.4rem 1.6rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      font-size: 0.95rem;
+    }
+    .manual-page__sub {
+      color: #6b6b6b;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .manual-page ol { padding-left: 1.4rem; margin-bottom: 0; }
+    .manual-page li p { margin: 0.5rem 0 0; }
+    .manual-page strong { color: #111; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="container">
+      <a href="../index.html">
+        <img src="../assets/images/JJW_Logo.svg" alt="JJW Insights Analytics" class="site-nav__logo">
+      </a>
+      <ul class="site-nav__links">
+        <li><a href="../index.html">Home </a></li>
+        <li><a href="../capability-tree.html"> Capabilities </a></li>
+        <li><a href="../portfolio.html" class="active"> Portfolio </a></li>
+        <li><a href="../about.html"> About </a></li>
+        <li><a href="../contact.html"> Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">A sequel to <a href="dog-groomer-platform.html">The Missing Date</a></p>
+      <h1 class="hero__tagline">The system says no. <span class="accent">Now what?</span></h1>
+      <p class="hero__sub">
+        Software isn't finished when it works. It's finished when someone who has never seen it can run it on a busy
+        Saturday, without calling us. This is the story of the manual we wrote so a small grooming shop can do that.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="case">
+
+        <p class="eyebrow">Chapter 1</p>
+        <h2 class="case-first">The day we're not there</h2>
+        <p>
+          In <a href="dog-groomer-platform.html">The Missing Date</a>, we built a grooming shop's system around one
+          rule: if Jaddi's paperwork doesn't say when his rabies shot expires, the system won't guess. He stays
+          "not cleared" until the shop has the real certificate.
+        </p>
+        <p>
+          That refusal protects the shop. But a refusal on its own just stops the line. The groomer at the counter
+          sees a red box, a dog waiting, and an owner asking why. What do they do next? Who fixes it? Can the
+          manager override it?
+        </p>
+        <p>
+          A small shop has no IT department and no trainer. When we hand the system over and leave, the only thing
+          still in the room is what we wrote down.
+        </p>
+        <div class="callout">
+          <p>So the real question isn't whether the system works. It's <strong>whether the shop can run it without us.</strong></p>
+        </div>
+
+        <p class="eyebrow">Chapter 2</p>
+        <h2 class="case-first">Three readers, three manuals</h2>
+        <p>
+          The people who touch the system don't share a job, so they shouldn't share a manual. The first page asks
+          one question, <em>which manual is yours?</em>, and sends each reader to the one written for them.
+        </p>
+        <div class="feature-grid">
+          <div class="value-card">
+            <h3 class="value-card__title">Groomer manual</h3>
+            <p class="value-card__text">13 procedures. Signing in, checking in a dog, adding vaccine paperwork, booking a groom, and recording the haircut.</p>
+          </div>
+          <div class="value-card">
+            <h3 class="value-card__title">Manager manual</h3>
+            <p class="value-card__text">11 procedures. Opening Admin, verifying shots typed in without a copy, second looks at hand checks, and the staff list.</p>
+          </div>
+          <div class="value-card">
+            <h3 class="value-card__title">Technical systems manual</h3>
+            <p class="value-card__text">9 procedures. Starting the app, running the database tests, backups, publishing, and the AI that reads paperwork.</p>
+          </div>
+        </div>
+        <p>
+          Every procedure has a number, like GRM-02 or MGR-04, and follows the same order: what it's for, who does it,
+          what must already be true, the steps, what the screen shows when it's done, and what to do if it isn't.
+        </p>
+
+        <p class="eyebrow">Chapter 3</p>
+        <h2 class="case-first">Written for someone who has never seen it</h2>
+        <p>
+          The standard we held every page to: leave nothing for the reader to work out. If a step makes them guess
+          where a button is, what it's called, or what happens next, the step isn't finished.
+        </p>
+        <div class="compare">
+          <div class="compare__col">
+            <p class="compare__label">Weak</p>
+            <p>Search for the dog by its name or the owner's name.</p>
+          </div>
+          <div class="compare__col compare__col--strong">
+            <p class="compare__label">Strong</p>
+            <ol>
+              <li>Click the <strong>Dog or owner name</strong> search box on the left side of the Check-in screen.</li>
+              <li>Type the name of the dog, or of its owner. The list below the search box shows only the dogs that match.</li>
+            </ol>
+          </div>
+        </div>
+        <p>
+          One action per step. Every button named exactly as the screen names it. Every step says where to look and
+          what you'll see after. It reads slower than a quick tip, and it's the version a new hire can follow on
+          their first morning.
+        </p>
+
+        <p class="eyebrow">Chapter 4</p>
+        <h2 class="case-first">The same rule, said three ways</h2>
+        <p>
+          Back to Jaddi. The rule that his shot can't be recorded without an expiry date exists in three places, and
+          each one speaks to a different reader.
+        </p>
+        <ul>
+          <li><strong>In the database</strong>, as rule GR021: a shot with no expiry date can't go on a vaccination record. Nothing can route around it.</li>
+          <li><strong>On the screen</strong>, in plain words, right where the groomer types the dates.</li>
+          <li><strong>In the manual</strong>, in procedure GRM-06, with what to do instead.</li>
+        </ul>
+        <figure class="shot">
+          <img src="../assets/images/dog-groomer-sop-paperwork.png" width="1408" height="880" loading="lazy"
+               alt="Jaddi's card in the shop's app. Under Can't groom today, the Paperwork the owner brought box says: a shot with no expiry date on the paper can't be recorded; the system never guesses one.">
+          <figcaption>The screen tells the groomer the rule at the moment it matters.</figcaption>
+        </figure>
+        <div class="manual-page">
+          <p class="manual-page__sub">SOP GRM-06 · Groomer manual · Add vaccine paperwork</p>
+          <ol start="3">
+            <li>Click <strong>Expires</strong> and enter the expiry date, exactly as the paper prints it.
+              <p>A shot with no expiry date on the paper cannot be recorded. The system never guesses one. Leave that vaccine's dates empty.</p>
+            </li>
+            <li>For each vaccine that is <strong>not</strong> on the paperwork, click <strong>Not on their paperwork</strong> beside its name. The line changes to <strong>Asked the owner · reminder in a week</strong>, and the shop asks the owner for it.</li>
+          </ol>
+        </div>
+        <p>
+          And when the red box does appear, the Check-in procedure has a section titled with the screen's exact words,
+          <strong>Can't groom today</strong>, that says what it means and what to do. Every section is numbered, so a
+          manager can text a groomer a link straight to the fix.
+        </p>
+
+        <p class="eyebrow">Chapter 5</p>
+        <h2 class="case-first">A manual that can't fall out of date</h2>
+        <p>
+          Most manuals are right on the day they're written. Then the software changes, and the manual quietly
+          becomes fiction. We built this one so that's hard to do.
+        </p>
+        <ul>
+          <li><strong>The rules list is read from the database.</strong> Every time the manual is built, it pulls all 42 shop rules straight from the database files. If a rule is added, the manual has it.</li>
+          <li><strong>The pictures are retaken by one command.</strong> It opens the app, clicks through to each screen, and saves every picture over the one the manual already shows.</li>
+          <li><strong>The rules are proven, too.</strong> The <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/sop/systems/database-tests.html" target="_blank" rel="noopener">Run the database tests</a> procedure walks the person who looks after the system through proving that every rule still says no, before any change goes live.</li>
+        </ul>
+        <div class="stats">
+          <div class="stat"><div class="stat__num">33</div><div class="stat__label">procedures across three manuals</div></div>
+          <div class="stat"><div class="stat__num">42</div><div class="stat__label">shop rules, listed from the database itself</div></div>
+          <div class="stat"><div class="stat__num">20</div><div class="stat__label">screenshots, retaken in one go</div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="turn">
+        <p>Anyone can hand over working software.<br><span class="accent">The harder story is software the shop can keep running.</span></p>
+      </div>
+      <div class="case-actions" style="margin-top: 2.5rem;">
+        <a href="https://jasonrwilliams-maker.github.io/dog-groomer-platform/sop/" class="btn btn--primary" target="_blank" rel="noopener">Open the manual &rarr;</a>
+        <a href="dog-groomer-platform.html" class="btn btn--outline">Read The Missing Date</a>
+      </div>
+      <p class="stack" style="text-align: center; margin-top: 2rem;">Quarto · Python · Playwright · PostgreSQL 16 · pgTAP</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 JJW Insights Analytics LLC. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
